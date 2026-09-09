@@ -1,0 +1,107 @@
+/* Fuente: tema at_economicas de https://fceye.us.es/ (09/09/2026).
+   Naranja institucional #FF5800, gris #363636 y blanco.
+   Naranja más oscuro para texto y botones con contraste sobre blanco. */
+.feceye-student {
+  --user-primary: #b83e00;
+  --user-primary-hover: #923100;
+  --user-secondary: #ff5800;
+  --user-accent: #fff0e6;
+  --user-accent-hover: #ffe0cc;
+  --color-primary: #b83e00;
+  --nav-bg: #ff5800;
+  --nav-text: #24150f;
+  --sidebar-bg: #fff;
+  --sidebar-text: #363636;
+  --sidebar-item-bg: #fff0e6;
+  --bg-gradient-start: #fcfcfc;
+  --bg-gradient-end: #fff5ef;
+  --text-primary: #363636;
+  --text-secondary: #63574f;
+  --text-muted: #706158;
+  --border-color: #e3d9d2;
+  --card-bg: #fff;
+  --footer-bg: #f7f7f7;
+  --card-shadow-hover: 0 8px 22px rgb(116 49 13 / 14%);
+  color: var(--text-primary);
+}
+.feceye-student .user-avatar-container { box-shadow: 0 4px 12px rgb(184 62 0 / 22%); }
+.feceye-student .badge-degree { background: var(--user-accent); color: var(--user-primary); }
+.feceye-student .perfil-title { color: var(--user-primary); }
+.dark-mode .feceye-student {
+  --nav-bg: #ff5800;
+  --nav-text: #24150f;
+  --user-primary: #ffac80;
+  --user-primary-hover: #ffc8a8;
+  --user-accent: #493023;
+  --user-accent-hover: #613b26;
+  --color-primary: #ffac80;
+  --bg-gradient-start: #221e1b;
+  --bg-gradient-end: #30231c;
+  --card-bg: #302a25;
+  --text-primary: #fff5ef;
+  --text-secondary: #e0c9ba;
+  --text-muted: #c8b5a8;
+  --border-color: #665143;
+  --sidebar-bg: #302a25;
+  --sidebar-text: #fff5ef;
+  --sidebar-item-bg: #493023;
+  --footer-bg: #221e1b;
+}
+.dark-mode .feceye-student .btn-primary { color: #24150f; }
+.feceye-onboarding {
+  box-sizing: border-box;
+  margin: auto;
+  width: min(680px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(22px, 4vw, 38px);
+  border: 1px solid var(--border-color);
+  border-top: 6px solid #ff5800;
+  border-radius: 18px;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  box-shadow: 0 24px 80px #0005;
+}
+.feceye-onboarding::backdrop { background: rgb(16 12 9 / 76%); }
+.feceye-onboarding h1 { font-size: clamp(1.5rem, 4vw, 2rem); line-height: 1.2; margin: 12px 0; color: var(--text-primary); }
+.feceye-onboarding p { line-height: 1.6; }
+.feceye-onboarding .onboarding-eyebrow { color: var(--user-primary); font-size: .73rem; letter-spacing: .1em; font-weight: 800; }
+.onboarding-steps { list-style: none; padding: 0; display: flex; gap: 12px; margin: 24px 0; }
+.onboarding-steps li { display: flex; align-items: center; gap: 6px; font-size: .82rem; color: var(--text-secondary); }
+.onboarding-steps span { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; border: 1px solid var(--border-color); }
+.onboarding-steps [aria-current] { font-weight: 700; color: var(--user-primary); }
+.onboarding-steps [aria-current] span { background: #ff5800; color: #24150f; border-color: #ff5800; }
+.feceye-onboarding fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.feceye-onboarding label { display: block; font-weight: 600; margin: 14px 0 8px; }
+.feceye-onboarding select { box-sizing: border-box; width: 100%; min-height: 46px; padding: 10px; border-radius: 7px; border: 1px solid var(--border-color); font: inherit; background: var(--card-bg); color: var(--text-primary); }
+.feceye-onboarding button { font: inherit; border-radius: 7px; padding: 10px 14px; cursor: pointer; }
+.feceye-onboarding :focus-visible { outline: 3px solid var(--user-primary); outline-offset: 3px; }
+.feceye-onboarding button:disabled { opacity: .55; cursor: not-allowed; }
+.feceye-onboarding .onboarding-primary { margin-top: 16px; width: 100%; border: 0; background: #b83e00; color: #fff; font-weight: 700; min-height: 48px; }
+.feceye-onboarding .onboarding-primary:hover:not(:disabled) { background: #923100; }
+.feceye-onboarding .onboarding-logout { display: block; margin: 20px auto 0; background: transparent; color: var(--text-secondary); border: 0; text-decoration: underline; }
+.onboarding-subjects { max-height: 36vh; overflow-y: auto; padding: 4px; margin-top: 12px; }
+.feceye-onboarding .onboarding-subject { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; margin: 8px 0; cursor: pointer; }
+.onboarding-subject:has(input:checked) { background: var(--user-accent); border-color: var(--user-primary); }
+.onboarding-subject input { width: 20px; height: 20px; accent-color: var(--user-primary); flex-shrink: 0; }
+.onboarding-subject small { display: block; color: var(--text-secondary); font-weight: 400; margin-top: 4px; }
+.onboarding-error { border: 1px solid #c64d34; background: var(--user-accent); padding: 12px; border-radius: 8px; }
+.onboarding-error button { color: var(--text-primary); background: var(--card-bg); border: 1px solid var(--border-color); }
+.onboarding-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+.onboarding-profile-background .user-header-card { min-height: 200px; }
+@media (max-width: 420px) {
+  .feceye-onboarding { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); padding: 20px 16px; }
+  .onboarding-steps { gap: 8px; }
+  .onboarding-steps li { gap: 4px; font-size: .72rem; }
+}
+/* Neutralizar los acentos azules heredados del perfil, también en modo oscuro. */
+.feceye-student .badge-degree,
+.feceye-student .grupo-badge,
+body.dark-mode .feceye-student .badge-degree,
+body.dark-mode .feceye-student .grupo-badge {
+  background: var(--user-accent);
+  color: var(--user-primary);
+  border-color: var(--border-color);
+}
+body.dark-mode .feceye-student .section-title { color: var(--user-primary); }

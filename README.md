@@ -70,4 +70,30 @@ Compilar el frontend y servirlo con fallback de rutas a `index.html`. Publicar `
 
 Producción requiere sesiones en PostgreSQL y cookies Secure. El almacenamiento en memoria solo se permite para desarrollo/pruebas. En despliegues con varios procesos, añadir en el proxy un límite de intentos compartido. La persistencia sigue el contrato de [connect-pg-simple](https://github.com/voxpelli/node-connect-pg-simple) y la configuración de cookies de [express-session](https://expressjs.com/en/resources/middleware/session/).
 
-Completar las variables de correo y aportar la plantilla PDF de permuta de FECEYE en `PLANTILLAS` para los flujos de documentos heredados. Antes de publicar, completar los textos institucionales de privacidad/contacto y los recursos oficiales del centro. Esta adaptación no se ha desplegado ni se ha conectado a la base de producción.
+Completar las variables de correo y aportar la plantilla PDF de permuta de FECEYE en `PLANTILLAS` para los flujos de documentos heredados. Antes de publicar, completar los textos institucionales de privacidad/contacto y los recursos oficiales del centro. Los cambios locales requieren actualizar explícitamente el servidor; las pruebas no modifican su base de datos.
+
+## Actualización: perfil académico obligatorio y colores FECEYE
+
+El área de estudiante usa naranja `#FF5800`, blanco y gris `#363636`, tomados del tema de https://fceye.us.es/. Se usa un naranja más oscuro para texto/botones sobre blanco y variantes legibles para modo oscuro. Los estilos se limitan al área de estudiante.
+
+Al registrarse se abre `/miPerfil`. Antes de montar las pantallas de estudiante, se consulta `GET /api/v1/usuario/configuracionInicial`. El asistente es un diálogo modal nativo: oscurece el fondo, bloquea interacción/foco fuera del diálogo y no permite cerrar con Escape ni clic exterior. Solo permite completar el paso, reintentar ante errores o cerrar sesión.
+
+Pasos obligatorios: grado → una o más asignaturas (incluso de distintos cursos) → un grupo actual por cada asignatura. El estado se lee de la base al entrar, navegar y completar cada paso; las cuentas existentes retoman lo pendiente. Si se aprueban todas las asignaturas desde el perfil, se vuelve a exigir selección. Un perfil completo no muestra el asistente.
+
+`POST /api/v1/usuario/configuracionInicial` guarda cada paso en una transacción, con validación de pertenencia e identificadores de base de datos (funciona también con asignaturas cuyo código sea nulo). El rol se obtiene de la sesión; el endpoint solo admite estudiantes. Las rutas de permutas y solicitudes rechazan perfiles incompletos con HTTP 409 y `code: PERFIL_INCOMPLETO`.
+
+Esta actualización **no requiere migraciones SQL**. Una vez publicados los cambios en Git, actualizar el servidor:
+
+```sh
+cd /opt/PermutasFECEYE/PermutasFECEYE
+export PATH="/opt/feceye-runtime/node-v22.23.2-linux-x64/bin:$PATH"
+git pull --ff-only
+npm --prefix backend ci
+sudo systemctl restart permutas-feceye
+npm --prefix frontend ci
+npm --prefix frontend run build
+```
+
+El contenedor `permutas-feceye-web` sirve la carpeta `frontend/dist` que ya tiene montada. No requiere cambios en DNS, proxy, firewall ni `.env`.
+
+Validación: 42 pruebas frontend; 28 comprobaciones backend superadas y una integración Docker optativa omitida. El nuevo SQL se ha probado en PostgreSQL embebido (PGlite, dependencia solo de desarrollo), incluyendo rollback, selecciones cruzadas y bloqueo de permutas. Compilación correcta; persiste el aviso previo de tamaño del bundle. No se han aplicado estos cambios a la base ni al servidor de producción.

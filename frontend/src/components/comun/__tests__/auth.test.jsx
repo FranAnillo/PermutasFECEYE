@@ -35,6 +35,7 @@ function renderAuth(path = '/login', extra = null) {
             <Route path="/registro" element={<Registro />} />
             <Route path="/noRegistrado" element={<NoRegistrado />} />
             <Route path="/estudiante" element={<RoleRoute allowedRoles={['estudiante']}><p>Student home</p></RoleRoute>} />
+            <Route path="/miPerfil" element={<p>Student profile</p>} />
             <Route path="/admin" element={<RoleRoute allowedRoles={['administrador']}><p>Admin home</p></RoleRoute>} />
             <Route path="/unauthorized" element={<p>Access denied</p>} />
         </Routes>
@@ -78,7 +79,7 @@ describe('Web authentication', () => {
         renderAuth('/registro');
         await fillRegistro();
         fireEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }));
-        expect(await screen.findByText('Student home')).toBeInTheDocument();
+        expect(await screen.findByText('Student profile')).toBeInTheDocument();
         expect(registro).toHaveBeenCalledWith({ nombre_usuario: 'alumno1', nombre_completo: 'Ana Estudiante', correo: 'ana@example.com', password: 'clave-segura-123' });
     });
 
@@ -108,7 +109,7 @@ describe('Web authentication', () => {
         expect(await screen.findByRole('alert')).toHaveTextContent('El usuario o correo ya está registrado.');
         expect(screen.getByRole('button', { name: 'Crear cuenta' })).toBeEnabled();
         fireEvent.click(screen.getByRole('button', { name: 'Crear cuenta' }));
-        expect(await screen.findByText('Student home')).toBeInTheDocument();
+        expect(await screen.findByText('Student profile')).toBeInTheDocument();
     });
 
     it('shows server credential errors without navigating', async () => {

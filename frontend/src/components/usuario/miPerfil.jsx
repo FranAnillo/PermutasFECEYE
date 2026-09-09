@@ -4,7 +4,7 @@ import { obtenerDatosUsuario } from "../../services/usuario";
 import { obtenerMiGrupoAsignatura } from "../../services/grupo";
 import { superarAsignaturasUsuario } from "../../services/asignaturas";
 import SeleccionarEstudio from "../usuario/seleccionarEstudio";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faBookOpen, faUserGraduate, faEnvelope, faUniversity } from "@fortawesome/free-solid-svg-icons";
 
@@ -15,6 +15,7 @@ export default function MiPerfil() {
   const [error, setError] = useState(null);
   const [mensajeExito, setMensajeExito] = useState("");
   const navigate = useNavigate();
+  const { refrescarPerfil } = useOutletContext() || {};
 
   useEffect(() => {
     const obtenerDatos = async () => {
@@ -49,6 +50,7 @@ export default function MiPerfil() {
       if (!response.err) {
         const asignaturaAprobada = asignaturas.find(asignatura => asignatura.id === idAsignatura);
         setAsignaturas(asignaturas.filter(asignatura => asignatura.id !== idAsignatura));
+        await refrescarPerfil?.();
         setMensajeExito(`¡Enhorabuena! Has aprobado ${asignaturaAprobada.asignatura}.`);
 
         // Limpiar mensaje después de 5 segundos
@@ -73,6 +75,7 @@ export default function MiPerfil() {
         }
       }
       setAsignaturas([]);
+      await refrescarPerfil?.();
       setMensajeExito("¡Enhorabuena! Has aprobado todas tus asignaturas.");
       setTimeout(() => setMensajeExito(""), 5000);
     } catch (error) {

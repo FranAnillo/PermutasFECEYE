@@ -9,6 +9,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { databaseConfig } from './config/database.mjs';
 import autorizacionRouter from './routes/autorizacionRoutes.mjs';
+import configuracionRouter, { exigirPerfilCompleto } from './routes/configuracionInicialRoutes.mjs';
 import usuarioRouter from './routes/usuarioRoutes.mjs';
 import estudioRouter from './routes/estudiosRoutes.mjs';
 import asignaturaRouter from './routes/asignaturaRoutes.mjs';
@@ -88,6 +89,8 @@ export function createApp({ env = process.env, sessionStore, authRouter = autori
       next();
     } catch (error) { next(error); }
   });
+  app.use('/api/v1/usuario/configuracionInicial', configuracionRouter);
+  app.use(['/api/v1/permutas', '/api/v1/solicitudPermuta'], exigirPerfilCompleto());
   app.use('/api/v1/usuario', usuarioRouter);
   app.use('/api/v1/estudio', estudioRouter);
   app.use('/api/v1/asignatura', asignaturaRouter);

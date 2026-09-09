@@ -73,7 +73,7 @@ export default function AuthForm({ register = false }) {
 
     if (loading) return <div role="status" className="loading-text">{t("common.loading")}</div>;
     if (isAuthenticated) {
-        return <Navigate to={user?.rol === "administrador" ? "/admin" : user?.rol === "estudiante" ? "/estudiante" : "/unauthorized"} replace />;
+        return <Navigate to={user?.rol === "administrador" ? "/admin" : user?.rol === "estudiante" ? (register ? "/miPerfil" : "/estudiante") : "/unauthorized"} replace />;
     }
 
     return (
