@@ -1,0 +1,145 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "welcome": "Welcome to FECEYE Exchanges",
+        "description": "Manage your subject and group exchanges at FECEYE.",
+        "last_notifications": "Latest Notifications",
+        "no_notifications": "No notifications",
+        "notifications": "Notifications",
+        "accept": "Accept",
+        "read_more": "Read more",
+        "cookie_consent": "We use cookies to improve user experience."
+    },
+    "navbar": {
+        "brand": "FECEYE Exchanges - Admin",
+        "management": "Management",
+        "home": "Home",
+        "incidents": "Incidents",
+        "my_incidents": "My Incidents",
+        "create_notification": "Create notification",
+        "view_stats": "View statistics",
+        "user_management": "User management",
+        "profile": "Profile",
+        "my_profile": "My profile",
+        "logout": "Logout",
+        "exchanges": "Exchanges",
+        "view_available": "View available exchanges",
+        "my_exchanges": "My exchanges",
+        "request_exchange": "Request exchange",
+        "my_requests": "My requests",
+        "accepted_exchanges": "Accepted exchanges",
+        "report_incident": "Report incident",
+        "student_brand": "FECEYE Exchanges",
+        "menu": "Open menu",
+        "logout_error": "Unable to sign out. Please try again."
+    },
+    "login": {
+        "title": "Sign in",
+        "button": "Sign in",
+        "description": "Access your FECEYE Exchanges account.",
+        "switch_prompt": "Do not have an account yet?",
+        "switch_link": "Create an account"
+    },
+    "footer": {
+        "school_name": "Faculty of Economics and Business Sciences",
+        "university_name": "University of Seville",
+        "policies": "Policies",
+        "privacy_policy": "Privacy Policy",
+        "cookies_policy": "Cookies Policy",
+        "guides": "Guides",
+        "user_guide": "User Guide",
+        "documentation": "Documentation",
+        "contact_us": "Contact Us",
+        "send_email": "Send us an email",
+        "platform_name": "FECEYE Exchanges"
+    },
+    "accepted_swaps": {
+        "title": "Accepted Swaps",
+        "subtitle": "Select the swaps you want to generate. You can generate one swap for each group of subjects you are swapping with a student.",
+        "student_1": "Student 1",
+        "student_2": "Student 2",
+        "subject": "Subject",
+        "code": "Code",
+        "group": "Group",
+        "generate_swap": "Generate Swap",
+        "continue_swap": "Continue Swap",
+        "complete_swap": "Complete Swap",
+        "view_swap": "View Swap",
+        "no_swaps": "No accepted swaps",
+        "loading": "Loading swaps...",
+        "error_loading": "Error loading data",
+        "success_generated": "Swap generated successfully",
+        "error_generated": "Error generating swap"
+    },
+    "available_swaps": {
+        "title": "Available Swaps",
+        "subtitle": "Here you will find swaps compatible with your enrollment. If you see one interesting, accept the proposal to start the group exchange.",
+        "swap_label": "Swap",
+        "code_label": "Code",
+        "accept_btn": "Accept Proposal",
+        "empty_title": "No swaps available at the moment",
+        "empty_msg": "Come back later or create your own swap request.",
+        "request_btn": "Request a swap",
+        "loading": "Loading available swaps...",
+        "error_loading": "Error loading swaps",
+        "success_accepted": "Swap accepted successfully",
+        "error_accepted": "Error accepting swap"
+    },
+    "pdf_generation": {
+        "title": "Permutation Document Generation",
+        "description": "This form allows you to generate the necessary documentation to request a subject permutation. Please complete all mandatory fields and ensure the information is correct before submitting the form.",
+        "instructions_1": "Once you fill out the form, you can download a PDF with the permutation request. This PDF must be signed and sent to the system so your partner can fill in their data.",
+        "instructions_2": "When your partner signs the PDF, you can download it and send it to the administration.",
+        "labels": {
+            "dni": "ID Card (DNI):",
+            "dni_letter": "DNI Letter:",
+            "address": "Address:",
+            "city": "City:",
+            "zip_code": "Zip Code:",
+            "province": "Province:",
+            "phone": "Phone:"
+        },
+        "buttons": {
+            "visualize": "Visualize",
+            "download": "Download",
+            "upload": "Send PDF",
+            "validate": "Validate"
+        },
+        "errors": {
+            "fix_errors": "Please correct the errors in the form",
+            "select_file": "Please select a file to upload.",
+            "upload_error": "Error uploading PDF file.",
+            "send_success": "PDF sent successfully.",
+            "send_error": "Error sending PDF",
+            "validate_success": "The permutation has been validated successfully.",
+            "generation_error": "Error generating PDF"
+        },
+        "modal": {
+            "title": "Validate Permutation",
+            "message": "Check the document details and signatures. Consult FECEYE’s current submission procedure before sending your request; validation in this platform does not replace submission to the faculty."
+        }
+    },
+    "register": {
+        "title": "Create an account",
+        "description": "Register to manage your exchanges at FECEYE.",
+        "button": "Create account",
+        "switch_prompt": "Already have an account?",
+        "switch_link": "Sign in"
+    },
+    "auth": {
+        "username": "Username (UVUS)",
+        "full_name": "Full name",
+        "email": "Email address",
+        "password": "Password",
+        "confirm_password": "Confirm password",
+        "password_hint": "Use between 12 and 128 characters.",
+        "password_mismatch": "The passwords do not match.",
+        "required": "Enter your username and password.",
+        "invalid_details": "Enter your full name and a valid email address.",
+        "username_hint": "Use 3–50 characters: letters, numbers, periods, hyphens or underscores.",
+        "submitting": "Submitting…",
+        "session_error": "Unable to start your session. Please try again.",
+        "network_error": "Unable to connect to the server. Please try again.",
+        "request_error": "Unable to complete the request."
+    }
+}

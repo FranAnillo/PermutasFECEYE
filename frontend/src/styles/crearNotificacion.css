@@ -1,0 +1,86 @@
+.notificacion-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    background-color: #f5f5f5;
+    padding: 20px;
+}
+
+.notificacion-container {
+    width: 100%;
+    max-width: 800px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.notificacion-form-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.notificacion-form label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.notificacion-form textarea,
+.notificacion-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.notificacion-form button {
+    padding: 10px 20px;
+    background-color: #34a2e2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+}
+
+.notificacion-form button:hover {
+    background-color: #0a64ca;
+}
+
+/* Adaptación a móviles */
+/* Adaptación a móviles */
+@media (max-width: 768px) {
+    .notificacion-page {
+        height: auto;
+        padding: 10px;
+    }
+
+    .notificacion-container {
+        max-width: 100%;
+        padding: 10px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .notificacion-form-wrapper {
+        gap: 10px;
+    }
+
+    .notificacion-form button {
+        width: 100%;
+        padding: 12px 0;
+        font-size: 18px;
+        margin-top: 20px;
+    }
+
+    .notificacion-form textarea,
+    .notificacion-form select {
+        font-size: 15px;
+        padding: 8px;
+    }
+}

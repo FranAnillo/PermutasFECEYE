@@ -1,0 +1,145 @@
+{
+    "common": {
+        "loading": "Chargement...",
+        "welcome": "Bienvenue sur Permutes FECEYE",
+        "description": "Gérez vos échanges de matières et de groupes à FECEYE.",
+        "last_notifications": "Dernières Notifications",
+        "no_notifications": "Aucune notification",
+        "notifications": "Notifications",
+        "accept": "Accepter",
+        "read_more": "Lire plus",
+        "cookie_consent": "Nous utilisons des cookies pour améliorer l'expérience utilisateur."
+    },
+    "navbar": {
+        "brand": "Permutes FECEYE - Admin",
+        "management": "Gestion",
+        "home": "Accueil",
+        "incidents": "Incidents",
+        "my_incidents": "Mes Incidents",
+        "create_notification": "Créer une notification",
+        "view_stats": "Voir les statistiques",
+        "user_management": "Gestion des utilisateurs",
+        "profile": "Profil",
+        "my_profile": "Mon profil",
+        "logout": "Se déconnecter",
+        "exchanges": "Permutes",
+        "view_available": "Voir les permutes disponibles",
+        "my_exchanges": "Mes permutes",
+        "request_exchange": "Demander une permute",
+        "my_requests": "Mes demandes",
+        "accepted_exchanges": "Permutes acceptées",
+        "report_incident": "Signaler un incident",
+        "student_brand": "Permutes FECEYE",
+        "menu": "Ouvrir le menu",
+        "logout_error": "La déconnexion a échoué. Veuillez réessayer."
+    },
+    "login": {
+        "title": "Se connecter",
+        "button": "Se connecter",
+        "description": "Accédez à votre compte Permutes FECEYE.",
+        "switch_prompt": "Vous n’avez pas encore de compte ?",
+        "switch_link": "Créer un compte"
+    },
+    "footer": {
+        "school_name": "Faculté des Sciences Économiques et de Gestion",
+        "university_name": "Université de Séville",
+        "policies": "Politiques",
+        "privacy_policy": "Politique de Confidentialité",
+        "cookies_policy": "Politique de Cookies",
+        "guides": "Guides",
+        "user_guide": "Guide d'Utilisation",
+        "documentation": "Documentation",
+        "contact_us": "Contactez-nous",
+        "send_email": "Envoyez-nous un e-mail",
+        "platform_name": "Permutes FECEYE"
+    },
+    "accepted_swaps": {
+        "title": "Permutes Acceptées",
+        "subtitle": "Sélectionnez les permutes que vous souhaitez générer. Vous pouvez générer une permute pour chaque groupe de matières que vous échangez avec un étudiant.",
+        "student_1": "Étudiant 1",
+        "student_2": "Étudiant 2",
+        "subject": "Matière",
+        "code": "Code",
+        "group": "Groupe",
+        "generate_swap": "Générer Permute",
+        "continue_swap": "Continuer Permute",
+        "complete_swap": "Terminer Permute",
+        "view_swap": "Voir Permute",
+        "no_swaps": "Aucune permute acceptée",
+        "loading": "Chargement des permutes...",
+        "error_loading": "Erreur lors du chargement des données",
+        "success_generated": "Permute générée avec succès",
+        "error_generated": "Erreur lors de la génération de la permute"
+    },
+    "available_swaps": {
+        "title": "Permutes Disponibles",
+        "subtitle": "Ici, vous trouverez des permutes compatibles avec votre inscription. Si vous en voyez une intéressante, acceptez la proposition pour commencer l'échange de groupe.",
+        "swap_label": "Permute",
+        "code_label": "Code",
+        "accept_btn": "Accepter Proposition",
+        "empty_title": "Aucune permute disponible pour le moment",
+        "empty_msg": "Revenez plus tard ou créez votre propre demande de permute.",
+        "request_btn": "Demander une permute",
+        "loading": "Chargement des permutes intéressantes...",
+        "error_loading": "Erreur lors du chargement des permutes",
+        "success_accepted": "Permute acceptée avec succès",
+        "error_accepted": "Erreur lors de l'acceptation de la permute"
+    },
+    "pdf_generation": {
+        "title": "Génération de documentation de permute",
+        "description": "Ce formulaire vous permet de générer la documentation nécessaire pour demander une permute de matières. Veuillez remplir tous les champs obligatoires et assurez-vous que les informations sont correctes avant d'envoyer le formulaire.",
+        "instructions_1": "Une fois que vous avez rempli le formulaire, vous pouvez télécharger un PDF avec la demande de permute. Ce PDF doit être signé et envoyé au système afin que votre partenaire puisse remplir ses données.",
+        "instructions_2": "Lorsque votre partenaire signe le PDF, vous pouvez le télécharger et l'envoyer à l'administration.",
+        "labels": {
+            "dni": "CNI (DNI):",
+            "dni_letter": "Lettre DNI:",
+            "address": "Adresse:",
+            "city": "Ville:",
+            "zip_code": "Code Postal:",
+            "province": "Province:",
+            "phone": "Téléphone:"
+        },
+        "buttons": {
+            "visualize": "Visualiser",
+            "download": "Télécharger",
+            "upload": "Envoyer PDF",
+            "validate": "Valider"
+        },
+        "errors": {
+            "fix_errors": "Veuillez corriger les erreurs dans le formulaire",
+            "select_file": "Veuillez sélectionner un fichier à télécharger.",
+            "upload_error": "Erreur lors du téléchargement du fichier PDF.",
+            "send_success": "PDF envoyé avec succès.",
+            "send_error": "Erreur lors de l'envoi du PDF",
+            "validate_success": "La permute a été validée avec succès.",
+            "generation_error": "Erreur lors de la génération du PDF"
+        },
+        "modal": {
+            "title": "Valider Permute",
+            "message": "Vérifiez les données et les signatures du document. Consultez la procédure de dépôt en vigueur à FECEYE avant d’envoyer la demande ; la validation sur cette plateforme ne remplace pas son dépôt auprès de la faculté."
+        }
+    },
+    "register": {
+        "title": "Créer un compte",
+        "description": "Inscrivez-vous pour gérer vos échanges à FECEYE.",
+        "button": "Créer un compte",
+        "switch_prompt": "Vous avez déjà un compte ?",
+        "switch_link": "Se connecter"
+    },
+    "auth": {
+        "username": "Identifiant (UVUS)",
+        "full_name": "Nom complet",
+        "email": "Adresse e-mail",
+        "password": "Mot de passe",
+        "confirm_password": "Confirmer le mot de passe",
+        "password_hint": "Utilisez entre 12 et 128 caractères.",
+        "password_mismatch": "Les mots de passe ne correspondent pas.",
+        "required": "Saisissez votre identifiant et votre mot de passe.",
+        "invalid_details": "Saisissez votre nom complet et une adresse e-mail valide.",
+        "username_hint": "Utilisez de 3 à 50 caractères : lettres, chiffres, points, tirets ou traits de soulignement.",
+        "submitting": "Envoi en cours…",
+        "session_error": "Impossible d’ouvrir votre session. Veuillez réessayer.",
+        "network_error": "Impossible de joindre le serveur. Veuillez réessayer.",
+        "request_error": "Impossible de terminer la demande."
+    }
+}

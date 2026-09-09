@@ -1,0 +1,445 @@
+/* ========================================
+   USER COMMON STYLES
+   Sistema de diseño unificado para estudiantes
+   ======================================== */
+
+:root {
+    /* Paleta Azul Corporativa Estudiante */
+    --user-primary: #2b579a;
+    --user-primary-hover: #20406a;
+    --user-secondary: #00bcd4;
+    --user-accent: #e3f2fd;
+    --user-accent-hover: #bbdefb;
+    --border-color: #e2e8f0;
+
+    --danger-color: #ef4444;
+    --danger-hover: #dc2626;
+    --success-color: #10b981;
+    --success-hover: #059669;
+    --warning-color: #f59e0b;
+
+    --bg-gradient-start: #f8fafc;
+    --bg-gradient-end: #e6f0fa;
+
+    --card-bg: #ffffff;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --card-shadow-hover: 0 10px 15px -3px rgba(43, 87, 154, 0.15), 0 4px 6px -2px rgba(43, 87, 154, 0.1);
+
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+
+    --border-radius: 16px;
+    --border-radius-sm: 8px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    --spacing-sm: 12px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+    --footer-bg: #f8f9fa;
+}
+
+/* ========================================
+    Layout Principal
+    ======================================== */
+body {
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+p,
+span,
+li,
+strong,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: inherit;
+}
+
+.page-container {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+    padding: var(--spacing-md);
+    padding-top: 76px;
+    /* Compensación Navbar Fixed */
+    box-sizing: border-box;
+}
+
+.content-wrap {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--spacing-md);
+    box-sizing: border-box;
+}
+
+/* ========================================
+   Headers
+   ======================================== */
+.page-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+    background: linear-gradient(135deg, var(--user-primary), var(--user-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   Cards
+   ======================================== */
+.user-card {
+    background: var(--card-bg);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    border: 1px solid rgba(43, 87, 154, 0.1);
+}
+
+.user-card:hover {
+    box-shadow: var(--card-shadow-hover);
+    transform: translateY(-2px);
+}
+
+/* ========================================
+   Botones
+   ======================================== */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.btn-full {
+    width: 100%;
+}
+
+.btn-primary {
+    background: var(--user-primary);
+    color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--user-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(43, 87, 154, 0.3);
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    background: var(--danger-hover);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.btn-success {
+    background: var(--success-color);
+    color: white;
+}
+
+.btn-success:hover:not(:disabled) {
+    background: var(--success-hover);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* ========================================
+   Formularios
+   ======================================== */
+.form-group {
+    margin-bottom: var(--spacing-md);
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    transition: var(--transition);
+    box-sizing: border-box;
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+    border-color: var(--user-primary);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(43, 87, 154, 0.1);
+}
+
+/* ========================================
+   Utilidades
+   ======================================== */
+.user-loading,
+.user-error {
+    text-align: center;
+    padding: var(--spacing-xl);
+    font-weight: 600;
+}
+
+.user-error {
+    color: var(--danger-color);
+}
+
+/* ========================================
+   Responsive
+   ======================================== */
+@media (max-width: 768px) {
+    .page-container {
+        padding: var(--spacing-sm);
+        padding-top: 68px;
+        /* Ajuste móvil */
+    }
+
+    .page-title {
+        font-size: 2rem;
+    }
+}
+
+/* ========================================
+   Modo Oscuro
+   ======================================== */
+body.dark-mode {
+    --bg-gradient-start: #0f172a;
+    --bg-gradient-end: #1e293b;
+    --card-bg: #1e293b;
+
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+
+    --user-primary-hover: #3b82f6;
+    /* Un poco más brillante en oscuro */
+
+    /* Sombras más sutiles en fondo oscuro */
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --card-shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+
+    --border-color: #334155;
+    --footer-bg: #1e293b;
+    --user-accent: #1e293b;
+    --user-accent-hover: #334155;
+    background-color: #0f172a;
+    /* Fallback */
+}
+
+body.dark-mode .user-card {
+    border: 1px solid var(--border-color);
+}
+
+body.dark-mode .page-title {
+    /* Gradiente ajustado para oscuro */
+    background: linear-gradient(135deg, #60a5fa, #22d3ee);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body.dark-mode .form-input,
+body.dark-mode .form-select,
+body.dark-mode .form-textarea {
+    background-color: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .form-input:focus,
+body.dark-mode .form-select:focus,
+body.dark-mode .form-textarea:focus {
+    border-color: var(--user-secondary);
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.15);
+}
+
+/* Ajustes específicos de componentes */
+body.dark-mode .checkbox-label {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .checkbox-label:hover {
+    background-color: #334155;
+}
+
+body.dark-mode .theme-toggle-btn {
+    color: #fbbf24;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+}
+
+body.dark-mode .theme-toggle-btn:hover {
+    transform: scale(1.1);
+}
+
+
+body.dark-mode .success-banner {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: #34d399;
+}
+
+body.dark-mode .empty-state {
+    background: rgba(30, 41, 59, 0.5);
+    color: var(--text-secondary);
+}
+
+body.dark-mode .info-text-responsive {
+    color: var(--text-primary);
+}
+
+/* Estilo base para el botón de toggle (aplicable a ambos modos) */
+.theme-toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    color: var(--nav-text, #ffffff);
+    /* Color por defecto si está en la navbar */
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+/* ========================================
+   Componentes Específicos
+   ======================================== */
+
+/* Filtros Unificados */
+.filtro-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    background: var(--card-bg);
+    padding: 12px 24px;
+    border-radius: 30px;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.filtro-container label {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.filtro-container select {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 2px solid var(--border-color);
+    background: var(--card-bg);
+    color: var(--text-primary);
+    outline: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.filtro-container select:focus {
+    border-color: var(--user-primary);
+}
+
+/* Área de Subida de Archivos */
+.file-upload-wrapper {
+    border: 2px dashed var(--border-color);
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    background-color: rgba(43, 87, 154, 0.03);
+    position: relative;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.file-upload-wrapper:hover {
+    border-color: var(--user-primary);
+    background-color: rgba(43, 87, 154, 0.05);
+}
+
+body.dark-mode .file-upload-wrapper {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.file-upload-icon {
+    font-size: 2rem;
+    color: var(--user-primary);
+    margin-bottom: 12px;
+}
+
+.file-upload-text {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.file-upload-hint {
+    margin: 5px 0 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}

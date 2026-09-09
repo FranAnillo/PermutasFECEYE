@@ -1,0 +1,120 @@
+.cookies-policy p,
+.cookies-list,
+.privacy-policy p {
+    text-align: left;
+}
+
+.cookies-policy .actualizacion {
+    text-align: center;
+}
+
+.footer {
+    width: 100%;
+    min-height: 90px;
+    background-color: var(--footer-bg, #f8f9fa);
+    padding: 20px;
+    border-top: 1px solid var(--border-color, #ddd);
+    color: var(--text-primary, #333);
+    z-index: 1000;
+    box-sizing: border-box;
+    margin-top: auto;
+}
+
+.footer h4 {
+    color: var(--user-primary, var(--admin-primary, #2b579a));
+    margin-bottom: 10px;
+}
+
+.footer p,
+.footer li {
+    color: var(--text-secondary, #666);
+}
+
+
+.footer-container {
+    max-width: 1200px;
+    /* Ajusta al contenido */
+    margin: 0 auto;
+    /* Centra el contenido */
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+
+.footer-section {
+    max-width: 300px;
+}
+
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    color: var(--link-color, #337ab7);
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+
+a:hover {
+    text-decoration: underline;
+    /* Agrega subrayado */
+    color: var(--link-hover, #0056b3);
+    /* Oscurece el color del enlace */
+}
+
+/* Modo Oscuro para el Footer */
+body.dark-mode .footer {
+    background-color: #1e293b;
+    border-top-color: #334155;
+    color: #f1f5f9;
+}
+
+body.dark-mode .footer h4 {
+    color: #60a5fa;
+}
+
+body.dark-mode .footer p,
+body.dark-mode .footer li,
+body.dark-mode .footer a {
+    color: #94a3b8;
+}
+
+body.dark-mode .footer a:hover {
+    color: #60a5fa;
+}
+
+
+@media (max-width: 768px) {
+    .footer {
+        position: static;
+        /* Cambiado de relative a static para asegurar que no se fije */
+        bottom: auto;
+        left: auto;
+        padding: 15px;
+        margin-top: 20px;
+        /* Separación del contenido si es necesario */
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+        width: 100%;
+    }
+
+    .footer-section {
+        max-width: 100%;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .footer div {
+        width: 100%;
+    }
+}

@@ -1,0 +1,97 @@
+body {
+    background-color: #f4f7f6;
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .policy-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  .policy-header {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 20px;
+  }
+  
+  .policy-header h1 {
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 10px;
+  }
+  
+  .policy-header p {
+    font-size: 1em;
+    color: #7f8c8d;
+  }
+  
+  .policy-section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #fdfdfd;
+    border-left: 4px solid #3498db;
+    border-radius: 5px;
+  }
+  
+  .policy-section h2 {
+    font-size: 1.8em;
+    color: #34495e;
+    margin-bottom: 15px;
+  }
+  
+  .policy-section p,
+  .policy-section ul {
+    line-height: 1.6;
+    color: #555;
+  }
+  
+  .policy-section ul {
+    list-style-type: disc;
+    padding-left: 20px;
+  }
+  
+  .policy-section ul li {
+    margin-bottom: 10px;
+  }
+  
+  .back-link-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .back-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .back-link:hover {
+    background-color: #2980b9;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .policy-container {
+      margin: 20px;
+      padding: 15px;
+    }
+  
+    .policy-header h1 {
+      font-size: 2em;
+    }
+  
+    .policy-section h2 {
+      font-size: 1.5em;
+    }
+  }
+  

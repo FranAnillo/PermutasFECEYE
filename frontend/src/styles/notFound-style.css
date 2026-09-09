@@ -1,0 +1,29 @@
+/* Adaptación móvil para NotFound */
+/* Adaptación móvil para NotFound */
+@media (max-width: 768px) {
+  .notfound-container {
+    padding: 16px 4px;
+    margin-top: 24px;
+    text-align: center;
+    width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .notfound-container h1 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .notfound-container p {
+    font-size: 0.95em;
+    margin-bottom: 12px;
+  }
+
+  .notfound-container a {
+    font-size: 1em;
+    padding: 10px 0;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

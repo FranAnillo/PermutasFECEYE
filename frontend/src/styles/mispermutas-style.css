@@ -1,0 +1,153 @@
+.mispermutas-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: #333;
+}
+
+.mispermutas-columns {
+  display: flex;
+  gap: 40px;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  /* Esto permite que las columnas se acomoden en pantallas pequeñas */
+}
+
+.mispermutascol {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+  /* Evita que las columnas se hagan demasiado pequeñas */
+}
+
+.mispermutas-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.mispermuta-card {
+  width: 90%;
+  background-color: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mispermuta-info {
+  margin-bottom: 15px;
+}
+
+.mispermuta-info p {
+  margin: 8px 0;
+}
+
+.denegar-btn {
+  background-color: #bf0a2e;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.denegar-btn:hover {
+  background-color: #a00927;
+}
+
+.denegar-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #ff0000;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.swiper {
+  width: 100%;
+  padding: 20px 0;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+}
+
+.mispermutas-title {
+  color: #333;
+}
+
+/* Adaptación móvil */
+/* Adaptación móvil */
+@media (max-width: 768px) {
+  .mispermutas-title {
+    font-size: 1.2em;
+    text-align: center;
+    margin-top: 12px;
+  }
+
+  .mispermutas-subtitle {
+    font-size: 1em;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .mispermutas-container {
+    padding: 8px 2px;
+    width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .mispermutas-columns {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .mispermutascol {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .mispermuta-card {
+    padding: 10px;
+    font-size: 0.95em;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  .mispermuta-info p {
+    font-size: 0.95em;
+    margin-bottom: 6px;
+  }
+
+  .denegar-btn,
+  .aceptar-btn {
+    width: 100%;
+    font-size: 1em;
+    padding: 12px;
+    margin-bottom: 8px;
+    max-width: 100vw;
+  }
+
+  .swiper-button-next,
+  .swiper-button-prev {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .swiper-pagination-bullet {
+    width: 12px !important;
+    height: 12px !important;
+  }
+}

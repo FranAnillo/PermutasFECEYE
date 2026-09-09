@@ -1,0 +1,219 @@
+{
+    "common": {
+        "loading": "Cargando...",
+        "welcome": "Bienvenido a Permutas FECEYE",
+        "description": "Gestiona tus permutas de asignaturas y grupos en FECEYE.",
+        "last_notifications": "Últimas Notificaciones",
+        "no_notifications": "No hay notificaciones",
+        "notifications": "Notificaciones",
+        "accept": "Aceptar",
+        "read_more": "Leer más",
+        "cookie_consent": "Utilizamos cookies para mejorar la experiencia del usuario."
+    },
+    "navbar": {
+        "brand": "Permutas FECEYE - Admin",
+        "management": "Gestión",
+        "home": "Inicio",
+        "incidents": "Incidencias",
+        "my_incidents": "Mis Incidencias",
+        "create_notification": "Crear notificación",
+        "view_stats": "Ver estadísticas",
+        "user_management": "Gestión de usuarios",
+        "profile": "Perfil",
+        "my_profile": "Mi perfil",
+        "logout": "Cerrar sesión",
+        "exchanges": "Permutas",
+        "view_available": "Ver permutas disponibles",
+        "my_exchanges": "Mis permutas",
+        "request_exchange": "Solicitar permuta",
+        "my_requests": "Mis solicitudes",
+        "accepted_exchanges": "Permutas aceptadas",
+        "report_incident": "Reportar incidencia",
+        "student_brand": "Permutas FECEYE",
+        "menu": "Abrir menú",
+        "logout_error": "No se ha podido cerrar la sesión. Inténtalo de nuevo."
+    },
+    "login": {
+        "title": "Iniciar sesión",
+        "button": "Iniciar sesión",
+        "description": "Accede con tu cuenta de Permutas FECEYE.",
+        "switch_prompt": "¿Todavía no tienes cuenta?",
+        "switch_link": "Crear una cuenta"
+    },
+    "footer": {
+        "school_name": "Facultad de Ciencias Económicas y Empresariales",
+        "university_name": "Universidad de Sevilla",
+        "policies": "Políticas",
+        "privacy_policy": "Política de Privacidad",
+        "cookies_policy": "Política de Cookies",
+        "guides": "Guías",
+        "user_guide": "Guía de uso",
+        "documentation": "Documentación",
+        "contact_us": "Contáctanos",
+        "send_email": "Envíanos un correo",
+        "platform_name": "Permutas FECEYE"
+    },
+    "accepted_swaps": {
+        "title": "Permutas Aceptadas",
+        "subtitle": "Selecciona las permutas que deseas generar. Puedes generar una permuta por cada grupo de asignaturas que vayas a permutar con un estudiante.",
+        "student_1": "Estudiante 1",
+        "student_2": "Estudiante 2",
+        "subject": "Asignatura",
+        "code": "Código",
+        "group": "Grupo",
+        "generate_swap": "Generar Permuta",
+        "continue_swap": "Continuar Permuta",
+        "complete_swap": "Completar Permuta",
+        "view_swap": "Ver Permuta",
+        "no_swaps": "No hay permutas aceptadas",
+        "loading": "Cargando permutas...",
+        "error_loading": "Error al cargar los datos",
+        "success_generated": "Permuta generada con éxito",
+        "error_generated": "Error al generar la permuta"
+    },
+    "available_swaps": {
+        "title": "Permutas Disponibles",
+        "subtitle": "Aquí encontrarás permutas compatibles con tu matrícula. Si ves alguna interesante, acepta la propuesta para iniciar el intercambio de grupo.",
+        "swap_label": "Permuta",
+        "code_label": "Código",
+        "accept_btn": "Aceptar Propuesta",
+        "empty_title": "No hay permutas disponibles por el momento",
+        "empty_msg": "Vuelve más tarde o crea tu propia solicitud de permuta.",
+        "request_btn": "Solicitar una permuta",
+        "loading": "Cargando permutas interesantes...",
+        "error_loading": "Error al cargar las permutas",
+        "success_accepted": "Permuta aceptada correctamente",
+        "error_accepted": "Error al aceptar la permuta"
+    },
+    "pdf_generation": {
+        "title": "Generación documentación permuta",
+        "description": "Este formulario permite generar la documentación necesaria para solicitar una permuta de asignaturas. Por favor, completa todos los campos obligatorios y asegúrate de que la información es correcta antes de enviar el formulario.",
+        "instructions_1": "Una vez rellenes el formulario, podrás descargar un PDF con la solicitud de permuta. Este PDF deberá ser firmado y enviado al sistema para que tu compañero pueda rellenar sus datos.",
+        "instructions_2": "Cuando tu compañero firme el PDF, podrás descargarlo y enviarlo a la administración.",
+        "labels": {
+            "dni": "DNI:",
+            "dni_letter": "Letra DNI:",
+            "address": "Domicilio:",
+            "city": "Población:",
+            "zip_code": "Código Postal:",
+            "province": "Provincia:",
+            "phone": "Teléfono:"
+        },
+        "buttons": {
+            "visualize": "Visualizar",
+            "download": "Descargar",
+            "upload": "Enviar PDF",
+            "validate": "Validar"
+        },
+        "errors": {
+            "fix_errors": "Por favor, corrige los errores en el formulario",
+            "select_file": "Por favor, selecciona un archivo para subir.",
+            "upload_error": "Error al subir el archivo PDF.",
+            "send_success": "Se ha enviado el PDF correctamente.",
+            "send_error": "Error al enviar el PDF",
+            "validate_success": "La permuta ha sido validada correctamente.",
+            "generation_error": "Error generando el PDF"
+        },
+        "modal": {
+            "title": "Validar Permuta",
+            "message": "Comprueba los datos y las firmas del documento. Consulta el procedimiento de presentación vigente de FECEYE antes de remitir la solicitud; la validación en esta plataforma no sustituye su presentación ante el centro."
+        }
+    },
+    "chatbot": {
+        "title": "Asistente de Ayuda",
+        "subtitle": "¿En qué puedo ayudarte?",
+        "welcome_message": "¡Hola! 👋 Soy tu asistente virtual. Estoy aquí para ayudarte con el uso de la plataforma de permutas FECEYE. ¿Qué necesitas saber?",
+        "placeholder": "Escribe tu pregunta aquí...",
+        "send_button": "Enviar",
+        "typing": "Escribiendo...",
+        "clear_chat": "Limpiar chat",
+        "quick_suggestions": {
+            "title": "Preguntas frecuentes:",
+            "how_to_use": "¿Cómo uso la plataforma?",
+            "request_swap": "¿Cómo solicito una permuta?",
+            "accept_swap": "¿Cómo acepto una permuta?",
+            "generate_pdf": "¿Cómo genero el PDF?",
+            "report_incident": "¿Cómo reporto una incidencia?"
+        },
+        "responses": {
+            "platform_usage": "La plataforma te permite gestionar permutas de asignaturas. Puedes ver permutas disponibles, solicitar nuevas permutas, aceptar propuestas de otros estudiantes y generar la documentación necesaria. Navega por el menú para acceder a cada sección.",
+            "request_swap_guide": "Para solicitar una permuta:\n1. Ve a 'Solicitar permuta' en el menú\n2. Selecciona tu grado y las asignaturas que quieres permutar\n3. Elige los grupos que te interesan\n4. Envía tu solicitud\n\nTu solicitud aparecerá en 'Permutas disponibles' para otros estudiantes.",
+            "accept_swap_guide": "Para aceptar una permuta:\n1. Ve a 'Ver permutas disponibles'\n2. Revisa las permutas compatibles con tu matrícula\n3. Haz clic en 'Aceptar Propuesta' en la que te interese\n4. Una vez aceptada, podrás generar la documentación en 'Permutas aceptadas'",
+            "pdf_generation_guide": "Para generar el PDF de permuta:\n1. Ve a 'Permutas aceptadas'\n2. Selecciona la permuta que quieres documentar\n3. Haz clic en 'Generar Permuta'\n4. Completa el formulario con tus datos personales\n5. Descarga el PDF, fírmalo y súbelo al sistema\n\nRecuerda que ambos estudiantes deben completar y firmar el documento.",
+            "report_incident_guide": "Para reportar una incidencia:\n1. Ve a 'Reportar incidencia' en el menú\n2. Describe el problema que has encontrado\n3. Añade toda la información relevante\n4. Envía el reporte\n\nPodrás hacer seguimiento en 'Mis Incidencias'. Un administrador la revisará pronto.",
+            "contact_support": "Si necesitas ayuda adicional, reporta una incidencia desde la plataforma para que un administrador pueda revisarla.",
+            "default": "Lo siento, no entiendo tu pregunta. 🤔\n\nPuedes intentar con alguna de las preguntas frecuentes de arriba, o si necesitas ayuda específica, puedes reportar una incidencia y un administrador te asistirá.",
+            "registration_info": "Crea tu cuenta en la página de registro con tu UVUS, nombre completo, correo electrónico y una contraseña. Después puedes acceder desde Iniciar sesión."
+        },
+        "keywords": {
+            "platform": [
+                "plataforma",
+                "usar",
+                "funciona",
+                "cómo",
+                "ayuda",
+                "guía"
+            ],
+            "request": [
+                "solicitar",
+                "pedir",
+                "crear",
+                "nueva permuta",
+                "solicitud"
+            ],
+            "accept": [
+                "aceptar",
+                "aprobar",
+                "confirmar permuta"
+            ],
+            "pdf": [
+                "pdf",
+                "documento",
+                "generar",
+                "descargar",
+                "firmar"
+            ],
+            "incident": [
+                "incidencia",
+                "problema",
+                "error",
+                "reportar",
+                "soporte"
+            ],
+            "contact": [
+                "contacto",
+                "ayuda",
+                "soporte",
+                "administrador"
+            ],
+            "registration": [
+                "registro",
+                "registrarme",
+                "cuenta"
+            ]
+        }
+    },
+    "register": {
+        "title": "Crear una cuenta",
+        "description": "Regístrate para gestionar tus permutas en FECEYE.",
+        "button": "Crear cuenta",
+        "switch_prompt": "¿Ya tienes cuenta?",
+        "switch_link": "Iniciar sesión"
+    },
+    "auth": {
+        "username": "Usuario (UVUS)",
+        "full_name": "Nombre completo",
+        "email": "Correo electrónico",
+        "password": "Contraseña",
+        "confirm_password": "Confirmar contraseña",
+        "password_hint": "Utiliza entre 12 y 128 caracteres.",
+        "password_mismatch": "Las contraseñas no coinciden.",
+        "required": "Introduce tu usuario y contraseña.",
+        "invalid_details": "Introduce tu nombre completo y un correo electrónico válido.",
+        "username_hint": "El usuario debe tener entre 3 y 50 caracteres: letras, números, punto, guion o guion bajo.",
+        "submitting": "Enviando…",
+        "session_error": "No se ha podido iniciar la sesión. Inténtalo de nuevo.",
+        "network_error": "No se puede conectar con el servidor. Inténtalo de nuevo.",
+        "request_error": "No se ha podido completar la solicitud."
+    }
+}

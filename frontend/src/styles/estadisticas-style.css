@@ -1,0 +1,59 @@
+.estadisticas-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Tres columnas */
+  gap: 20px; /* Espaciado entre las tarjetas */
+  margin-top: 20px;
+}
+
+.stat-card {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card h2 {
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2196F3;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Adaptación a móviles */
+@media (max-width: 768px) {
+  .estadisticas-container {
+    padding: 10px;
+    max-width: 100vw;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .stat-card {
+    padding: 12px;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .stat-card h2 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .stat-value {
+    font-size: 1.3rem;
+    padding: 12px 0;
+  }
+}

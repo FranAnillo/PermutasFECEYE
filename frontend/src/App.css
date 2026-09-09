@@ -1,0 +1,29 @@
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+main {
+  flex-grow: 1;
+}
+
+.volver-arriba-btn {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .volver-arriba-btn {
+    display: block;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-icons {
+    gap: 5px;
+  }
+  .nav-icons button {
+    padding: 5px 8px;
+  }
+}

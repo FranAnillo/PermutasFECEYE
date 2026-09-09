@@ -1,0 +1,35 @@
+.language-switcher {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 0 10px;
+}
+
+.lang-btn {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+
+.lang-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.lang-btn.active {
+    background: #E0AD0F;
+    border-color: #E0AD0F;
+    color: #1e293b;
+}
+
+/* Dark mode adjustments if needed */
+[data-theme='dark'] .lang-btn {
+    border-color: rgba(255, 255, 255, 0.2);
+}

@@ -1,0 +1,29 @@
+/* Adaptación móvil para Unauthorized */
+/* Adaptación móvil para Unauthorized */
+@media (max-width: 768px) {
+  .unauthorized-container {
+    padding: 16px 4px;
+    margin-top: 24px;
+    text-align: center;
+    width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .unauthorized-container h1 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+
+  .unauthorized-container p {
+    font-size: 0.95em;
+    margin-bottom: 12px;
+  }
+
+  .unauthorized-container a {
+    font-size: 1em;
+    padding: 10px 0;
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+}

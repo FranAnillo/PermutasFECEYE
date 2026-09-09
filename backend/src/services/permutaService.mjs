@@ -1,0 +1,462 @@
+import database from "../config/database.mjs";
+// import { sendMessage } from "./telegramService.mjs"
+// import autorizacionService from "./autorizacionService.mjs";
+// import { mensajeFirmadaPermutaAlumno1, mensajeFirmadaPermutaAlumno2,mensajeAceptadaPermuta, mensajeValidacionPermuta,mensajeBorradorPermuta } from "../utils/mensajesTelegram.mjs";
+import email from "../utils/email.mjs";
+import usuarioService from "./usuarioService.mjs";
+class PermutaService {
+  async crearListaPermutas(archivo, IdsPermuta) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      await conexion.query("BEGIN");
+      const queryPermutas = {
+        text: ` INSERT INTO permutas (estado, archivo ) VALUES ('FIRMADA',$1) 
+                RETURNING id`,
+        values: [archivo],
+      };
+      const resultado = await conexion.query(queryPermutas);
+      const permutasId = resultado.rows[0].id;
+      for (const id of IdsPermuta) {
+        const queryPermutas_permuta = {
+          text: ` INSERT INTO permutas_permuta (permuta_id_fk, permutas_id_fk) 
+                  VALUES ($1, $2)`,
+          values: [id, permutasId],
+        };
+        await conexion.query(queryPermutas_permuta);
+      }
+      await conexion.query("COMMIT");
+      return "Se ha creado la lista de permutas correctamente";
+    } catch (error) {
+      await conexion.query("ROLLBACK");
+      console.error("Error al listar permutas:", error);
+      throw new Error("Error al listar permutas");
+    } finally {
+      await conexion.end();
+    }
+  }
+
+  async generarBorradorPermutas(IdsPermuta, uvus) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      await conexion.query("BEGIN");
+      const queryPermutas = {
+        text: ` INSERT INTO permutas (estado, estudiante_cumplimentado_1 ) VALUES ('BORRADOR', $1) 
+                RETURNING id`,
+        values: [uvus],
+      };
+      const resultado = await conexion.query(queryPermutas);
+      const permutasId = resultado.rows[0].id;
+      for (const id of IdsPermuta) {
+        const queryPermutas_permuta = {
+          text: ` INSERT INTO permutas_permuta (permuta_id_fk, permutas_id_fk) 
+                  VALUES ($1, $2);`,
+          values: [id, permutasId],
+        };
+        const queryPermutas_permuta_update = {
+          text: `Update permuta set estado = 'FINALIZADA' where id = $1;`,
+          values: [id],
+        };
+        await conexion.query(queryPermutas_permuta_update);
+        await conexion.query(queryPermutas_permuta);
+      }
+      await conexion.query("COMMIT");
+      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // // Enviar mensaje por Telegram
+      // try {
+      //   const chatIdEstudiante = await autorizacionService?.obtenerChatIdUsuario(uvus);
+      //   await sendMessage(chatIdEstudiante, mensajeBorradorPermuta);
+      // } catch (msgError) {
+      //   console.error("Error enviando mensaje de validación:", msgError);
+      // }
+      // Enviar mensaje por email
+      try{
+        const usuarioDatos = await usuarioService.obtenerDatosUsuario(uvus);
+        console.log("Datos usuario para email de borrador de permuta:", usuarioDatos);
+        await email.sendEmailToStudentsDocumentoPermuta(usuarioDatos, 'Borrador de Permuta Generado', "plantillaEmailDocumentoPermuta.ejs");
+      }catch(msgError){
+        console.error("Error enviando email de borrador de permuta:", msgError);
+      }
+      return "Se ha creado la lista de permutas correctamente";
+    } catch (error) {
+      await conexion.query("ROLLBACK");
+      console.error("Error al listar permutas:", error);
+      throw new Error("Error al listar permutas");
+    } finally {
+      await conexion.end();
+    }
+  }
+
+  async listarPermutas(IdsPermuta) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      const query = {
+        text: ` SELECT id, estado, archivo
+              FROM permutas 
+              WHERE id in (SELECT permutas_id_fk  FROM permutas_permuta WHERE permuta_id_fk = ANY($1)) AND vigente = true`,
+        values: [IdsPermuta],
+      };
+      const resultado = await conexion.query(query);
+      await conexion.end();
+      return resultado.rows;
+    } catch (error) {
+      console.error("Error al listar permutas:", error);
+      throw new Error("Error al listar permutas");
+    }
+  }
+
+  async firmarPermuta(permutaId, archivo,uvus) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      const query = {
+        text: `UPDATE permutas 
+               SET estado = 'FIRMADA', archivo = $2
+               WHERE id = $1 AND vigente = true`,
+        values: [permutaId, archivo],
+      };
+
+      await conexion.query(query);
+      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // const querySelect = {
+      //   text: ` SELECT LEAST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_primario,
+      //                 GREATEST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_secundario,
+      //                 (SELECT estado FROM permutas WHERE id = ( SELECT permutas_id_fk FROM permutas_permuta WHERE permuta_id_fk = p.id LIMIT 1)) AS estado_permuta_asociada
+      //           FROM permuta p
+      //           INNER JOIN usuario u1 ON p.usuario_id_1_fk = u1.id
+      //           INNER JOIN usuario u2 ON p.usuario_id_2_fk = u2.id
+      //           WHERE ( p.usuario_id_1_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)
+      //           OR p.usuario_id_2_fk = (SELECT id FROM usuario WHERE nombre_usuario =$1)) 
+      //           AND (p.estado = 'VALIDADA' OR p.estado = 'FINALIZADA') AND p.aceptada_1 = true AND p.aceptada_2 = true AND p.vigente = true;`,
+      //   values: [uvus],
+      // };
+      // const resultado = await conexion.query(querySelect);
+      // const { usuario_primario, usuario_secundario } = resultado.rows[0];
+      // try {
+      //   const chatIdEstudiante1 = await autorizacionService?.obtenerChatIdUsuario(usuario_primario);
+      //   const chatIdEstudiante2 = await autorizacionService?.obtenerChatIdUsuario(usuario_secundario);
+      //   await sendMessage(chatIdEstudiante1, mensajeFirmadaPermutaAlumno1(usuario_secundario));
+      //   await sendMessage(chatIdEstudiante2, mensajeFirmadaPermutaAlumno2(usuario_primario));
+      // } catch (msgError) {
+      //   console.error("Error enviando mensaje de validación:", msgError);
+      // }
+      return "La permuta ha sido firmada correctamente";
+    } catch (error) {
+      console.error("Error al firmar la permuta:", error);
+      throw new Error("Error al firmar la permuta");
+    } finally {
+      await conexion.end();
+    }
+  }
+
+  async aceptarPermuta(permutaId, archivo, uvus) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      const query = {
+        text: `UPDATE permutas 
+               SET estado = 'ACEPTADA', archivo = $2, estudiante_cumplimentado_2 = $3
+               WHERE id = $1
+               AND vigente = true`,
+        values: [permutaId, archivo, uvus],
+      };
+
+      await conexion.query(query);
+      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // const querySelect = {
+      //   text: `SELECT estudiante_cumplimentado_1, estudiante_cumplimentado_2 FROM permutas WHERE id = $1`,
+      //   values: [permutaId],
+      // };
+      // const resultado = await conexion.query(querySelect);
+      // const { estudiante_cumplimentado_1, estudiante_cumplimentado_2 } = resultado.rows[0];
+      // try {
+      //   const chatIdEstudiante1 = await autorizacionService?.obtenerChatIdUsuario(estudiante_cumplimentado_1);
+      //   const chatIdEstudiante2 = await autorizacionService?.obtenerChatIdUsuario(estudiante_cumplimentado_2);
+      //   await sendMessage(chatIdEstudiante1, mensajeAceptadaPermuta);
+      //   await sendMessage(chatIdEstudiante2, mensajeAceptadaPermuta);
+      // } catch (msgError) {
+      //   console.error("Error enviando mensaje de validación:", msgError);
+      // }
+      return "La permuta ha sido aceptada correctamente";
+    } catch (error) {
+      console.error("Error al aceptar la permuta:", error);
+      throw new Error("Error al aceptar la permuta");
+    } finally {
+      await conexion.end();
+    }
+  }
+
+async validarPermuta(permutaId) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      const queryUpdate = {
+        text: `UPDATE permutas 
+               SET estado = 'VALIDADA'
+               WHERE id = $1`,
+        values: [permutaId],
+      };
+      await conexion.query(queryUpdate);
+
+      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // const querySelect = {
+      //   text: `SELECT estudiante_cumplimentado_1, estudiante_cumplimentado_2 FROM permutas WHERE id = $1`,
+      //   values: [permutaId],
+      // };
+      // const resultado = await conexion.query(querySelect);
+      // const { estudiante_cumplimentado_1, estudiante_cumplimentado_2 } = resultado.rows[0];
+      // try {
+      //   const chatIdEstudiante1 = await autorizacionService?.obtenerChatIdUsuario(estudiante_cumplimentado_1);
+      //   const chatIdEstudiante2 = await autorizacionService?.obtenerChatIdUsuario(estudiante_cumplimentado_2);
+      //   await sendMessage(chatIdEstudiante1, mensajeValidacionPermuta);
+      //   await sendMessage(chatIdEstudiante2, mensajeValidacionPermuta);
+      // } catch (msgError) {
+      //   console.error("Error enviando mensaje de validación:", msgError);
+      // }
+    } catch (error) {
+      console.error("Error al validar la permuta:", error);
+      throw new Error("Error al validar la permuta");
+    } finally {
+      await conexion.end();
+    }
+}
+
+  async rechazarSolicitudPermuta(uvus, solicitud) {
+    const conexion = await database.connectPostgreSQL();
+    const update = {
+      text: `update permuta set estado = 'RECHAZADA' where id = $1 and usuario_id_1_fk = (select id from usuario where nombre_usuario = $2)`,
+      values: [solicitud, uvus],
+    };
+    await conexion.query(update);
+    await conexion.end();
+    return "Solicitud de permuta rechazada.";
+  }
+
+  async misPermutasPropuestas(uvus) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      const query = {
+        text: `
+          SELECT 
+            p.id AS permuta_id,
+            a.nombre AS nombre_asignatura,
+            a.codigo AS codigo_asignatura,
+            g1.nombre AS grupo_solicitante,
+            g2.nombre AS grupo_solicitado,
+            p.estado AS estado
+          FROM permuta p
+          INNER JOIN asignatura a ON p.asignatura_id_fk = a.id
+          INNER JOIN grupo g1 ON p.grupo_id_1_fk = g1.id
+          INNER JOIN grupo g2 ON p.grupo_id_2_fk = g2.id
+          WHERE p.usuario_id_1_fk = (
+            SELECT id FROM usuario WHERE nombre_usuario = $1
+          )
+          and p.aceptada_2 = true
+          AND p.aceptada_1 = false
+          AND p.estado = 'ACEPTADA'
+          AND p.vigente = true
+        `,
+        values: [uvus],
+      };
+
+      const resultado = await conexion.query(query);
+      await conexion.end();
+      return resultado.rows;
+    } catch (error) {
+      console.error("Error al obtener las permutas propuestas:", error);
+      throw new Error("Error al obtener las permutas propuestas");
+    } finally {
+      await conexion.end();
+    }
+  }
+
+  async misPermutasPropuestasPorMi(uvus) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      const query = {
+        text: `
+          SELECT 
+            p.id AS permuta_id,
+            a.nombre AS nombre_asignatura,
+            a.codigo AS codigo_asignatura,
+            g1.nombre AS grupo_solicitado,
+            g2.nombre AS grupo_solicitante,
+            p.estado AS estado
+          FROM permuta p
+          INNER JOIN asignatura a ON p.asignatura_id_fk = a.id
+          INNER JOIN grupo g1 ON p.grupo_id_1_fk = g1.id
+          INNER JOIN grupo g2 ON p.grupo_id_2_fk = g2.id
+          WHERE p.usuario_id_2_fk = (
+            SELECT id FROM usuario WHERE nombre_usuario = $1
+          )
+          AND p.aceptada_1 = false
+          AND p.aceptada_2 = true
+          AND p.estado = 'ACEPTADA'
+          AND p.vigente = true
+        `,
+        values: [uvus],
+      };
+
+      const resultado = await conexion.query(query);
+      await conexion.end();
+      return resultado.rows;
+    } catch (error) {
+      console.error("Error al obtener las permutas propuestas por mí:", error);
+      throw new Error("Error al obtener las permutas propuestas por mí");
+    } finally {
+      await conexion.end();
+    }
+  }
+
+  async obtenerPermutasValidadasPorUsuario(uvus) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      const query = {
+        text: `
+          SELECT 
+            p.id AS permuta_id,
+            a.nombre AS nombre_asignatura,
+            a.codigo AS codigo_asignatura,
+            g1.nombre AS grupo_1,
+            g2.nombre AS grupo_2,
+            p.estado AS estado
+          FROM permuta p
+          INNER JOIN asignatura a ON p.asignatura_id_fk = a.id
+          INNER JOIN grupo g1 ON p.grupo_id_1_fk = g1.id
+          INNER JOIN grupo g2 ON p.grupo_id_2_fk = g2.id
+          WHERE p.aceptada_1 = true
+            AND p.aceptada_2 = true
+            AND (p.estado = 'VALIDADA' OR p.estado ='FINALIZADA')
+            AND (
+              p.usuario_id_1_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)
+              OR p.usuario_id_2_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)
+            )
+            AND p.vigente = true
+        `,
+        values: [uvus],
+      };
+
+      const resultado = await conexion.query(query);
+      await conexion.end();
+      return resultado.rows;
+    } catch (error) {
+      console.error(
+        "Error al obtener las permutas validadas por usuario:",
+        error
+      );
+      throw new Error("Error al obtener las permutas validadas por usuario");
+    } finally {
+      await conexion.end();
+    }
+  }
+
+  async obtenerPermutasAgrupadasPorUsuario(uvus) {
+    const conexion = await database.connectPostgreSQL();
+    try {
+      const query = {
+        text: `
+ SELECT 
+      p.id AS permuta_id,
+      a.nombre AS nombre_asignatura,
+      a.codigo AS codigo_asignatura,
+      g1.nombre AS grupo_1,
+      g2.nombre AS grupo_2,
+      p.estado AS estado,
+      LEAST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_primario,
+      GREATEST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_secundario,
+      (SELECT estado 
+        FROM permutas 
+        WHERE id = (
+          SELECT permutas_id_fk 
+          FROM permutas_permuta 
+          WHERE permuta_id_fk = p.id
+          LIMIT 1
+        )
+      ) AS estado_permuta_asociada
+    FROM permuta p
+    INNER JOIN asignatura a ON p.asignatura_id_fk = a.id
+    INNER JOIN grupo g1 ON p.grupo_id_1_fk = g1.id
+    INNER JOIN grupo g2 ON p.grupo_id_2_fk = g2.id
+    INNER JOIN usuario u1 ON p.usuario_id_1_fk = u1.id
+    INNER JOIN usuario u2 ON p.usuario_id_2_fk = u2.id
+    WHERE (
+      p.usuario_id_1_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)
+      OR p.usuario_id_2_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)
+    )
+    AND (p.estado = 'VALIDADA' OR p.estado = 'FINALIZADA')
+    AND p.aceptada_1 = true
+    AND p.aceptada_2 = true
+    AND p.vigente = true
+        `,
+        values: [uvus],
+      };
+
+      const resultado = await conexion.query(query);
+
+      // Agrupar las permutas por usuario_primario y usuario_secundario
+      const permutasAgrupadas = resultado.rows.reduce((acc, row) => {
+        const key = `${row.usuario_primario}-${row.usuario_secundario}`;
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push({
+          permuta_id: row.permuta_id,
+          nombre_asignatura: row.nombre_asignatura,
+          codigo_asignatura: row.codigo_asignatura,
+          grupo_1: row.grupo_1,
+          grupo_2: row.grupo_2,
+          estado: row.estado,
+          estado_permuta_asociada: row.estado_permuta_asociada,
+        });
+        return acc;
+      }, {});
+
+      await conexion.end();
+
+      // Convertir el objeto agrupado en un array
+      return Object.entries(permutasAgrupadas).map(([usuarios, permutas]) => ({
+        usuarios: usuarios.split("-"),
+        permutas,
+      }));
+    } catch (error) {
+      console.error(
+        "Error al obtener las permutas agrupadas por usuario:",
+        error
+      );
+      throw new Error("Error al obtener las permutas agrupadas por usuario");
+    } finally {
+      await conexion.end();
+    }
+  }
+async actualizarLaVigenciaPermuta() {
+  const conexion = await database.connectPostgreSQL();
+  try {
+    const updateQuery = {
+      text: `UPDATE permuta SET vigente = false WHERE vigente = true`,
+    };
+    const res = await conexion.query(updateQuery);
+    return { updated: res.rowCount };
+  } catch (error) {
+    console.error("Error al actualizar la vigencia de las permutas:", error);
+    throw new Error("Error al actualizar la vigencia de las permutas");
+  } finally {
+    await conexion.end();
+  }
+}
+
+async actualizarLaVigenciaPermutas() {
+  const conexion = await database.connectPostgreSQL();
+  try {
+    const updateQuery = {
+      text: `UPDATE permutas SET vigente = false WHERE vigente = true`,
+    };
+    const res = await conexion.query(updateQuery);
+    return { updated: res.rowCount };
+  } catch (error) {
+    console.error("Error al actualizar la vigencia de las permutas agrupadas:", error);
+    throw new Error("Error al actualizar la vigencia de las permutas agrupadas");
+  } finally {
+    await conexion.end();
+  }
+}
+
+}
+
+const permutaService = new PermutaService();
+export default permutaService;

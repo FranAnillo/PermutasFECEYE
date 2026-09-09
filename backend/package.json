@@ -1,0 +1,40 @@
+{
+  "name": "permutas-feceye-backend",
+  "version": "1.0.0",
+  "description": "API de permutas de FECEYE de la Universidad de Sevilla",
+  "type": "module",
+  "main": "src/app.mjs",
+  "scripts": {
+    "test": "node --test",
+    "start": "node src/app.mjs",
+    "dev": "node --watch src/app.mjs",
+    "password:usuario": "node scripts/password-usuario.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "connect-pg-simple": "^10.0.0",
+    "cors": "^2.8.5",
+    "csv-parser": "^3.2.1",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "jwk-to-pem": "^2.0.6",
+    "multer": "^1.4.5-lts.1",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.3",
+    "passport": "^0.7.0",
+    "passport-saml": "^3.2.4",
+    "pg": "^8.13.1",
+    "uuid": "^11.0.2"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

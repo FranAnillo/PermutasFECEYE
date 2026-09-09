@@ -1,0 +1,95 @@
+/* Sidebar container */
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    /* Ajusta el ancho de la barra lateral */
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Fondo oscuro detrás */
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Barra lateral */
+.sidebar {
+    background-color: #fff;
+    width: 300px;
+    height: 100%;
+    box-shadow: -4px 0px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    overflow-y: auto;
+    border-left: 3px solid #ddd;
+    border-radius: 8px;
+}
+
+/* Título de la barra lateral */
+.sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Lista de notificaciones */
+.notificaciones-list {
+    margin-top: 20px;
+}
+
+.notificacion-card {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.notificacion-card h3 {
+    font-size: 18px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.notificacion-card p {
+    font-size: 14px;
+    color: #777;
+}
+
+/* Botón de cierre */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #fff;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+/* Icono de campana */
+.bell-icon {
+    font-size: 30px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Adaptación móvil */
+@media (max-width: 768px) {
+    .sidebar-container {
+        width: 100vw;
+        justify-content: flex-end;
+    }
+
+    .sidebar {
+        width: 85vw;
+        /* Casi todo el ancho, dejando un poco para cerrar al tocar fuera */
+        max-width: 320px;
+        border-radius: 0;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar h2 {
+        font-size: 1.2rem;
+    }
+}
