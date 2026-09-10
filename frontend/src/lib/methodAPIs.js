@@ -68,3 +68,15 @@ export const getPDF = async (fun) => {
     if (!respuesta.ok) throw new Error("No se pudo obtener el PDF");
     return await respuesta.arrayBuffer();
 }
+
+// El flujo documental propaga errores de transporte y de negocio sin cambiar las API heredadas.
+export async function postDocumento(path, body, isFile = false) {
+    const response = await fetch(API_URL + path, {
+        method: 'POST', credentials: 'include',
+        ...(isFile ? { body } : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) }),
+    });
+    let data;
+    try { data = await response.json(); } catch { throw new Error('El servidor no ha devuelto una respuesta válida.'); }
+    if (!response.ok || data.err || data.error) throw new Error(data.message || data.errmsg || 'No se pudo completar la operación.');
+    return { err: false, result: data };
+}

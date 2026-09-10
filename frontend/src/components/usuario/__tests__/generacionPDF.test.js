@@ -51,4 +51,18 @@ describe('datos del documento de permuta', () => {
       'grupo nuevo de la fila 1',
     ]));
   });
+
+  it('no atribuye un grupo al estudiante si falta su identidad en la fila', () => {
+    const datos = prepararDatosDocumento({ usuarios: [
+      { uvus: 'a', correo: 'a@example.test', estudio: 'ECO' },
+      { uvus: 'b', correo: 'b@example.test', estudio: 'ECO' },
+    ], permutas: [{ nombre_asignatura: 'Finanzas', curso_asignatura: 2,
+      usuario_1_grupo: 2, usuario_2_grupo: 3 }] }, 'a');
+    expect(datos.permutas[0].grupo_actual_1).toBeUndefined();
+    expect(validarDatosSistemaDocumento(datos)).toContain('identidad de los participantes de la fila 1');
+  });
+
+  it('rechaza un primer firmante ajeno a la pareja', () => {
+    expect(() => prepararDatosDocumento({ usuarios: [{ uvus: 'a' }, { uvus: 'b' }] }, 'c')).toThrow('primer firmante');
+  });
 });

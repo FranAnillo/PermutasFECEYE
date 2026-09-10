@@ -3,19 +3,18 @@ import { PDFDocument } from "pdf-lib";
 import { saveAs } from "file-saver";
 import {
   obtenerPlantillaPermuta,
-  subidaArchivo,
-  servirArchivo,
+  subirPDFDocumento,
+  descargarPDFDocumento,
 } from "../../services/subidaArchivos.js";
 import {
-  verListaPermutas,
-  listarPermutas,
+  obtenerDocumentoPermuta,
   firmarPermuta,
   aceptarPermuta,
   validarSolicitudPermuta,
 } from "../../services/permuta.js";
 import "../../styles/user-common.css";
 import "../../styles/generacionPDF-style.css";
-import { dayValue, monthValue, yearValue } from "../../lib/generadorFechas.js";
+
 import {
   validarDNI,
   validarLetraDNI,
@@ -24,7 +23,7 @@ import {
   validarTelefono,
 } from "../../lib/validadores.js";
 import Modal from "./Modal.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logError } from "../../lib/logger.js";
 import { useTranslation } from "react-i18next";
@@ -45,6 +44,7 @@ export default function GeneracionPDF() {
   const [codigoPostal, setCodigoPostal] = useState("");
   const [provincia, setProvincia] = useState("");
   const [telefono, setTelefono] = useState("");
+  const [cursoSolicitante, setCursoSolicitante] = useState("");
   const [usuarios, setUsuarios] = useState([]);
   const [permutas, setPermutas] = useState([]);
   const [permutaId, setPermutaId] = useState(null);
@@ -67,54 +67,57 @@ export default function GeneracionPDF() {
   const [cargandoDatos, setCargandoDatos] = useState(true);
   const [errorCarga, setErrorCarga] = useState("");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const documentoId = Number(searchParams.get('documento'));
+  const [puedeEditar, setPuedeEditar] = useState(false);
+  const [puedeValidar, setPuedeValidar] = useState(false);
+  const [enviando, setEnviando] = useState(false);
 
   useEffect(() => {
+    let activo = true;
     const cargarDatos = async () => {
+      setCargandoDatos(true);
+      setErrorCarga('');
+      setPdfExistente(null);
+      setPdfUrl(null);
+      setFile(null);
+      setErrors({});
+      setPuedeEditar(false);
+      setPuedeValidar(false);
+      setNombre(''); setApellidos(''); setDni(''); setLetraDNI('');
+      setDomicilio(''); setPoblacion(''); setCodigoPostal(''); setProvincia(''); setTelefono('');
+      setCursoSolicitante('');
       try {
-        const lista = await verListaPermutas();
-        const grupo = lista?.result?.result?.[0];
-        if (!grupo?.permutas?.length) throw new Error("No hay permutas para documentar");
-        if (grupo?.usuarios?.length !== 2) throw new Error("La permuta debe tener dos estudiantes");
-        if (grupo.permutas.length > 10) throw new Error("El documento admite un máximo de 10 cambios");
-
-        const idsPermutas = grupo.permutas.map(
-          (permuta) => permuta.permuta_id
-        );
-        const permuta = await listarPermutas(idsPermutas);
-        const datosPermuta = permuta?.result?.result?.[0];
-        const estado = datosPermuta?.estado;
-        const fileId = datosPermuta?.archivo;
-        const datosDocumento = prepararDatosDocumento(grupo, datosPermuta?.estudiante_cumplimentado_1);
-        const datosFaltantes = validarDatosSistemaDocumento(datosDocumento);
-        if (datosFaltantes.length > 0) {
-          throw new Error(`No se puede generar el documento. Faltan: ${datosFaltantes.join(", ")}.`);
+        if (!Number.isSafeInteger(documentoId) || documentoId < 1) throw new Error('Selecciona un documento desde Permutas aceptadas.');
+        const response = await obtenerDocumentoPermuta(documentoId);
+        const doc = response?.result?.result;
+        if (doc?.id !== documentoId || !['BORRADOR', 'FIRMADA', 'ACEPTADA', 'VALIDADA'].includes(doc.estado)) {
+          throw new Error('El servidor no ha devuelto un documento válido.');
         }
-        setUsuarios(datosDocumento.usuarios);
-        setPermutas(datosDocumento.permutas);
-        setPermutaId(datosPermuta?.id);
-
-        if (estado !== "BORRADOR") {
-          setEstadoPermuta(estado);
-          const bytes = await servirArchivo("buzon", fileId);
+        if (!activo) return;
+        setPermutaId(doc.id);
+        setEstadoPermuta(doc.estado);
+        setPuedeEditar(doc.puedeEditar === true);
+        setPuedeValidar(doc.puedeValidar === true);
+        if (doc.estado === 'BORRADOR') {
+          const datos = prepararDatosDocumento(doc.grupo, doc.estudiante_cumplimentado_1);
+          const faltantes = validarDatosSistemaDocumento(datos);
+          if (faltantes.length) throw new Error('No se puede generar el documento. Revisa los datos de los perfiles y asignaturas: ' + faltantes.join(', ') + '.');
+          setUsuarios(datos.usuarios);
+          setPermutas(datos.permutas);
+        } else {
+          const bytes = await descargarPDFDocumento(doc.id);
+          if (!activo) return;
           setPdfExistente(bytes);
-
-          if (estado === "ACEPTADA" || estado === "VALIDADA") {
-            const blob = new Blob([bytes], { type: "application/pdf" });
-            const pdfUrl = URL.createObjectURL(blob);
-            setPdfUrl(pdfUrl);
-          }
+          setPdfUrl(URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' })));
         }
       } catch (error) {
-        const message = error?.message || "No se pudieron cargar los datos de la permuta.";
-        setErrorCarga(message);
-        toast.error(message);
-        logError(error);
-      } finally {
-        setCargandoDatos(false);
-      }
+        if (activo) { setErrorCarga(error.message || 'No se pudo cargar el documento.'); logError(error); }
+      } finally { if (activo) setCargandoDatos(false); }
     };
     cargarDatos();
-  }, []);
+    return () => { activo = false; };
+  }, [documentoId]);
 
   useEffect(() => () => {
     if (pdfUrl) URL.revokeObjectURL(pdfUrl);
@@ -122,12 +125,11 @@ export default function GeneracionPDF() {
 
   const generarPDF = async () => {
     try {
-      const existingPdfBytes =
-        estadoPermuta !== "BORRADOR" && pdfExistente
-          ? pdfExistente
-          : await obtenerPlantillaPermuta();
+      if (!puedeEditar || estadoPermuta !== 'BORRADOR') throw new Error('No puedes editar este documento.');
+      const existingPdfBytes = await obtenerPlantillaPermuta();
 
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
+      pdfDoc.setSubject(`Permutas FCEYE: documento ${permutaId}`);
       const form = asegurarCamposPlantillaPermuta(pdfDoc);
       if (permutas.length > 10) throw new Error("El documento admite un máximo de 10 cambios");
 
@@ -138,19 +140,17 @@ export default function GeneracionPDF() {
       };
 
       // Datos conocidos por el sistema y fecha de firma.
-      const cursos = [...new Set(permutas
-        .map((permuta) => permuta.curso_asignatura)
-        .filter((curso) => curso !== null && curso !== undefined))];
       usuarios.forEach((usuario, index) => {
         const numero = index + 1;
         setSystemField(`EMAIL_${numero}`, usuario.correo);
         setSystemField(`TITULACION_${numero}`, usuario.estudio);
-        setSystemField(`CURSO_SOLICITANTE_${numero}`, cursos.join(", "));
       });
+      setSystemField('CURSO_SOLICITANTE_1', cursoSolicitante);
       setSystemField("LOCALIDAD_FECHA", "Sevilla");
-      setSystemField("DIA", dayValue);
-      setSystemField("MES", monthValue);
-      setSystemField("ANIO", yearValue.slice(-2));
+      const fecha = new Date();
+      setSystemField('DIA', String(fecha.getDate()).padStart(2, '0'));
+      setSystemField('MES', fecha.toLocaleString('es-ES', { month: 'long' }).toUpperCase());
+      setSystemField('ANIO', String(fecha.getFullYear()).slice(-2));
 
       // Las dos tablas reflejan los mismos cambios desde la perspectiva de cada estudiante.
       for (let index = 0; index < 10; index++) {
@@ -204,7 +204,7 @@ export default function GeneracionPDF() {
   };
 
   const descargarPDF = async () => {
-    if ((estadoPermuta === "ACEPTADA" || estadoPermuta === "VALIDADA") && pdfExistente) {
+    if (estadoPermuta !== "BORRADOR" && pdfExistente) {
       saveAs(new Blob([pdfExistente], { type: "application/pdf" }), "solicitud-permutas.pdf");
       return;
     }
@@ -218,46 +218,47 @@ export default function GeneracionPDF() {
     saveAs(pdfBlob, "solicitud-permutas.pdf");
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      setFile(selectedFile);
+  const handleFileChange = e => {
+    const selected = e.target.files[0];
+    setFile(null);
+    if (!selected) return;
+    if (!/\.pdf$/i.test(selected.name) || (selected.type && selected.type !== 'application/pdf') || selected.size > 10 * 1024 * 1024) {
+      toast.error('Selecciona un PDF de hasta 10 MB.');
+      e.target.value = '';
+      return;
     }
+    setFile(selected);
   };
 
   const handleUpload = async () => {
-    if (!file) {
-      toast.warning(t("pdf_generation.errors.select_file"));
-      return;
-    }
-    const formData = new FormData();
-    formData.append("tipo", "buzon");
-    formData.append("file", file);
+    if (enviando || !puedeEditar) return;
+    if (!file) { toast.warning(t('pdf_generation.errors.select_file')); return; }
+    setEnviando(true);
     try {
-      const response = await subidaArchivo(formData);
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await subirPDFDocumento(permutaId, formData);
       const fileId = response?.result?.fileId;
-      if (!fileId) {
-        toast.error(t("pdf_generation.errors.upload_error"));
-        return;
-      }
-      if (estadoPermuta === "BORRADOR") {
-        await firmarPermuta(fileId, permutaId);
-      } else {
-        await aceptarPermuta(fileId, permutaId);
-      }
-      toast.success(t("pdf_generation.errors.send_success"));
-      navigate("/permutasAceptadas");
-    } catch (error) {
-      logError(error);
-      toast.error(t("pdf_generation.errors.send_error"));
-    }
+      if (!fileId) throw new Error('No se ha recibido el archivo subido.');
+      if (estadoPermuta === 'BORRADOR') await firmarPermuta(fileId, permutaId);
+      else if (estadoPermuta === 'FIRMADA') await aceptarPermuta(fileId, permutaId);
+      else throw new Error('El documento ya no admite cambios.');
+      toast.success(t('pdf_generation.errors.send_success'));
+      navigate('/permutasAceptadas');
+    } catch (error) { logError(error); toast.error(error.message || t('pdf_generation.errors.send_error')); }
+    finally { setEnviando(false); }
   };
 
   const handleValidarPermuta = async () => {
-    await validarSolicitudPermuta(permutaId);
-    setShowModal(false);
-    toast.success(t("pdf_generation.errors.validate_success"));
-    navigate("/permutasAceptadas");
+    if (enviando || !puedeValidar) return;
+    setEnviando(true);
+    try {
+      await validarSolicitudPermuta(permutaId);
+      setShowModal(false);
+      toast.success(t('pdf_generation.errors.validate_success'));
+      navigate('/permutasAceptadas');
+    } catch (error) { logError(error); toast.error(error.message || 'No se pudo validar el documento.'); }
+    finally { setEnviando(false); }
   };
 
   const handleDNIChange = (e) => {
@@ -292,12 +293,13 @@ export default function GeneracionPDF() {
       nombre: validarCampoObligatorio(nombre, "nombre"),
       apellidos: validarCampoObligatorio(apellidos, "apellidos"),
       dni: validarDNI(dni),
-      letraDNI: validarLetraDNI(letraDNI),
+      letraDNI: validarLetraDNI(letraDNI, dni),
       domicilio: validarCampoObligatorio(domicilio, "domicilio"),
       poblacion: validarCampoObligatorio(poblacion, "población"),
       codigoPostal: validarCodigoPostal(codigoPostal),
       provincia: validarCampoObligatorio(provincia, "provincia"),
       telefono: validarTelefono(telefono),
+      cursoSolicitante: validarCampoObligatorio(cursoSolicitante, "curso del estudiante"),
     };
     setErrors(nuevoErrors);
     // Comprobar si hay algún error
@@ -319,7 +321,7 @@ export default function GeneracionPDF() {
           <div className="user-card user-error" role="alert">
             <h2>No se puede preparar el documento</h2>
             <p>{errorCarga}</p>
-            <p>Actualiza y reinicia el backend antes de volver a intentarlo.</p>
+            <button className="btn btn-secondary" onClick={() => navigate("/permutasAceptadas")}>Volver a Permutas aceptadas</button>
           </div>
         </div>
       </div>
@@ -346,6 +348,13 @@ export default function GeneracionPDF() {
 
           {/* Columna Izquierda: Formulario */}
           <div className="user-card">
+            {estadoPermuta === "BORRADOR" && puedeEditar && <>
+            <div className="form-group">
+              <label className="form-label" htmlFor="curso-solicitante">Curso del estudiante</label>
+              <input id="curso-solicitante" className="form-input" value={cursoSolicitante} maxLength={30}
+                placeholder="Por ejemplo, 2º" onChange={event => setCursoSolicitante(event.target.value)} />
+              {errors.cursoSolicitante && <span role="alert">{errors.cursoSolicitante}</span>}
+            </div>
             <div className="pdf-form-row">
               <div style={{ flex: 1 }} className="form-group">
                 <label className="form-label">{t("pdf_generation.labels.name")}</label>
@@ -488,18 +497,21 @@ export default function GeneracionPDF() {
               {errors.telefono && <span style={{ color: 'var(--danger-color)', fontSize: '0.85rem' }}>{errors.telefono}</span>}
             </div>
 
+            </>}
+            {estadoPermuta === 'FIRMADA' && <p>Descarga el PDF original, completa los campos del segundo estudiante en un editor de PDF y añade tu firma. Sube después el documento completo. La aplicación conserva el archivo original sin reescribirlo.</p>}
+            {!puedeEditar && estadoPermuta === 'BORRADOR' && <p>El primer estudiante está preparando el documento.</p>}
             <div className="pdf-actions">
-              {estadoPermuta !== "ACEPTADA" && estadoPermuta !== "VALIDADA" && (
+              {estadoPermuta === "BORRADOR" && puedeEditar && (
                 <button className="btn btn-primary" onClick={mostrarPDF}>
                   {t("pdf_generation.buttons.visualize")}
                 </button>
               )}
-              <button className="btn btn-secondary" onClick={descargarPDF} style={{ width: '100%', backgroundColor: '#6c757d', color: 'white' }}>
+              <button disabled={estadoPermuta === "BORRADOR" && !puedeEditar} className="btn btn-secondary" onClick={descargarPDF} style={{ width: '100%', backgroundColor: '#6c757d', color: 'white' }}>
                 {t("pdf_generation.buttons.download")}
               </button>
             </div>
 
-            {estadoPermuta !== "ACEPTADA" && estadoPermuta !== "VALIDADA" && (
+            {puedeEditar && (
               <div className="file-upload-wrapper" style={{ marginTop: '20px', padding: '20px' }}>
                 <input
                   type="file"
@@ -513,16 +525,17 @@ export default function GeneracionPDF() {
                   <span>{file ? file.name : "Seleccionar PDF firmado"}</span>
                 </label>
                 <p className="pdf-upload-hint">Adjunta únicamente el documento PDF cumplimentado y firmado.</p>
-                <button className="btn btn-success btn-full" onClick={handleUpload}>
+                <button className="btn btn-success btn-full" disabled={enviando} onClick={handleUpload}>
                   {t("pdf_generation.buttons.upload")}
                 </button>
               </div>
             )}
 
-            {estadoPermuta === "ACEPTADA" && estadoPermuta !== "VALIDADA" && (
+            {puedeValidar && (
               <button
                 className="btn btn-warning btn-full"
                 style={{ marginTop: '20px', backgroundColor: 'var(--warning-color)', color: 'white' }}
+                disabled={enviando}
                 onClick={() => setShowModal(true)}
               >
                 {t("pdf_generation.buttons.validate")}

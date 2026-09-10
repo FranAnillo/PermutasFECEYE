@@ -12,6 +12,7 @@ export default function PermutasAceptadas() {
   const [permutas, setPermutas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
+  const [generando, setGenerando] = useState(false);
   const [usuario, setUsuario] = useState(null);
   const navigate = useNavigate();
 
@@ -56,14 +57,19 @@ export default function PermutasAceptadas() {
 
 
   const handleGenerarPermuta = async (IdsPermuta) => {
+    if (generando) return;
+    setGenerando(true);
     try {
-      await generarBorradorPermuta(IdsPermuta);
+      const response = await generarBorradorPermuta(IdsPermuta);
+      const id = response?.result?.result?.id;
+      if (!Number.isSafeInteger(id)) throw new Error('No se ha recibido el documento creado.');
       toast.success(t("accepted_swaps.success_generated"));
-      navigate("/generarPermuta");
+      navigate(`/generarPermuta?documento=${id}`);
     } catch (error) {
-      toast.error(t("accepted_swaps.error_generated"));
-      setError(t("accepted_swaps.error_generated"));
+      toast.error(error.message || t("accepted_swaps.error_generated"));
       logError(error);
+    } finally {
+      setGenerando(false);
     }
   };
 
@@ -90,12 +96,14 @@ export default function PermutasAceptadas() {
             {permutas.map((grupoPermuta, index) => {
               const usuarios = grupoPermuta.usuarios ?? [];
               const permutasDetalles = grupoPermuta.permutas ?? [];
+              const documentoId = permutasDetalles[0]?.documento_id;
+              const primerFirmante = permutasDetalles[0]?.estudiante_cumplimentado_1 || usuarios[0];
               const todasNull = permutasDetalles.every((permuta) => permuta.estado_permuta_asociada === null);
               const todasBorrador = permutasDetalles.every((permuta) => permuta.estado_permuta_asociada === "BORRADOR");
               const puedeGenerarPermuta = usuario === usuarios[0] && todasNull
-              const puedeContinuarPermuta = usuario === usuarios[0] && todasBorrador;
+              const puedeContinuarPermuta = usuario === primerFirmante && todasBorrador;
               const todasFirmadas = permutasDetalles.length > 0 && permutasDetalles.every((permuta) => permuta.estado_permuta_asociada === "FIRMADA");
-              const puedeCompletarPermuta = usuario === usuarios[1] && todasFirmadas;
+              const puedeCompletarPermuta = usuarios.includes(usuario) && usuario !== primerFirmante && todasFirmadas;
               const todasFinalizadas = permutasDetalles.every((permuta) => (permuta.estado_permuta_asociada === "ACEPTADA" || permuta.estado_permuta_asociada === "VALIDADA"));
               const IdsPermuta = permutasDetalles.map((permuta) => permuta.permuta_id);
 
@@ -134,16 +142,16 @@ export default function PermutasAceptadas() {
 
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '15px' }}>
                     {puedeGenerarPermuta && (
-                      <button className="btn btn-success btn-full" onClick={() => handleGenerarPermuta(IdsPermuta)}>{t("accepted_swaps.generate_swap")}</button>
+                      <button className="btn btn-success btn-full" disabled={generando} onClick={() => handleGenerarPermuta(IdsPermuta)}>{t("accepted_swaps.generate_swap")}</button>
                     )}
                     {puedeContinuarPermuta && (
-                      <button className="btn btn-success btn-full" onClick={() => navigate("/generarPermuta")}>{t("accepted_swaps.continue_swap")}</button>
+                      <button className="btn btn-success btn-full" onClick={() => navigate(`/generarPermuta?documento=${documentoId}`)}>{t("accepted_swaps.continue_swap")}</button>
                     )}
                     {puedeCompletarPermuta && (
-                      <button className="btn btn-primary btn-full" onClick={() => navigate("/generarPermuta")}>{t("accepted_swaps.complete_swap")}</button>
+                      <button className="btn btn-primary btn-full" onClick={() => navigate(`/generarPermuta?documento=${documentoId}`)}>{t("accepted_swaps.complete_swap")}</button>
                     )}
                     {todasFinalizadas && (
-                      <button className="btn btn-primary btn-full" onClick={() => navigate("/generarPermuta")}>{t("accepted_swaps.view_swap")}</button>
+                      <button className="btn btn-primary btn-full" onClick={() => navigate(`/generarPermuta?documento=${documentoId}`)}>{t("accepted_swaps.view_swap")}</button>
                     )}
                   </div>
                 </div>

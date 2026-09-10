@@ -4,10 +4,11 @@ export const validarDNI = (value) => {
   if (!dniRegex.test(value)) return "El DNI debe tener 8 números";
   return "";
 };
-export const validarLetraDNI = (value) => {
+export const validarLetraDNI = (value, dni) => {
   const letraRegex = /^[A-Z]$/;
   if (!value) return "La letra es obligatoria";
   if (!letraRegex.test(value)) return "Debe ser una letra mayúscula";
+  if (/^[0-9]{8}$/.test(dni) && 'TRWAGMYFPDXBNJZSQVHLCKE'[Number(dni) % 23] !== value) return "La letra no corresponde al DNI";
   return "";
 };
 export const validarCodigoPostal = (value) => {

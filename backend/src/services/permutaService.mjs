@@ -1,9 +1,10 @@
+import { crearDocumento, listarDocumentos, cambiarEstadoDocumento } from './documentoPermutaService.mjs';
 import database from "../config/database.mjs";
+import email from '../utils/email.mjs';
+import usuarioService from './usuarioService.mjs';
 // import { sendMessage } from "./telegramService.mjs"
 // import autorizacionService from "./autorizacionService.mjs";
 // import { mensajeFirmadaPermutaAlumno1, mensajeFirmadaPermutaAlumno2,mensajeAceptadaPermuta, mensajeValidacionPermuta,mensajeBorradorPermuta } from "../utils/mensajesTelegram.mjs";
-import email from "../utils/email.mjs";
-import usuarioService from "./usuarioService.mjs";
 class PermutaService {
   async crearListaPermutas(archivo, IdsPermuta) {
     const conexion = await database.connectPostgreSQL();
@@ -35,187 +36,20 @@ class PermutaService {
     }
   }
 
-  async generarBorradorPermutas(IdsPermuta, uvus) {
-    const conexion = await database.connectPostgreSQL();
-    try {
-      await conexion.query("BEGIN");
-      const queryPermutas = {
-        text: ` INSERT INTO permutas (estado, estudiante_cumplimentado_1 ) VALUES ('BORRADOR', $1) 
-                RETURNING id`,
-        values: [uvus],
-      };
-      const resultado = await conexion.query(queryPermutas);
-      const permutasId = resultado.rows[0].id;
-      for (const id of IdsPermuta) {
-        const queryPermutas_permuta = {
-          text: ` INSERT INTO permutas_permuta (permuta_id_fk, permutas_id_fk) 
-                  VALUES ($1, $2);`,
-          values: [id, permutasId],
-        };
-        const queryPermutas_permuta_update = {
-          text: `Update permuta set estado = 'FINALIZADA' where id = $1;`,
-          values: [id],
-        };
-        await conexion.query(queryPermutas_permuta_update);
-        await conexion.query(queryPermutas_permuta);
-      }
-      await conexion.query("COMMIT");
-      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
-      // // Enviar mensaje por Telegram
-      // try {
-      //   const chatIdEstudiante = await autorizacionService?.obtenerChatIdUsuario(uvus);
-      //   await sendMessage(chatIdEstudiante, mensajeBorradorPermuta);
-      // } catch (msgError) {
-      //   console.error("Error enviando mensaje de validación:", msgError);
-      // }
-      // Enviar mensaje por email
-      try{
-        const usuarioDatos = await usuarioService.obtenerDatosUsuario(uvus);
-        console.log("Datos usuario para email de borrador de permuta:", usuarioDatos);
-        await email.sendEmailToStudentsDocumentoPermuta(usuarioDatos, 'Borrador de Permuta Generado', "plantillaEmailDocumentoPermuta.ejs");
-      }catch(msgError){
-        console.error("Error enviando email de borrador de permuta:", msgError);
-      }
-      return "Se ha creado la lista de permutas correctamente";
-    } catch (error) {
-      await conexion.query("ROLLBACK");
-      console.error("Error al listar permutas:", error);
-      throw new Error("Error al listar permutas");
-    } finally {
-      await conexion.end();
+  async generarBorradorPermutas(ids, uvus) {
+    const documento = await crearDocumento(ids, uvus);
+    if (documento.creado) {
+      try {
+        const usuario = await usuarioService.obtenerDatosUsuario(uvus);
+        await email.sendEmailToStudentsDocumentoPermuta(usuario, 'Borrador de Permuta Generado', 'plantillaEmailDocumentoPermuta.ejs');
+      } catch (error) { console.error('No se pudo notificar el borrador:', error); }
     }
+    return documento;
   }
-
-  async listarPermutas(IdsPermuta) {
-    const conexion = await database.connectPostgreSQL();
-    try {
-      const query = {
-        text: ` SELECT id, estado, archivo, estudiante_cumplimentado_1, estudiante_cumplimentado_2
-              FROM permutas 
-              WHERE id in (SELECT permutas_id_fk  FROM permutas_permuta WHERE permuta_id_fk = ANY($1)) AND vigente = true`,
-        values: [IdsPermuta],
-      };
-      const resultado = await conexion.query(query);
-      await conexion.end();
-      return resultado.rows;
-    } catch (error) {
-      console.error("Error al listar permutas:", error);
-      throw new Error("Error al listar permutas");
-    }
-  }
-
-  async firmarPermuta(permutaId, archivo,uvus) {
-    const conexion = await database.connectPostgreSQL();
-    try {
-      const query = {
-        text: `UPDATE permutas 
-               SET estado = 'FIRMADA', archivo = $2
-               WHERE id = $1 AND vigente = true`,
-        values: [permutaId, archivo],
-      };
-
-      await conexion.query(query);
-      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
-      // const querySelect = {
-      //   text: ` SELECT LEAST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_primario,
-      //                 GREATEST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_secundario,
-      //                 (SELECT estado FROM permutas WHERE id = ( SELECT permutas_id_fk FROM permutas_permuta WHERE permuta_id_fk = p.id LIMIT 1)) AS estado_permuta_asociada
-      //           FROM permuta p
-      //           INNER JOIN usuario u1 ON p.usuario_id_1_fk = u1.id
-      //           INNER JOIN usuario u2 ON p.usuario_id_2_fk = u2.id
-      //           WHERE ( p.usuario_id_1_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)
-      //           OR p.usuario_id_2_fk = (SELECT id FROM usuario WHERE nombre_usuario =$1)) 
-      //           AND (p.estado = 'VALIDADA' OR p.estado = 'FINALIZADA') AND p.aceptada_1 = true AND p.aceptada_2 = true AND p.vigente = true;`,
-      //   values: [uvus],
-      // };
-      // const resultado = await conexion.query(querySelect);
-      // const { usuario_primario, usuario_secundario } = resultado.rows[0];
-      // try {
-      //   const chatIdEstudiante1 = await autorizacionService?.obtenerChatIdUsuario(usuario_primario);
-      //   const chatIdEstudiante2 = await autorizacionService?.obtenerChatIdUsuario(usuario_secundario);
-      //   await sendMessage(chatIdEstudiante1, mensajeFirmadaPermutaAlumno1(usuario_secundario));
-      //   await sendMessage(chatIdEstudiante2, mensajeFirmadaPermutaAlumno2(usuario_primario));
-      // } catch (msgError) {
-      //   console.error("Error enviando mensaje de validación:", msgError);
-      // }
-      return "La permuta ha sido firmada correctamente";
-    } catch (error) {
-      console.error("Error al firmar la permuta:", error);
-      throw new Error("Error al firmar la permuta");
-    } finally {
-      await conexion.end();
-    }
-  }
-
-  async aceptarPermuta(permutaId, archivo, uvus) {
-    const conexion = await database.connectPostgreSQL();
-    try {
-      const query = {
-        text: `UPDATE permutas 
-               SET estado = 'ACEPTADA', archivo = $2, estudiante_cumplimentado_2 = $3
-               WHERE id = $1
-               AND vigente = true`,
-        values: [permutaId, archivo, uvus],
-      };
-
-      await conexion.query(query);
-      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
-      // const querySelect = {
-      //   text: `SELECT estudiante_cumplimentado_1, estudiante_cumplimentado_2 FROM permutas WHERE id = $1`,
-      //   values: [permutaId],
-      // };
-      // const resultado = await conexion.query(querySelect);
-      // const { estudiante_cumplimentado_1, estudiante_cumplimentado_2 } = resultado.rows[0];
-      // try {
-      //   const chatIdEstudiante1 = await autorizacionService?.obtenerChatIdUsuario(estudiante_cumplimentado_1);
-      //   const chatIdEstudiante2 = await autorizacionService?.obtenerChatIdUsuario(estudiante_cumplimentado_2);
-      //   await sendMessage(chatIdEstudiante1, mensajeAceptadaPermuta);
-      //   await sendMessage(chatIdEstudiante2, mensajeAceptadaPermuta);
-      // } catch (msgError) {
-      //   console.error("Error enviando mensaje de validación:", msgError);
-      // }
-      return "La permuta ha sido aceptada correctamente";
-    } catch (error) {
-      console.error("Error al aceptar la permuta:", error);
-      throw new Error("Error al aceptar la permuta");
-    } finally {
-      await conexion.end();
-    }
-  }
-
-async validarPermuta(permutaId) {
-    const conexion = await database.connectPostgreSQL();
-    try {
-      const queryUpdate = {
-        text: `UPDATE permutas 
-               SET estado = 'VALIDADA'
-               WHERE id = $1`,
-        values: [permutaId],
-      };
-      await conexion.query(queryUpdate);
-
-      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
-      // const querySelect = {
-      //   text: `SELECT estudiante_cumplimentado_1, estudiante_cumplimentado_2 FROM permutas WHERE id = $1`,
-      //   values: [permutaId],
-      // };
-      // const resultado = await conexion.query(querySelect);
-      // const { estudiante_cumplimentado_1, estudiante_cumplimentado_2 } = resultado.rows[0];
-      // try {
-      //   const chatIdEstudiante1 = await autorizacionService?.obtenerChatIdUsuario(estudiante_cumplimentado_1);
-      //   const chatIdEstudiante2 = await autorizacionService?.obtenerChatIdUsuario(estudiante_cumplimentado_2);
-      //   await sendMessage(chatIdEstudiante1, mensajeValidacionPermuta);
-      //   await sendMessage(chatIdEstudiante2, mensajeValidacionPermuta);
-      // } catch (msgError) {
-      //   console.error("Error enviando mensaje de validación:", msgError);
-      // }
-    } catch (error) {
-      console.error("Error al validar la permuta:", error);
-      throw new Error("Error al validar la permuta");
-    } finally {
-      await conexion.end();
-    }
-}
+  listarPermutas(ids, uvus) { return listarDocumentos(ids, uvus); }
+  firmarPermuta(id, archivo, uvus) { return cambiarEstadoDocumento(id, uvus, 'FIRMADA', archivo); }
+  aceptarPermuta(id, archivo, uvus) { return cambiarEstadoDocumento(id, uvus, 'ACEPTADA', archivo); }
+  validarPermuta(id, uvus) { return cambiarEstadoDocumento(id, uvus, 'VALIDADA'); }
 
   async rechazarSolicitudPermuta(uvus, solicitud) {
     const conexion = await database.connectPostgreSQL();
@@ -355,21 +189,17 @@ async validarPermuta(permutaId) {
       p.id AS permuta_id,
       a.nombre AS nombre_asignatura,
       a.codigo AS codigo_asignatura,
-      g1.nombre AS grupo_1,
-      g2.nombre AS grupo_2,
+      CASE WHEN u1.nombre_usuario < u2.nombre_usuario THEN g1.nombre ELSE g2.nombre END AS grupo_1,
+      CASE WHEN u1.nombre_usuario < u2.nombre_usuario THEN g2.nombre ELSE g1.nombre END AS grupo_2,
       p.estado AS estado,
       LEAST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_primario,
       GREATEST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_secundario,
-      (SELECT estado 
-        FROM permutas 
-        WHERE id = (
-          SELECT permutas_id_fk 
-          FROM permutas_permuta 
-          WHERE permuta_id_fk = p.id
-          LIMIT 1
-        )
-      ) AS estado_permuta_asociada
+      d.estado AS estado_permuta_asociada, d.id AS documento_id,
+      d.estudiante_cumplimentado_1
     FROM permuta p
+    LEFT JOIN (SELECT pp.permuta_id_fk, doc.id, doc.estado, doc.estudiante_cumplimentado_1
+      FROM permutas_permuta pp JOIN permutas doc ON doc.id = pp.permutas_id_fk AND doc.vigente = true
+    ) d ON d.permuta_id_fk = p.id
     INNER JOIN asignatura a ON p.asignatura_id_fk = a.id
     INNER JOIN grupo g1 ON p.grupo_id_1_fk = g1.id
     INNER JOIN grupo g2 ON p.grupo_id_2_fk = g2.id
@@ -391,7 +221,7 @@ async validarPermuta(permutaId) {
 
       // Agrupar las permutas por usuario_primario y usuario_secundario
       const permutasAgrupadas = resultado.rows.reduce((acc, row) => {
-        const key = `${row.usuario_primario}-${row.usuario_secundario}`;
+        const key = JSON.stringify([row.usuario_primario, row.usuario_secundario, row.documento_id]);
         if (!acc[key]) {
           acc[key] = [];
         }
@@ -403,15 +233,15 @@ async validarPermuta(permutaId) {
           grupo_2: row.grupo_2,
           estado: row.estado,
           estado_permuta_asociada: row.estado_permuta_asociada,
+          documento_id: row.documento_id,
+          estudiante_cumplimentado_1: row.estudiante_cumplimentado_1,
         });
         return acc;
       }, {});
 
-      await conexion.end();
-
       // Convertir el objeto agrupado en un array
       return Object.entries(permutasAgrupadas).map(([usuarios, permutas]) => ({
-        usuarios: usuarios.split("-"),
+        usuarios: JSON.parse(usuarios).slice(0, 2),
         permutas,
       }));
     } catch (error) {

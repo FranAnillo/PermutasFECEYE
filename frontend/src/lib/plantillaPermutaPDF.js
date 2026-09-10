@@ -80,11 +80,20 @@ const fieldDefinitions = () => {
 export const CAMPOS_PLANTILLA_PERMUTA = fieldDefinitions();
 
 export function asegurarCamposPlantillaPermuta(pdfDoc) {
+  const pages = pdfDoc.getPages();
+  if (pages.length < 1 || pages.length > 2 || pages.some(page => Math.abs(page.getWidth() - 595.28) > 2 ||
+      Math.abs(page.getHeight() - REFERENCE_HEIGHT) > 2 || page.getRotation().angle !== 0)) {
+    throw new Error("La plantilla debe tener el formato A4 vertical FCEYE 2026-27, con su posible segunda página");
+  }
   const form = pdfDoc.getForm();
   const present = new Set(form.getFields().map((field) => field.getName()));
   const missing = CAMPOS_PLANTILLA_PERMUTA.filter(({ name }) => !present.has(name));
 
-  if (missing.length === 0) return form;
+  if (missing.length === 0) {
+    // Verificar también los tipos; un nombre correcto no garantiza un campo de texto.
+    CAMPOS_PLANTILLA_PERMUTA.forEach(({ name }) => form.getTextField(name));
+    return form;
+  }
   if (present.size > 0) {
     throw new Error("La plantilla subida no es compatible con el formulario FCEYE 2026-27");
   }

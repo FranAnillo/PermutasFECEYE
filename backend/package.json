@@ -28,6 +28,7 @@
     "nodemailer": "^7.0.3",
     "passport": "^0.7.0",
     "passport-saml": "^3.2.4",
+    "pdf-lib": "^1.17.1",
     "pg": "^8.13.1",
     "uuid": "^11.0.2"
   },

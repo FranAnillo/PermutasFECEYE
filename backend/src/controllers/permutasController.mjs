@@ -1,101 +1,31 @@
+import { obtenerDocumento, listarDocumentos, cambiarEstadoDocumento } from '../services/documentoPermutaService.mjs';
 import permutaService from "../services/permutaService.mjs";
 import GenericValidators from "../utils/genericValidators.mjs";
 
-const generarBorradorPermutas = async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.status(401).json({ err: true, message: "No hay usuario en la sesión" });
-        }
-        const uvus = req.session.user.nombre_usuario;
-        const IdsPermuta = req.body.IdsPermuta;
-        if (!Array.isArray(IdsPermuta) || IdsPermuta.some(id => !GenericValidators.isInteger(id, "PermutaId").valido)) {
-            return res.status(400).json({ error: true, message: "IdsPermuta debe ser un array de enteros" });
-        }
-        res.status(200).json({ error: false, result: await permutaService.generarBorradorPermutas(IdsPermuta, uvus) });
-    } catch (err) {
-        console.error("Error en generarBorradorPermutas:", err);
-        res.status(500).json({ error: true, message: "Error al crear la generarBorradorPermutas" });
-    }
+const responder = operacion => async (req, res) => {
+  try {
+    const result = await operacion(req);
+    res.json({ err: false, result });
+  } catch (error) {
+    if (!error.status) console.error(error);
+    res.status(error.status || 500).json({ err: true, message: error.status ? error.message : 'No se pudo completar la operación.' });
+  }
 };
-
-const listarPermutas = async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.status(401).json({ err: true, message: "No hay usuario en la sesión" });
-        }
-        const IdsPermuta = req.body.IdsPermuta;
-        if (!Array.isArray(IdsPermuta) || IdsPermuta.some(id => !GenericValidators.isInteger(id, "PermutaId").valido)) {
-            return res.status(400).json({ error: true, message: "IdsPermuta debe ser un array de enteros" });
-        }
-        res.status(200).json({ error: false, result: await permutaService.listarPermutas(IdsPermuta) });
-    } catch (err) {
-        console.error("Error en listarPermutas:", err);
-        res.status(500).json({ error: true, message: "Error al listarPermutas" });
-    }
-};
-
-const firmarPermuta = async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.status(401).json({ err: true, message: "No hay usuario en la sesión" });
-        }
-        const uvus = req.session.user.nombre_usuario;
-        const { archivo } = req.body;
-        const validId = GenericValidators.isInteger(req.body.permutaId, "PermutaId");
-        if (!validId.valido) {
-            return res.status(400).json({ err: true, message: validId.mensaje });
-        }
-        const permutaId = validId.valor;
-        const validArchivo = GenericValidators.isFilePdfOrPng(archivo, "Archivo", 50);
-        if (!validArchivo.valido || !/^[0-9a-fA-F-]{36}\.pdf$/.test(archivo)) {
-            return res.status(400).json({ err: true, message: "El archivo debe ser un PDF con nombre UUID.pdf" });
-        }
-        res.send({ err: false, result: await permutaService.firmarPermuta(permutaId, archivo,uvus) });
-    } catch (err) {
-        console.error('api firmarPermuta ha tenido una excepción:', err);
-        res.status(500).json({ err: true, message: 'Error interno en firmarPermuta', details: err.message });
-    }
-};
-
-const aceptarPermuta = async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.status(401).json({ err: true, message: "No hay usuario en la sesión" });
-        }
-        const uvus = req.session.user.nombre_usuario;
-        const { archivo } = req.body;
-        const validId = GenericValidators.isInteger(req.body.permutaId, "PermutaId");
-        if (!validId.valido) {
-            return res.status(400).json({ err: true, message: validId.mensaje });
-        }
-        const permutaId = validId.valor;
-        const validArchivo = GenericValidators.isFilePdfOrPng(archivo, "Archivo", 50);
-        if (!validArchivo.valido || !/^[0-9a-fA-F-]{36}\.pdf$/.test(archivo)) {
-            return res.status(400).json({ err: true, message: "El archivo debe ser un PDF con nombre UUID.pdf" });
-        }
-        res.send({ err: false, result: await permutaService.aceptarPermuta(permutaId, archivo, uvus) });
-    } catch (err) {
-        console.error('api aceptarPermuta ha tenido una excepción:', err);
-        res.status(500).json({ err: true, message: 'Error interno en aceptarPermuta', details: err.message });
-    }
-};
-
-const validarPermuta = async (req, res) => {
-    try {
-        if (!req.session.user) {
-            return res.status(401).json({ err: true, message: "No hay usuario en la sesión" });
-        }
-        const validId = GenericValidators.isInteger(req.body.permutaId, "PermutaId");
-        if (!validId.valido) {
-            return res.status(400).json({ err: true, message: validId.mensaje });
-        }
-        const permutaId = validId.valor;
-        res.send({ err: false, result: await permutaService.validarPermuta(permutaId) });
-    } catch (err) {
-        console.error('api validarPermuta ha tenido una excepción:', err);
-        res.status(500).json({ err: true, message: 'Error interno en validarPermuta', details: err.message });
-    }
-};
+const generarBorradorPermutas = responder(req => permutaService.generarBorradorPermutas(req.body.IdsPermuta, req.session.user.nombre_usuario));
+const listarPermutas = responder(req => listarDocumentos(req.body.IdsPermuta, req.session.user.nombre_usuario));
+const obtenerDocumentoPermuta = responder(req => obtenerDocumento(req.body.permutaId, req.session.user.nombre_usuario));
+const transicion = estado => responder(async req => {
+  const { permutaId, archivo } = req.body;
+  if (estado !== 'VALIDADA' && req.session.documentosSubidos?.[archivo] !== permutaId) {
+    throw Object.assign(new Error('Sube el PDF desde este documento antes de enviarlo.'), { status: 400 });
+  }
+  const result = await cambiarEstadoDocumento(permutaId, req.session.user.nombre_usuario, estado, archivo);
+  if (archivo) delete req.session.documentosSubidos[archivo];
+  return result;
+});
+const firmarPermuta = transicion('FIRMADA');
+const aceptarPermuta = transicion('ACEPTADA');
+const validarPermuta = transicion('VALIDADA');
 
 const rechazarSolicitudPermuta = async (req, res) => {
     try {
@@ -183,6 +113,7 @@ const actualizarVigenciaPermutas = async (req, res) => {
 };
 
 export default {
+    obtenerDocumentoPermuta,
     listarPermutas,
     aceptarPermuta,
     rechazarSolicitudPermuta,

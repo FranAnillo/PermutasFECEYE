@@ -7,7 +7,7 @@ const storage = multer.diskStorage({
     const tipo = req.body.tipo;
     let uploadPath;
     if (tipo === "buzon") {
-      uploadPath = process.env.BUZON;
+      return cb(new Error("Sube el PDF desde el documento de permuta correspondiente"));
     } else if (tipo === "archivador") {
       uploadPath = process.env.ARCHIVADOR;
     } else if (tipo === "proyectoDocente") {

@@ -1,4 +1,4 @@
-import { postAPI } from "../lib/methodAPIs.js";
+import { postAPI, postDocumento } from "../lib/methodAPIs.js";
 
 export const solicitarPermuta = async (asignatura, gruposDeseados) => {
     return await postAPI("/api/v1/solicitudPermuta/solicitarPermuta", { asignatura, grupos_deseados: gruposDeseados })
@@ -47,28 +47,30 @@ export const misPermutasPropuestasPorMi = async () => {
 }
 
 export const listarPermutas = async (IdsPermuta) => {
-    return await postAPI("/api/v1/permutas/listarPermutas", { IdsPermuta });
+    return await postDocumento("/api/v1/permutas/listarPermutas", { IdsPermuta });
 }
 
 export const firmarPermuta = async (archivo, permutaId) => {
-    return await postAPI("/api/v1/permutas/firmarPermuta", { archivo, permutaId })
+    return await postDocumento("/api/v1/permutas/firmarPermuta", { archivo, permutaId })
 }
 export const validarSolicitudPermuta = async (permutaId) => {
-    return await postAPI("/api/v1/permutas/validarPermuta", { permutaId })
+    return await postDocumento("/api/v1/permutas/validarPermuta", { permutaId })
 }
 
 export const aceptarPermuta = async (archivo, permutaId) => {
-    return await postAPI("/api/v1/permutas/aceptarPermuta", { archivo, permutaId })
+    return await postDocumento("/api/v1/permutas/aceptarPermuta", { archivo, permutaId })
 }
 
 export const obtenerPermutasAgrupadasPorUsuario = async () => {
-    return await postAPI("/api/v1/permutas/obtenerPermutasAgrupadasPorUsuario");
+    return await postDocumento("/api/v1/permutas/obtenerPermutasAgrupadasPorUsuario");
 }
 
 export const generarBorradorPermuta = async (IdsPermuta) => {
-    return await postAPI("/api/v1/permutas/generarBorradorPermuta", { IdsPermuta });
+    return await postDocumento("/api/v1/permutas/generarBorradorPermuta", { IdsPermuta });
 }
 
 export const actualizarVigenciaPermutas = async () => {
     return await postAPI("/api/v1/solicitudPermuta/actualizarVigenciaPermutas");
 }
+
+export const obtenerDocumentoPermuta = permutaId => postDocumento('/api/v1/permutas/obtenerDocumento', { permutaId });

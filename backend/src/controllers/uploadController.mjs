@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "path";
 import { fileURLToPath } from "node:url";
 import GenericValidators from "../utils/genericValidators.mjs";
+import database from '../config/database.mjs';
 
 const bundledTemplatesDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -33,7 +34,7 @@ const subirArchivo = (req, res) => {
   }
 };
 
-const servirArchivo = (req, res) => {
+const servirArchivo = async (req, res) => {
   try {
     if (!req.session.user) {
       return res
@@ -41,6 +42,16 @@ const servirArchivo = (req, res) => {
         .json({ err: true, message: "No hay usuario en la sesión" });
     }
     const { tipo, fileId } = req.params;
+    if (tipo === 'buzon') {
+      const conexion = await database.connectPostgreSQL();
+      try {
+        const { rows } = await conexion.query(`SELECT d.id FROM permutas d
+          JOIN permutas_permuta pp ON pp.permutas_id_fk = d.id JOIN permuta p ON p.id = pp.permuta_id_fk
+          JOIN usuario u ON u.id IN (p.usuario_id_1_fk, p.usuario_id_2_fk)
+          WHERE d.archivo = $1 AND d.vigente = true AND u.nombre_usuario = $2 LIMIT 1`, [fileId, req.session.user.nombre_usuario]);
+        if (!rows.length) return res.status(403).json({ message: 'No tienes acceso a este documento.' });
+      } finally { await conexion.end(); }
+    }
     if (tipo !== "archivador" && tipo !== "buzon") {
       return res
         .status(400)

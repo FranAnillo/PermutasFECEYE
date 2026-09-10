@@ -5,6 +5,7 @@ import { verificarRol } from '../middleware/rolMiddleware.mjs';
 const router = Router()
 router
 .post('/generarBorradorPermuta', verificarRol('estudiante'), permutasController.generarBorradorPermutas)
+.post('/obtenerDocumento', verificarRol('estudiante'), permutasController.obtenerDocumentoPermuta)
 .post('/listarPermutas', verificarRol('estudiante'), permutasController.listarPermutas)
 .post('/firmarPermuta', verificarRol('estudiante'), permutasController.firmarPermuta)
 .post('/aceptarPermuta', verificarRol('estudiante'), permutasController.aceptarPermuta)
