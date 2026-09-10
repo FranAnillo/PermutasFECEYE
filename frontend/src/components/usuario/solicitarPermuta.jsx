@@ -3,7 +3,7 @@ import { obtenerTodosGruposMisAsignaturasSinGrupoUsuario } from "../../services/
 import { solicitarPermuta } from "../../services/permuta.js";
 import { useNavigate } from "react-router-dom";
 import "../../styles/user-common.css";
-// import "../../styles/seleccionarGrupos-style.css"; // Ya no necesario si migramos todo
+import "../../styles/solicitarPermuta-style.css";
 import { toast } from "react-toastify";
 import { logError } from "../../lib/logger.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -53,10 +53,20 @@ export default function SeleccionarGruposSinGrupo() {
   }, []);
 
   const handleGrupoSeleccionadoParaAsignatura = (codasignatura, numgrupo) => {
-    setSeleccionados((prev) => ({
-      ...prev,
-      [codasignatura.toString()]: numgrupo,
-    }));
+    const key = codasignatura.toString();
+    setSeleccionados((prev) => {
+      const gruposActuales = prev[key] || [];
+      const estaSeleccionado = gruposActuales.includes(numgrupo);
+      const grupos = estaSeleccionado
+        ? gruposActuales.filter((grupo) => grupo !== numgrupo)
+        : [...gruposActuales, numgrupo];
+
+      if (grupos.length === 0) {
+        const { [key]: _eliminado, ...resto } = prev;
+        return resto;
+      }
+      return { ...prev, [key]: grupos };
+    });
   };
 
   const handleSubmit = async () => {
@@ -68,16 +78,16 @@ export default function SeleccionarGruposSinGrupo() {
       }
 
       for (const rawCod of keys) {
-        const rawGrupo = seleccionados[rawCod];
-        if (rawGrupo) {
+        const gruposSeleccionados = seleccionados[rawCod] || [];
+        if (gruposSeleccionados.length > 0) {
           // Limpiar y convertir a entero por seguridad (el backend espera enteros)
-          // El replace(/\D/g, '') elimina cualquier carácter que no sea un dígito (como la 'G')
           const codasignatura = parseInt(rawCod.toString().replace(/\D/g, ''), 10);
-          const grupoDeseado = parseInt(rawGrupo.toString().replace(/\D/g, ''), 10);
+          const gruposDeseados = [...new Set(gruposSeleccionados
+            .map((grupo) => parseInt(grupo.toString().replace(/\D/g, ''), 10))
+            .filter(Number.isInteger))];
 
-          if (!isNaN(codasignatura) && !isNaN(grupoDeseado)) {
-            // El servicio espera (asignatura, grupos_deseados)
-            await solicitarPermuta(codasignatura, [grupoDeseado]);
+          if (!isNaN(codasignatura) && gruposDeseados.length > 0) {
+            await solicitarPermuta(codasignatura, gruposDeseados);
           }
         }
       }
@@ -91,7 +101,7 @@ export default function SeleccionarGruposSinGrupo() {
 
 
   const haySeleccion = asignaturas.some(
-    ({ codasignatura }) => seleccionados[codasignatura.toString()]
+    ({ codasignatura }) => (seleccionados[codasignatura.toString()] || []).length > 0
   );
 
   if (cargando) {
@@ -108,7 +118,7 @@ export default function SeleccionarGruposSinGrupo() {
         <div className="page-header">
           <h1 className="page-title">Solicitar Permuta</h1>
           <p className="page-subtitle">
-            Selecciona el grupo al que deseas cambiarte para cada asignatura.
+            Selecciona uno o varios grupos a los que aceptarías cambiarte para cada asignatura.
             Crearemos una solicitud de permuta para que otros estudiantes puedan aceptarla.
           </p>
         </div>
@@ -131,31 +141,30 @@ export default function SeleccionarGruposSinGrupo() {
                   </div>
 
                   <div className="form-group" style={{ marginTop: 'auto' }}>
-                    <label htmlFor={`select-${codasignatura}`} className="form-label" style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                      Selecciona grupo deseado:
-                    </label>
-                    <select
-                      id={`select-${codasignatura}`}
-                      className="form-select"
-                      value={seleccionados[codasignatura.toString()] || ""}
-                      onChange={(e) =>
-                        handleGrupoSeleccionadoParaAsignatura(
-                          codasignatura,
-                          e.target.value
-                        )
-                      }
-                    >
-                      <option value="" disabled>-- Selecciona un grupo --</option>
-                      {grupos.map((grupo) => (
-                        <option key={grupo} value={grupo}>
-                          Grupo {grupo}
-                        </option>
-                      ))}
-                    </select>
+                    <span className="form-label" style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                      Grupos deseados (puedes elegir varios):
+                    </span>
+                    <div className="swap-group-options" role="group" aria-label={`Grupos deseados para ${nombreasignatura}`}>
+                      {grupos.map((grupo) => {
+                        const seleccionado = (seleccionados[codasignatura.toString()] || []).includes(grupo);
+                        return (
+                          <button
+                            key={grupo}
+                            type="button"
+                            role="checkbox"
+                            aria-checked={seleccionado}
+                            className={`swap-group-option${seleccionado ? " is-selected" : ""}`}
+                            onClick={() => handleGrupoSeleccionadoParaAsignatura(codasignatura, grupo)}
+                          >
+                            Grupo {grupo}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                  {seleccionados[codasignatura.toString()] && (
+                  {(seleccionados[codasignatura.toString()] || []).length > 0 && (
                     <div style={{ marginTop: '10px', color: 'var(--success-color)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <FontAwesomeIcon icon={faCheckCircle} /> Solicitud lista para G.{seleccionados[codasignatura.toString()]}
+                      <FontAwesomeIcon icon={faCheckCircle} /> Solicitud lista para G.{seleccionados[codasignatura.toString()].join(", G.")}
                     </div>
                   )}
                 </div>
@@ -178,7 +187,7 @@ export default function SeleccionarGruposSinGrupo() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'var(--text-primary)' }}>
                 <FontAwesomeIcon icon={faInfoCircle} style={{ color: 'var(--user-primary)' }} />
                 <span className="info-text-responsive" style={{ fontWeight: 500 }}>
-                  {haySeleccion ? "¡Todo listo para solicitar!" : "Selecciona grupo para continuar"}
+                  {haySeleccion ? "¡Todo listo para solicitar!" : "Selecciona al menos un grupo para continuar"}
                 </span>
               </div>
               <button

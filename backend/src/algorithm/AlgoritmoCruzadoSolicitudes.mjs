@@ -13,16 +13,19 @@ class PermutaMatching {
 
         // Crear aristas basadas en las solicitudes de permuta, considerando asignaturas
         this.permutas.forEach(({ estudianteId, permutaA, asignatura }) => {
-            const estudianteActual = this.estudiantes.find(e => e.id === estudianteId);
-            const candidato = this.estudiantes.find(e => e.grupo === permutaA);
+            const candidatos = this.estudiantes.filter(e =>
+                e.id !== estudianteId &&
+                e.grupo === permutaA &&
+                e.asignatura === asignatura
+            );
 
-            if (candidato) {
+            candidatos.forEach((candidato) => {
                 const conexiones = this.grafo.get(estudianteId);
                 if (!conexiones.has(candidato.id)) {
                     conexiones.set(candidato.id, new Set());
                 }
                 conexiones.get(candidato.id).add(asignatura);
-            }
+            });
         });
     }
 

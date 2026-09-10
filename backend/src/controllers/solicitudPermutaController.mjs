@@ -18,7 +18,11 @@ const solicitarPermuta = async (req, res) => {
         if (!validGrupos.valido) {
             return res.status(400).json({ err: true, message: validGrupos.mensaje });
         }
-        res.send({ err: false, result: await solicitudPermutaService.solicitarPermuta(uvus, asignatura, grupos_deseados) });
+        const gruposDeseadosUnicos = [...new Set(grupos_deseados)];
+        if (gruposDeseadosUnicos.length === 0) {
+            return res.status(400).json({ err: true, message: "Debes seleccionar al menos un grupo deseado" });
+        }
+        res.send({ err: false, result: await solicitudPermutaService.solicitarPermuta(uvus, asignatura, gruposDeseadosUnicos) });
     } catch (err) {
         console.error('api solicitarPermuta ha tenido una excepción:', err);
         res.status(500).json({ err: true, message: 'Error interno en solicitarPermuta', details: err.message });

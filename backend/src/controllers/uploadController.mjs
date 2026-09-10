@@ -1,5 +1,12 @@
+import fs from "node:fs";
 import path from "path";
+import { fileURLToPath } from "node:url";
 import GenericValidators from "../utils/genericValidators.mjs";
+
+const bundledTemplatesDir = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../../assets/plantillas"
+);
 
 const subirArchivo = (req, res) => {
   try {
@@ -87,10 +94,14 @@ const obtenerPlantillaPermuta = (req, res) => {
     const startYY = startYear.toString().slice(-2);
     const endYY = endYear.toString().slice(-2);
 
-    const pdfPath = path.join(
-      process.env.PLANTILLAS,
-      `plantillaPermuta${startYY}${endYY}.pdf`
-    );
+    const filename = `plantillaPermuta${startYY}${endYY}.pdf`;
+    const uploadedPath = process.env.PLANTILLAS
+      ? path.resolve(process.env.PLANTILLAS, filename)
+      : "";
+    const bundledPath = path.join(bundledTemplatesDir, filename);
+    const pdfPath = uploadedPath && fs.existsSync(uploadedPath)
+      ? uploadedPath
+      : bundledPath;
     res.sendFile(pdfPath, (err) => {
       if (err) {
         console.error("No se ha encontrado el archivo:", err);

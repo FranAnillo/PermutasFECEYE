@@ -1,7 +1,7 @@
 import { postAPI } from "../lib/methodAPIs.js";
 
-export const solicitarPermuta = async (paramNumGrupo, paramCodigo) => {
-    return await postAPI("/api/v1/solicitudPermuta/solicitarPermuta", { asignatura: paramNumGrupo, grupos_deseados: paramCodigo })
+export const solicitarPermuta = async (asignatura, gruposDeseados) => {
+    return await postAPI("/api/v1/solicitudPermuta/solicitarPermuta", { asignatura, grupos_deseados: gruposDeseados })
 }
 export const cancelarSolicitudPermuta = async (solicitud_id) => {
     return await postAPI("/api/v1/solicitudPermuta/cancelarSolicitudPermuta", { solicitud: solicitud_id })

@@ -90,7 +90,7 @@ class PermutaService {
     const conexion = await database.connectPostgreSQL();
     try {
       const query = {
-        text: ` SELECT id, estado, archivo
+        text: ` SELECT id, estado, archivo, estudiante_cumplimentado_1, estudiante_cumplimentado_2
               FROM permutas 
               WHERE id in (SELECT permutas_id_fk  FROM permutas_permuta WHERE permuta_id_fk = ANY($1)) AND vigente = true`,
         values: [IdsPermuta],

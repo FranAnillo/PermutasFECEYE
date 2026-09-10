@@ -28,8 +28,31 @@ import { toast } from "react-toastify";
 import { logError } from "../../lib/logger.js";
 import { useTranslation } from "react-i18next";
 
+export function prepararDatosDocumento(grupo, primerFirmante) {
+  const usuariosOriginales = grupo?.usuarios || [];
+  const primero = usuariosOriginales.find(usuario => usuario.uvus === primerFirmante) || usuariosOriginales[0];
+  const segundo = usuariosOriginales.find(usuario => usuario.uvus !== primero?.uvus);
+  const usuariosOrdenados = [primero, segundo].filter(Boolean);
+  const grupoDe = (permuta, uvus) => permuta.usuario_1_uvus === uvus
+    ? permuta.usuario_1_grupo : permuta.usuario_2_grupo;
+  const permutasOrdenadas = (grupo?.permutas || []).map(permuta => {
+    const grupo1 = grupoDe(permuta, usuariosOrdenados[0]?.uvus);
+    const grupo2 = grupoDe(permuta, usuariosOrdenados[1]?.uvus);
+    return {
+      ...permuta,
+      grupo_actual_1: grupo1,
+      grupo_nuevo_1: grupo2,
+      grupo_actual_2: grupo2,
+      grupo_nuevo_2: grupo1,
+    };
+  });
+  return { usuarios: usuariosOrdenados, permutas: permutasOrdenadas };
+}
+
 export default function GeneracionPDF() {
   const { t } = useTranslation();
+  const [nombre, setNombre] = useState("");
+  const [apellidos, setApellidos] = useState("");
   const [dni, setDni] = useState("");
   const [letraDNI, setLetraDNI] = useState("");
   const [domicilio, setDomicilio] = useState("");
@@ -44,6 +67,8 @@ export default function GeneracionPDF() {
   const [pdfExistente, setPdfExistente] = useState(null);
   const [file, setFile] = useState(null);
   const [errors, setErrors] = useState({
+    nombre: "",
+    apellidos: "",
     dni: "",
     letraDNI: "",
     domicilio: "",
@@ -60,16 +85,22 @@ export default function GeneracionPDF() {
     const cargarDatos = async () => {
       try {
         const lista = await verListaPermutas();
-        setUsuarios(lista.result.result[0].usuarios);
-        setPermutas(lista.result.result[0].permutas);
+        const grupo = lista?.result?.result?.[0];
+        if (!grupo?.permutas?.length) throw new Error("No hay permutas para documentar");
+        if (grupo?.usuarios?.length !== 2) throw new Error("La permuta debe tener dos estudiantes");
+        if (grupo.permutas.length > 10) throw new Error("El documento admite un máximo de 10 cambios");
 
-        const idsPermutas = lista.result.result[0].permutas.map(
+        const idsPermutas = grupo.permutas.map(
           (permuta) => permuta.permuta_id
         );
         const permuta = await listarPermutas(idsPermutas);
-        const estado = permuta?.result?.result[0]?.estado;
-        const fileId = permuta?.result?.result[0]?.archivo;
-        setPermutaId(permuta?.result?.result[0]?.id);
+        const datosPermuta = permuta?.result?.result?.[0];
+        const estado = datosPermuta?.estado;
+        const fileId = datosPermuta?.archivo;
+        const datosDocumento = prepararDatosDocumento(grupo, datosPermuta?.estudiante_cumplimentado_1);
+        setUsuarios(datosDocumento.usuarios);
+        setPermutas(datosDocumento.permutas);
+        setPermutaId(datosPermuta?.id);
 
         if (estado !== "BORRADOR") {
           setEstadoPermuta(estado);
@@ -83,6 +114,9 @@ export default function GeneracionPDF() {
           }
         }
       } catch (error) {
+        if (error?.message === "El documento admite un máximo de 10 cambios") {
+          toast.error(error.message);
+        }
         logError(error);
       }
     };
@@ -98,111 +132,57 @@ export default function GeneracionPDF() {
 
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
       const form = pdfDoc.getForm();
+      if (permutas.length > 10) throw new Error("El documento admite un máximo de 10 cambios");
 
-      // Grado (bloqueado siempre)
-      const grado1 = form.getCheckBox("GII-IS");
-      const grado2 = form.getCheckBox("GII-IC");
-      const grado3 = form.getCheckBox("GII-TI");
-      const grado4 = form.getCheckBox("GISA");
-      [grado1, grado2, grado3, grado4].forEach((g) => g.enableReadOnly());
+      const setSystemField = (fieldName, value) => {
+        const field = form.getTextField(fieldName);
+        field.setText(String(value ?? ""));
+        field.enableReadOnly();
+      };
 
-      const estudio = usuarios[0]?.estudio;
-      switch (estudio) {
-        case "GII-IS":
-          grado1.check();
-          break;
-        case "GII-IC":
-          grado2.check();
-          break;
-        case "GII-TI":
-          grado3.check();
-          break;
-        case "GISA":
-          grado4.check();
-          break;
-      }
+      // Datos conocidos por el sistema y fecha de firma.
+      const cursos = [...new Set(permutas
+        .map((permuta) => permuta.curso_asignatura)
+        .filter((curso) => curso !== null && curso !== undefined))];
+      usuarios.forEach((usuario, index) => {
+        const numero = index + 1;
+        setSystemField(`EMAIL_${numero}`, usuario.correo);
+        setSystemField(`TITULACION_${numero}`, usuario.estudio);
+        setSystemField(`CURSO_SOLICITANTE_${numero}`, cursos.join(", "));
+      });
+      setSystemField("LOCALIDAD_FECHA", "Sevilla");
+      setSystemField("DIA", dayValue);
+      setSystemField("MES", monthValue);
+      setSystemField("ANIO", yearValue.slice(-2));
 
-      // Fechas (bloqueadas siempre)
-      const day = form.getTextField("DAY");
-      const month = form.getTextField("MONTH");
-      const year = form.getTextField("YEAR");
-      day.setText(dayValue);
-      month.setText(monthValue);
-      year.setText(yearValue);
-      [day, month, year].forEach((f) => f.enableReadOnly());
-
-      // Asignaturas (bloqueadas siempre)
-      for (let index = 0; index < 16; index++) {
+      // Las dos tablas reflejan los mismos cambios desde la perspectiva de cada estudiante.
+      for (let index = 0; index < 10; index++) {
         const asignatura = permutas[index];
-        const asignaturaField1 = form.getTextField(`ASIGNATURA1-${index + 1}`);
-        const asignaturaField2 = form.getTextField(`ASIGNATURA2-${index + 1}`);
-        const codigoField1 = form.getTextField(`COD1-${index + 1}`);
-        const codigoField2 = form.getTextField(`COD2-${index + 1}`);
-
-        if (asignatura) {
-          asignaturaField1.setText(String(asignatura.nombre_asignatura));
-          asignaturaField2.setText(String(asignatura.nombre_asignatura));
-          codigoField1.setText(String(asignatura.codigo_asignatura));
-          codigoField2.setText(String(asignatura.codigo_asignatura));
+        for (let estudiante = 1; estudiante <= 2; estudiante++) {
+          const numeroFila = index + 1;
+          const nombreAsignatura = String(asignatura?.nombre_asignatura ?? "");
+          setSystemField(`ASIGNATURA_${estudiante}_${numeroFila}`, nombreAsignatura);
+          setSystemField(`CURSO_${estudiante}_${numeroFila}`, asignatura?.curso_asignatura);
+          setSystemField(`GRUPO_ACTUAL_${estudiante}_${numeroFila}`, asignatura?.[`grupo_actual_${estudiante}`]);
+          setSystemField(`GRUPO_NUEVO_${estudiante}_${numeroFila}`, asignatura?.[`grupo_nuevo_${estudiante}`]);
         }
-        [
-          asignaturaField1,
-          asignaturaField2,
-          codigoField1,
-          codigoField2,
-        ].forEach((f) => f.enableReadOnly());
       }
 
-      // Datos personales
-      const camposEst1 = [
-        form.getTextField("DNI1"),
-        form.getTextField("LETRA1"),
-        form.getTextField("NOMBRE1"),
-        form.getTextField("DOMICILIO1"),
-        form.getTextField("POBLACION1"),
-        form.getTextField("COD-POSTAL1"),
-        form.getTextField("PROVINCIA1"),
-        form.getTextField("TELEFONO1"),
-      ];
-      const camposEst2 = [
-        form.getTextField("DNI2"),
-        form.getTextField("LETRA2"),
-        form.getTextField("NOMBRE2"),
-        form.getTextField("DOMICILIO2"),
-        form.getTextField("POBLACION2"),
-        form.getTextField("COD-POSTAL2"),
-        form.getTextField("PROVINCIA2"),
-        form.getTextField("TELEFONO2"),
-      ];
-
-      [...camposEst1, ...camposEst2].forEach((f) => f.enableReadOnly());
-
-      if (estadoPermuta === "BORRADOR") {
-        const usuario = usuarios[0];
-        const datos = [
-          dni,
-          letraDNI,
-          usuario.nombre_completo,
-          domicilio,
-          poblacion,
-          codigoPostal,
-          provincia,
-          telefono,
-        ];
-        datos.forEach((valor, i) => camposEst1[i].setText(valor));
-      } else if (estadoPermuta === "FIRMADA") {
-        const usuario = usuarios[1];
-        const datos = [
-          dni,
-          letraDNI,
-          usuario.nombre_completo,
-          domicilio,
-          poblacion,
-          codigoPostal,
-          provincia,
-          telefono,
-        ];
-        datos.forEach((valor, i) => camposEst2[i].setText(valor));
+      const estudianteActual = estadoPermuta === "BORRADOR" ? 1 : 2;
+      if (estadoPermuta === "BORRADOR" || estadoPermuta === "FIRMADA") {
+        const datosPersonales = {
+          APELLIDOS: apellidos,
+          NOMBRE: nombre,
+          DNI: `${dni}${letraDNI}`,
+          DOMICILIO: domicilio,
+          COD_POSTAL: codigoPostal,
+          LOCALIDAD: poblacion,
+          PROVINCIA: provincia,
+          TELEFONO: telefono,
+        };
+        Object.entries(datosPersonales).forEach(([campo, valor]) => {
+          setSystemField(`${campo}_${estudianteActual}`, valor);
+        });
       }
 
       return await pdfDoc.save();
@@ -225,6 +205,10 @@ export default function GeneracionPDF() {
   };
 
   const descargarPDF = async () => {
+    if ((estadoPermuta === "ACEPTADA" || estadoPermuta === "VALIDADA") && pdfExistente) {
+      saveAs(new Blob([pdfExistente], { type: "application/pdf" }), "solicitud-permutas.pdf");
+      return;
+    }
     if (!validarFormulario()) {
       toast.warning(t("pdf_generation.errors.fix_errors"));
       return;
@@ -305,6 +289,8 @@ export default function GeneracionPDF() {
 
   const validarFormulario = () => {
     const nuevoErrors = {
+      nombre: validarCampoObligatorio(nombre, "nombre"),
+      apellidos: validarCampoObligatorio(apellidos, "apellidos"),
       dni: validarDNI(dni),
       letraDNI: validarLetraDNI(letraDNI),
       domicilio: validarCampoObligatorio(domicilio, "domicilio"),
@@ -338,6 +324,36 @@ export default function GeneracionPDF() {
 
           {/* Columna Izquierda: Formulario */}
           <div className="user-card">
+            <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+              <div style={{ flex: 1 }} className="form-group">
+                <label className="form-label">{t("pdf_generation.labels.name")}</label>
+                <input
+                  type="text"
+                  disabled={estadoPermuta === "ACEPTADA" || estadoPermuta === "VALIDADA"}
+                  value={nombre}
+                  onChange={(e) => {
+                    setNombre(e.target.value);
+                    setErrors((prev) => ({ ...prev, nombre: validarCampoObligatorio(e.target.value, "nombre") }));
+                  }}
+                  className={`form-input ${errors.nombre ? "input-error" : ""}`}
+                />
+                {errors.nombre && <span style={{ color: 'var(--danger-color)', fontSize: '0.85rem' }}>{errors.nombre}</span>}
+              </div>
+              <div style={{ flex: 2 }} className="form-group">
+                <label className="form-label">{t("pdf_generation.labels.surnames")}</label>
+                <input
+                  type="text"
+                  disabled={estadoPermuta === "ACEPTADA" || estadoPermuta === "VALIDADA"}
+                  value={apellidos}
+                  onChange={(e) => {
+                    setApellidos(e.target.value);
+                    setErrors((prev) => ({ ...prev, apellidos: validarCampoObligatorio(e.target.value, "apellidos") }));
+                  }}
+                  className={`form-input ${errors.apellidos ? "input-error" : ""}`}
+                />
+                {errors.apellidos && <span style={{ color: 'var(--danger-color)', fontSize: '0.85rem' }}>{errors.apellidos}</span>}
+              </div>
+            </div>
             <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
               <div style={{ flex: 2 }} className="form-group">
                 <label className="form-label">{t("pdf_generation.labels.dni")}</label>

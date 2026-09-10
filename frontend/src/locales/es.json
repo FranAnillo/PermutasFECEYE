@@ -92,6 +92,8 @@
         "instructions_1": "Una vez rellenes el formulario, podrás descargar un PDF con la solicitud de permuta. Este PDF deberá ser firmado y enviado al sistema para que tu compañero pueda rellenar sus datos.",
         "instructions_2": "Cuando tu compañero firme el PDF, podrás descargarlo y enviarlo a la administración.",
         "labels": {
+            "name": "Nombre:",
+            "surnames": "Apellidos:",
             "dni": "DNI:",
             "dni_letter": "Letra DNI:",
             "address": "Domicilio:",

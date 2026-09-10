@@ -7,50 +7,53 @@ import PermutaMatching from "../algorithm/AlgoritmoCruzadoSolicitudes.mjs";
 class SolicitudPermutaService {
   async solicitarPermuta(uvus, asignatura, grupos_deseados) {
     const conexion = await database.connectPostgreSQL();
+    const gruposDeseadosUnicos = [...new Set(grupos_deseados)];
 
-    // Verificar si ya existe una solicitud activa para esta asignatura y usuario
-    const verificarSolicitudQuery = {
-      text: `
+    try {
+      await conexion.query("BEGIN");
+
+      // Verificar si ya existe una solicitud activa para esta asignatura y usuario
+      const verificarSolicitudQuery = {
+        text: `
                 SELECT 1 
                 FROM solicitud_permuta 
                 WHERE usuario_id_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)
                 AND id_asignatura_fk = (SELECT id FROM asignatura WHERE codigo = $2)
                 AND estado = 'SOLICITADA' AND vigente = true
             `,
-      values: [uvus, asignatura],
-    };
+        values: [uvus, asignatura],
+      };
 
-    const verificarSolicitudRes = await conexion.query(verificarSolicitudQuery);
+      const verificarSolicitudRes = await conexion.query(verificarSolicitudQuery);
 
-    if (verificarSolicitudRes.rows.length > 0) {
-      await conexion.end();
-      throw new Error('Ya existe una solicitud activa para esta asignatura.');
-    }
+      if (verificarSolicitudRes.rows.length > 0) {
+        throw new Error('Ya existe una solicitud activa para esta asignatura.');
+      }
 
-    // Insertar la nueva solicitud de permuta
-    const insert_solicitud_permuta = {
-      text: `insert into solicitud_permuta (usuario_id_fk ,grupo_solicitante_id_fk, estado, id_asignatura_fk, vigente) values ((
+      // Insertar una solicitud y asociarle todos los grupos aceptables.
+      const insert_solicitud_permuta = {
+        text: `insert into solicitud_permuta (usuario_id_fk ,grupo_solicitante_id_fk, estado, id_asignatura_fk, vigente) values ((
               SELECT id FROM usuario WHERE nombre_usuario = $2),
               (SELECT id FROM grupo WHERE id in (SELECT grupo_id_fk FROM usuario_grupo WHERE usuario_id_fk = (SELECT id FROM usuario WHERE nombre_usuario = $2)) AND asignatura_id_fk = 
               (SELECT id FROM asignatura WHERE codigo = $1)),
               'SOLICITADA',
             (Select id from asignatura where codigo = $1), true) returning id`,
-      values: [asignatura, uvus],
-    };
+        values: [asignatura, uvus],
+      };
 
-    const res_solicitud_permuta = await conexion.query(insert_solicitud_permuta);
-    const id = res_solicitud_permuta.rows[0].id;
+      const res_solicitud_permuta = await conexion.query(insert_solicitud_permuta);
+      const id = res_solicitud_permuta.rows[0].id;
 
-    for (const grupo of grupos_deseados) {
-      const insertGrupoDeseado = {
-        text: `insert into grupo_deseado (solicitud_permuta_id_fk , grupo_id_fk ) 
+      for (const grupo of gruposDeseadosUnicos) {
+        const insertGrupoDeseado = {
+          text: `insert into grupo_deseado (solicitud_permuta_id_fk , grupo_id_fk )
                 values(
                   $3,
                   (select id from grupo where nombre = $2 and grupo.asignatura_id_fk = (select id from asignatura where codigo = $1)))`,
-        values: [asignatura, grupo, id],
-      };
-      await conexion.query(insertGrupoDeseado);
-    }
+          values: [asignatura, grupo, id],
+        };
+        await conexion.query(insertGrupoDeseado);
+      }
 
     // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
     // // Obtener datos para el mensaje
@@ -81,8 +84,14 @@ class SolicitudPermutaService {
     //   console.error("Error al enviar el mensaje de solicitud de permuta:", error);
     // }
     // 
-    await conexion.end();
-    return 'Permuta de la asignatura solicitada.';
+      await conexion.query("COMMIT");
+      return 'Permuta de la asignatura solicitada.';
+    } catch (error) {
+      await conexion.query("ROLLBACK");
+      throw error;
+    } finally {
+      await conexion.end();
+    }
   }
 
 
@@ -268,16 +277,40 @@ class SolicitudPermutaService {
           WHEN u1.nombre_usuario < u2.nombre_usuario THEN u2.nombre_completo
           ELSE u1.nombre_completo
         END AS usuario_2_nombre,
-        e1.siglas AS usuario_1_estudio,
-        e2.siglas AS usuario_2_estudio,
+        CASE
+          WHEN u1.nombre_usuario < u2.nombre_usuario THEN e1.nombre
+          ELSE e2.nombre
+        END AS usuario_1_estudio,
+        CASE
+          WHEN u1.nombre_usuario < u2.nombre_usuario THEN e2.nombre
+          ELSE e1.nombre
+        END AS usuario_2_estudio,
+        CASE
+          WHEN u1.nombre_usuario < u2.nombre_usuario THEN u1.correo
+          ELSE u2.correo
+        END AS usuario_1_correo,
+        CASE
+          WHEN u1.nombre_usuario < u2.nombre_usuario THEN u2.correo
+          ELSE u1.correo
+        END AS usuario_2_correo,
         a.nombre AS nombre_asignatura,
-        a.codigo AS codigo_asignatura
+        a.curso AS curso_asignatura,
+        CASE
+          WHEN u1.nombre_usuario < u2.nombre_usuario THEN g1.nombre
+          ELSE g2.nombre
+        END AS usuario_1_grupo,
+        CASE
+          WHEN u1.nombre_usuario < u2.nombre_usuario THEN g2.nombre
+          ELSE g1.nombre
+        END AS usuario_2_grupo
       FROM permuta p
       INNER JOIN usuario u1 ON p.usuario_id_1_fk = u1.id
       INNER JOIN usuario u2 ON p.usuario_id_2_fk = u2.id
       INNER JOIN estudios e1 ON u1.estudios_id_fk = e1.id
       INNER JOIN estudios e2 ON u2.estudios_id_fk = e2.id
       INNER JOIN asignatura a ON p.asignatura_id_fk = a.id
+      INNER JOIN grupo g1 ON p.grupo_id_1_fk = g1.id
+      INNER JOIN grupo g2 ON p.grupo_id_2_fk = g2.id
       WHERE (p.usuario_id_1_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)
          OR p.usuario_id_2_fk = (SELECT id FROM usuario WHERE nombre_usuario = $1)) 
         AND (p.estado = 'VALIDADA' OR p.estado = 'FINALIZADA') and p.vigente = true
@@ -298,11 +331,13 @@ class SolicitudPermutaService {
               nombre_completo: row.usuario_1_nombre,
               uvus: row.usuario_1_uvus,
               estudio: row.usuario_1_estudio,
+              correo: row.usuario_1_correo,
             },
             {
               nombre_completo: row.usuario_2_nombre,
               uvus: row.usuario_2_uvus,
               estudio: row.usuario_2_estudio,
+              correo: row.usuario_2_correo,
             },
           ],
           permutas: [],
@@ -310,7 +345,11 @@ class SolicitudPermutaService {
       }
       acc[key].permutas.push({
         nombre_asignatura: row.nombre_asignatura,
-        codigo_asignatura: row.codigo_asignatura,
+        curso_asignatura: row.curso_asignatura,
+        usuario_1_uvus: row.usuario_1_uvus,
+        usuario_2_uvus: row.usuario_2_uvus,
+        usuario_1_grupo: row.usuario_1_grupo,
+        usuario_2_grupo: row.usuario_2_grupo,
         permuta_id: row.permuta_id,
       });
       return acc;
@@ -345,7 +384,8 @@ class SolicitudPermutaService {
       SELECT DISTINCT 
         u.id,
         u.nombre_usuario,
-        g.nombre as grupo
+        g.nombre as grupo,
+        g.asignatura_id_fk as asignatura
       FROM usuario u
       INNER JOIN usuario_grupo ug ON u.id = ug.usuario_id_fk
       INNER JOIN grupo g ON ug.grupo_id_fk = g.id

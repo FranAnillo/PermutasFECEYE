@@ -92,6 +92,8 @@
         "instructions_1": "Une fois que vous avez rempli le formulaire, vous pouvez télécharger un PDF avec la demande de permute. Ce PDF doit être signé et envoyé au système afin que votre partenaire puisse remplir ses données.",
         "instructions_2": "Lorsque votre partenaire signe le PDF, vous pouvez le télécharger et l'envoyer à l'administration.",
         "labels": {
+            "name": "Prénom :",
+            "surnames": "Noms de famille :",
             "dni": "CNI (DNI):",
             "dni_letter": "Lettre DNI:",
             "address": "Adresse:",

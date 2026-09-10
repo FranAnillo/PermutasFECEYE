@@ -76,6 +76,7 @@ test('una solicitud guarda sus grupos sin consultar datos del antiguo mensaje', 
   const queries = [];
   const connection = fakeConnection(t, async (query) => {
     queries.push(query);
+    if (typeof query === 'string') return { rows: [] };
     assert.doesNotMatch(query.text, /chat_?id/i);
     if (/SELECT 1\s+FROM solicitud_permuta/i.test(query.text)) return { rows: [] };
     if (/insert into solicitud_permuta/i.test(query.text)) return { rows: [{ id: 17 }] };
@@ -84,8 +85,10 @@ test('una solicitud guarda sus grupos sin consultar datos del antiguo mensaje', 
   });
 
   assert.equal(await solicitudPermutaService.solicitarPermuta('alumno', '12345', ['2', '3']), 'Permuta de la asignatura solicitada.');
-  assert.deepEqual(queries.slice(2).map(({ values }) => values), [['12345', '2', 17], ['12345', '3', 17]]);
-  assert.equal(queries.length, 4);
+  assert.equal(queries[0], 'BEGIN');
+  assert.deepEqual(queries.slice(3, 5).map(({ values }) => values), [['12345', '2', 17], ['12345', '3', 17]]);
+  assert.equal(queries.at(-1), 'COMMIT');
+  assert.equal(queries.length, 6);
   assert.equal(connection.end.mock.callCount(), 1);
 });
 
