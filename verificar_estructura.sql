@@ -1,4 +1,4 @@
--- Ejecutar en permutas_FECEYE. Solo lectura.
+-- Ejecutar en permutas_FCEYE. Solo lectura.
 SELECT current_database() AS base_actual, current_user AS usuario;
 
 -- Debe devolver CERO filas: cada fila indica un objeto ausente.

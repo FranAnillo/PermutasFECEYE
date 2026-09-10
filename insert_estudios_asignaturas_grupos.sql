@@ -2,7 +2,7 @@
 -- 4 estudios, 170 asignaturas, 170 relaciones y 556 grupos.
 -- Cada fila de Asignaturas se mantiene independiente dentro de su estudio.
 -- No se importan usuarios. No se asignan códigos inexistentes en el Excel.
--- Ejecutar como script COMPLETO en permutas_FECEYE.
+-- Ejecutar como script COMPLETO en permutas_FCEYE.
 -- Importación inicial: se exige que las cuatro tablas estén vacías.
 -- Grupos numerados de 1 a N, con límite de 100 estudiantes.
 -- Se amplía asignatura.nombre a varchar(120), conservando el nombre completo.
@@ -205,8 +205,8 @@ DECLARE
     asignatura_id_nueva integer;
     limite integer;
 BEGIN
-    IF current_database() <> 'permutas_FECEYE' THEN
-        RAISE EXCEPTION 'Base incorrecta: %. Ejecutar en permutas_FECEYE.', current_database();
+    IF current_database() <> 'permutas_FCEYE' THEN
+        RAISE EXCEPTION 'Base incorrecta: %. Ejecutar en permutas_FCEYE.', current_database();
     END IF;
     SELECT limite_estudiantes INTO limite FROM carga_config;
     IF limite IS NULL OR limite <= 0 THEN

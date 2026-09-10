@@ -44,7 +44,7 @@ async obtenerDatosUsuario(uvus) {
       };
       await conexion.query(query);
       await conexion.end();
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // // Enviar mensaje por Telegram
       // try {
       //   const chatIdUsuario = await autorizacionService.obtenerChatIdUsuario(uvus);

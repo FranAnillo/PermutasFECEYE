@@ -112,7 +112,7 @@ export default function CookiesPolicy() {
           <h2>5. Contacto</h2>
           <p>
             Si tienes alguna pregunta o inquietud sobre nuestra Política de
-            Cookies, consulta los canales institucionales de FECEYE:
+            Cookies, consulta los canales institucionales de FCEYE:
           </p>
           <ul>
             <li>Facultad de Ciencias Económicas y Empresariales, Universidad de Sevilla.</li>

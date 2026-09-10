@@ -108,7 +108,7 @@ class IncidenciaService {
       console.error("Error al actualizar el estado de la incidencia:", error);
       throw new Error("Error al actualizar el estado de la incidencia");
     }
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // // Mensaje al usuario que se asigna la incidencia
       // try {
       //   const chatIdUsuario = await autorizacionService.obtenerChatIdUsuario(uvus);
@@ -161,7 +161,7 @@ class IncidenciaService {
       values: [id_incidencia, uvus],
     };
     await conexion.query(query);
-    // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+    // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
     // const queryIncidenciaUsuario = {
     //   text: `select nombre_usuario from usuario where id = (select usuario_id_fk from incidencia_usuario where id = $1)`,
     //   values: [id_incidencia],
@@ -211,7 +211,7 @@ class IncidenciaService {
       };
       await conexion.query(incidenciaUsuario);
       await conexion.query('COMMIT');
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // try {
       //   const chatIdUsuario = await autorizacionService.obtenerChatIdUsuario(uvus);
       //   await sendMessage(chatIdUsuario, formatearNuevaIncidencia(descripcion,tipo_incidencia,fecha_creacion), "HTML");

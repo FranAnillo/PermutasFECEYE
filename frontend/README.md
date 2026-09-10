@@ -1,4 +1,4 @@
-# Permutas FECEYE — frontend
+# Permutas FCEYE — frontend
 
 Adaptación de la plataforma de permutas de ETSII para la Facultad de Ciencias Económicas y Empresariales de la Universidad de Sevilla. Desarrollada con React y Vite.
 
@@ -19,7 +19,7 @@ Vite sirve la aplicación en `http://localhost:5173` y redirige `/api` al backen
 - `/noRegistrado`: redirige al registro integrado.
 - Las rutas privadas comprueban la sesión y el rol. Cerrar sesión invalida la sesión del servidor y actualiza la navegación.
 
-Las notificaciones de la plataforma se mantienen en la portada y el menú. Esta adaptación no necesita el bot para acceder o registrarse. La marca se presenta como texto hasta disponer de recursos oficiales de FECEYE.
+Las notificaciones de la plataforma se mantienen en la portada y el menú. Esta adaptación no necesita el bot para acceder o registrarse. La marca se presenta como texto hasta disponer de recursos oficiales de FCEYE.
 
 ## Comprobaciones
 

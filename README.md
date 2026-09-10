@@ -1,6 +1,6 @@
-# Permutas FECEYE · Universidad de Sevilla
+# Permutas FCEYE · Universidad de Sevilla
 
-Adaptación de la plataforma de permutas de ETSII para FECEYE, con **registro web y acceso mediante nombre de usuario y contraseña local**. El bot y los envíos de Telegram quedan comentados; las notificaciones de la aplicación siguen funcionando.
+Adaptación de la plataforma de permutas de ETSII para FCEYE, con **registro web y acceso mediante nombre de usuario y contraseña local**. El bot y los envíos de Telegram quedan comentados; las notificaciones de la aplicación siguen funcionando.
 
 ## Base del proyecto
 
@@ -11,12 +11,12 @@ Adaptación de la plataforma de permutas de ETSII para FECEYE, con **registro we
 
 ## Instalación local
 
-Requisitos: Node.js 22 o posterior, npm y PostgreSQL con el esquema de permutas de FECEYE ya creado a partir de ETSII. Este proyecto no contiene un volcado completo del esquema original: `verificar_estructura.sql` solo lo comprueba.
+Requisitos: Node.js 22 o posterior, npm y PostgreSQL con el esquema de permutas de FCEYE ya creado a partir de ETSII. Este proyecto no contiene un volcado completo del esquema original: `verificar_estructura.sql` solo lo comprueba.
 
 1. En `backend/`, ejecutar `npm ci` y copiar `.env.example` a `.env`.
-2. Completar `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USER` y `DB_PASS` para la base de FECEYE.
+2. Completar `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USER` y `DB_PASS` para la base de FCEYE.
 3. Generar una clave con `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"` y guardarla como `SESSION_SECRET` en `.env`.
-4. Aplicar, en este orden y con una conexión a la base de FECEYE, los scripts completos:
+4. Aplicar, en este orden y con una conexión a la base de FCEYE, los scripts completos:
    - `backend/migrations/001_autenticacion_local.sql`
    - `backend/migrations/002_sesiones_web.sql`
 5. Ejecutar `npm start` desde `backend/`. La API escucha en `http://127.0.0.1:3000`.
@@ -62,7 +62,7 @@ Se mantiene el código funcional de ETSII y se corrigen los bloqueos de arranque
 - `cd backend && npm test`: pruebas de autenticación HTTP, contraseñas, transacciones simuladas, Telegram desactivado, notificaciones web y utilidades. Abren servidores locales efímeros.
 - `cd frontend && npm run test -- --run`: pruebas de interfaz.
 - `cd frontend && npm run build`: compilación para producción.
-- `backend/test/postgres.integration.test.mjs`: prueba optativa contra PostgreSQL real y vacío. Usa únicamente `127.0.0.1`, usuario `postgres`, base `feceye_test` y contraseña de pruebas `feceye-test-only`; requiere `FECEYE_TEST_DB_PORT`. Rechaza una base que ya contenga `usuario`, crea un esquema mínimo y limpia solo sus tablas al finalizar. Valida ambas migraciones, repetición, cuentas heredadas, registro concurrente, perfiles, roles, cookies, sesión persistente, logout e inserciones revertidas. No sustituye una prueba sobre una copia del esquema completo de producción.
+- `backend/test/postgres.integration.test.mjs`: prueba optativa contra PostgreSQL real y vacío. Usa únicamente `127.0.0.1`, usuario `postgres`, base `FCEYE_test` y contraseña de pruebas `FCEYE-test-only`; requiere `FCEYE_TEST_DB_PORT`. Rechaza una base que ya contenga `usuario`, crea un esquema mínimo y limpia solo sus tablas al finalizar. Valida ambas migraciones, repetición, cuentas heredadas, registro concurrente, perfiles, roles, cookies, sesión persistente, logout e inserciones revertidas. No sustituye una prueba sobre una copia del esquema completo de producción.
 
 ## Configuración de despliegue
 
@@ -70,9 +70,9 @@ Compilar el frontend y servirlo con fallback de rutas a `index.html`. Publicar `
 
 Producción requiere sesiones en PostgreSQL y cookies Secure. El almacenamiento en memoria solo se permite para desarrollo/pruebas. En despliegues con varios procesos, añadir en el proxy un límite de intentos compartido. La persistencia sigue el contrato de [connect-pg-simple](https://github.com/voxpelli/node-connect-pg-simple) y la configuración de cookies de [express-session](https://expressjs.com/en/resources/middleware/session/).
 
-Completar las variables de correo y aportar la plantilla PDF de permuta de FECEYE en `PLANTILLAS` para los flujos de documentos heredados. Antes de publicar, completar los textos institucionales de privacidad/contacto y los recursos oficiales del centro. Los cambios locales requieren actualizar explícitamente el servidor; las pruebas no modifican su base de datos.
+Completar las variables de correo y aportar la plantilla PDF de permuta de FCEYE en `PLANTILLAS` para los flujos de documentos heredados. Antes de publicar, completar los textos institucionales de privacidad/contacto y los recursos oficiales del centro. Los cambios locales requieren actualizar explícitamente el servidor; las pruebas no modifican su base de datos.
 
-## Actualización: perfil académico obligatorio y colores FECEYE
+## Actualización: perfil académico obligatorio y colores FCEYE
 
 El área de estudiante usa naranja `#FF5800`, blanco y gris `#363636`, tomados del tema de https://fceye.us.es/. Se usa un naranja más oscuro para texto/botones sobre blanco y variantes legibles para modo oscuro. Los estilos se limitan al área de estudiante.
 
@@ -85,15 +85,15 @@ Pasos obligatorios: grado → una o más asignaturas (incluso de distintos curso
 Esta actualización **no requiere migraciones SQL**. Una vez publicados los cambios en Git, actualizar el servidor:
 
 ```sh
-cd /opt/PermutasFECEYE/PermutasFECEYE
-export PATH="/opt/feceye-runtime/node-v22.23.2-linux-x64/bin:$PATH"
+cd /opt/PermutasFCEYE/PermutasFCEYE
+export PATH="/opt/FCEYE-runtime/node-v22.23.2-linux-x64/bin:$PATH"
 git pull --ff-only
 npm --prefix backend ci
-sudo systemctl restart permutas-feceye
+sudo systemctl restart permutas-FCEYE
 npm --prefix frontend ci
 npm --prefix frontend run build
 ```
 
-El contenedor `permutas-feceye-web` sirve la carpeta `frontend/dist` que ya tiene montada. No requiere cambios en DNS, proxy, firewall ni `.env`.
+El contenedor `permutas-FCEYE-web` sirve la carpeta `frontend/dist` que ya tiene montada. No requiere cambios en DNS, proxy, firewall ni `.env`.
 
 Validación: 42 pruebas frontend; 28 comprobaciones backend superadas y una integración Docker optativa omitida. El nuevo SQL se ha probado en PostgreSQL embebido (PGlite, dependencia solo de desarrollo), incluyendo rollback, selecciones cruzadas y bloqueo de permutas. Compilación correcta; persiste el aviso previo de tamaño del bundle. No se han aplicado estos cambios a la base ni al servidor de producción.

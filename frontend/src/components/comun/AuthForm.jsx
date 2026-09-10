@@ -80,7 +80,7 @@ export default function AuthForm({ register = false }) {
         <>
             <div className="auth-page">
                 <header className="auth-header">
-                    <Link className="auth-brand" to="/login">Permutas <span>FECEYE</span></Link>
+                    <Link className="auth-brand" to="/login">Permutas <span>FCEYE</span></Link>
                     <LanguageSwitcher />
                 </header>
                 <div className="auth-content">

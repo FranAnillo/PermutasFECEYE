@@ -5,7 +5,7 @@ export const databaseConfig = (env = process.env) => ({
   password: env.DB_PASS || env.DB_PASSWORD || undefined,
   host: env.DB_HOST || 'localhost',
   port: Number(env.DB_PORT || 5432),
-  database: env.DB_DATABASE || env.DB_NAME || 'permutas_FECEYE',
+  database: env.DB_DATABASE || env.DB_NAME || 'permutas_FCEYE',
   connectionTimeoutMillis: 5000,
 });
 

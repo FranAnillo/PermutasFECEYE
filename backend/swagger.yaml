@@ -1,8 +1,8 @@
 openapi: 3.0.1
 info:
-  title: Permutas FECEYE API
+  title: Permutas FCEYE API
   description: |-
-    API para la aplicación Permutas FECEYE, diseñada para gestionar permutas de grupos y asignaturas en un entorno académico.
+    API para la aplicación Permutas FCEYE, diseñada para gestionar permutas de grupos y asignaturas en un entorno académico.
     Permite a los estudiantes solicitar, aceptar y gestionar permutas, mientras que los administradores pueden supervisar y validar estas solicitudes.
     La autenticación se gestiona mediante registro e inicio de sesión locales, por lo que se espera que las solicitudes a estos endpoints incluyan la cookie de sesión correspondiente una vez que el usuario se haya autenticado.
   version: 1.0.0
@@ -45,7 +45,7 @@ paths:
                       maxLength: 254
       responses:
         '201':
-          description: Cuenta de estudiante creada; cookie feceye.sid emitida
+          description: Cuenta de estudiante creada; cookie FCEYE.sid emitida
           content:
             application/json:
               schema:
@@ -70,7 +70,7 @@ paths:
               $ref: '#/components/schemas/Credenciales'
       responses:
         '200':
-          description: Sesión iniciada; cookie feceye.sid regenerada
+          description: Sesión iniciada; cookie FCEYE.sid regenerada
           content:
             application/json:
               schema:

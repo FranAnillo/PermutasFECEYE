@@ -1,4 +1,4 @@
--- Ejecutar en la misma base de datos FECEYE después de 001_autenticacion_local.sql.
+-- Ejecutar en la misma base de datos FCEYE después de 001_autenticacion_local.sql.
 -- Esquema compatible con connect-pg-simple; no modifica datos de usuarios.
 BEGIN;
 CREATE TABLE IF NOT EXISTS public.sesion_web (

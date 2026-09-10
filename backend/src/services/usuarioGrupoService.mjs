@@ -25,7 +25,7 @@ class UsuarioGrupoService{
       };
       await conexion.query(insertQuery);
 
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // // Obtener todos los grupos actuales del usuario tras la inserción
       // const gruposQuery = {
       //   text: `select a.nombre as nombreAsignatura, g.nombre as numGrupo

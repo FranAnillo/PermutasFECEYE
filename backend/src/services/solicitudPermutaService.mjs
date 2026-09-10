@@ -52,7 +52,7 @@ class SolicitudPermutaService {
       await conexion.query(insertGrupoDeseado);
     }
 
-    // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+    // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
     // // Obtener datos para el mensaje
     // const datosQuery = {
     //   text: `

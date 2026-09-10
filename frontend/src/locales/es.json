@@ -1,8 +1,8 @@
 {
     "common": {
         "loading": "Cargando...",
-        "welcome": "Bienvenido a Permutas FECEYE",
-        "description": "Gestiona tus permutas de asignaturas y grupos en FECEYE.",
+        "welcome": "Bienvenido a Permutas FCEYE",
+        "description": "Gestiona tus permutas de asignaturas y grupos en FCEYE.",
         "last_notifications": "Últimas Notificaciones",
         "no_notifications": "No hay notificaciones",
         "notifications": "Notificaciones",
@@ -11,7 +11,7 @@
         "cookie_consent": "Utilizamos cookies para mejorar la experiencia del usuario."
     },
     "navbar": {
-        "brand": "Permutas FECEYE - Admin",
+        "brand": "Permutas FCEYE - Admin",
         "management": "Gestión",
         "home": "Inicio",
         "incidents": "Incidencias",
@@ -29,14 +29,14 @@
         "my_requests": "Mis solicitudes",
         "accepted_exchanges": "Permutas aceptadas",
         "report_incident": "Reportar incidencia",
-        "student_brand": "Permutas FECEYE",
+        "student_brand": "Permutas FCEYE",
         "menu": "Abrir menú",
         "logout_error": "No se ha podido cerrar la sesión. Inténtalo de nuevo."
     },
     "login": {
         "title": "Iniciar sesión",
         "button": "Iniciar sesión",
-        "description": "Accede con tu cuenta de Permutas FECEYE.",
+        "description": "Accede con tu cuenta de Permutas FCEYE.",
         "switch_prompt": "¿Todavía no tienes cuenta?",
         "switch_link": "Crear una cuenta"
     },
@@ -51,7 +51,7 @@
         "documentation": "Documentación",
         "contact_us": "Contáctanos",
         "send_email": "Envíanos un correo",
-        "platform_name": "Permutas FECEYE"
+        "platform_name": "Permutas FCEYE"
     },
     "accepted_swaps": {
         "title": "Permutas Aceptadas",
@@ -116,13 +116,13 @@
         },
         "modal": {
             "title": "Validar Permuta",
-            "message": "Comprueba los datos y las firmas del documento. Consulta el procedimiento de presentación vigente de FECEYE antes de remitir la solicitud; la validación en esta plataforma no sustituye su presentación ante el centro."
+            "message": "Comprueba los datos y las firmas del documento. Consulta el procedimiento de presentación vigente de FCEYE antes de remitir la solicitud; la validación en esta plataforma no sustituye su presentación ante el centro."
         }
     },
     "chatbot": {
         "title": "Asistente de Ayuda",
         "subtitle": "¿En qué puedo ayudarte?",
-        "welcome_message": "¡Hola! 👋 Soy tu asistente virtual. Estoy aquí para ayudarte con el uso de la plataforma de permutas FECEYE. ¿Qué necesitas saber?",
+        "welcome_message": "¡Hola! 👋 Soy tu asistente virtual. Estoy aquí para ayudarte con el uso de la plataforma de permutas FCEYE. ¿Qué necesitas saber?",
         "placeholder": "Escribe tu pregunta aquí...",
         "send_button": "Enviar",
         "typing": "Escribiendo...",
@@ -195,7 +195,7 @@
     },
     "register": {
         "title": "Crear una cuenta",
-        "description": "Regístrate para gestionar tus permutas en FECEYE.",
+        "description": "Regístrate para gestionar tus permutas en FCEYE.",
         "button": "Crear cuenta",
         "switch_prompt": "¿Ya tienes cuenta?",
         "switch_link": "Iniciar sesión"

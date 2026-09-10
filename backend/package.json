@@ -1,7 +1,7 @@
 {
-  "name": "permutas-feceye-backend",
+  "name": "permutas-FCEYE-backend",
   "version": "1.0.0",
-  "description": "API de permutas de FECEYE de la Universidad de Sevilla",
+  "description": "API de permutas de FCEYE de la Universidad de Sevilla",
   "type": "module",
   "main": "src/app.mjs",
   "scripts": {

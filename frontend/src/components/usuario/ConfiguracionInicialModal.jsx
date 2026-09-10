@@ -29,9 +29,9 @@ export default function ConfiguracionInicialModal({ estado, error, busy, onSave,
       ? { paso, asignatura_ids: asignaturas }
       : { paso, grupos: estado.matriculadas.map(a => ({ asignatura_id: a.id, grupo_id: Number(grupos[a.id]) })) });
   }
-  return <dialog ref={dialog} className="feceye-onboarding" aria-labelledby="onboarding-title"
+  return <dialog ref={dialog} className="FCEYE-onboarding" aria-labelledby="onboarding-title"
     aria-describedby="onboarding-description" onCancel={event => event.preventDefault()}>
-    <p className="onboarding-eyebrow">PERMUTAS FECEYE · TU PERFIL ACADÉMICO</p>
+    <p className="onboarding-eyebrow">PERMUTAS FCEYE · TU PERFIL ACADÉMICO</p>
     <h1 id="onboarding-title">{titulos[paso] || 'Preparando tu perfil'}</h1>
     <p id="onboarding-description">Antes de buscar permutas, necesitamos conocer tu grado, tus asignaturas y el grupo en el que estás matriculado en cada una.</p>
     <ol className="onboarding-steps" aria-label="Pasos de configuración">

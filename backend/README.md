@@ -1,4 +1,4 @@
-# API Permutas FECEYE
+# API Permutas FCEYE
 
 Adaptación de TFMPermuta (ETSII) con autenticación local y Telegram comentado.
 La instalación, migraciones, endpoints y límites de esta versión se documentan en

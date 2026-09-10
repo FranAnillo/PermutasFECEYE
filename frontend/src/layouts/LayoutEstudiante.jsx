@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { obtenerConfiguracionInicial, guardarConfiguracionInicial } from '../services/configuracionInicial';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/user-common.css';
-import '../styles/feceye-student.css';
+import '../styles/FCEYE-student.css';
 
 export default function LayoutEstudiante() {
   const navigate = useNavigate();
@@ -59,7 +59,7 @@ export default function LayoutEstudiante() {
   }
   const ready = verifiedPath === pathname && estado?.completo;
   const visibleState = verifiedPath === pathname ? estado : null;
-  return <div className="feceye-student">
+  return <div className="FCEYE-student">
     <NavbarEstudiante />
     <main>
       {ready ? <Outlet context={{ refrescarPerfil }} /> : <div className="page-container onboarding-profile-background" aria-hidden="true">

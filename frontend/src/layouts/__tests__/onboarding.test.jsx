@@ -5,7 +5,7 @@ import LayoutEstudiante from '../LayoutEstudiante';
 import { obtenerConfiguracionInicial, guardarConfiguracionInicial } from '../../services/configuracionInicial';
 vi.mock('../../services/configuracionInicial', () => ({ obtenerConfiguracionInicial: vi.fn(), guardarConfiguracionInicial: vi.fn() }));
 vi.mock('../../components/usuario/NavbarEstudiante', () => ({ default: () => <nav>Menú estudiante</nav> }));
-vi.mock('../../components/comun/footer', () => ({ default: () => <footer>FECEYE</footer> }));
+vi.mock('../../components/comun/footer', () => ({ default: () => <footer>FCEYE</footer> }));
 const logout = vi.fn();
 vi.mock('../../hooks/useAuth', () => ({ useAuth: () => ({ logout }) }));
 const usuario = { id: 1, nombre_completo: 'Ana', titulacion: 'Economía' };

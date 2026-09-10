@@ -1,4 +1,4 @@
--- Migración FECEYE: ejecutar con un usuario autorizado en la base de FECEYE,
+-- Migración FCEYE: ejecutar con un usuario autorizado en la base de FCEYE,
 -- antes de iniciar la aplicación. No modifica contraseñas ni cuentas existentes.
 -- Las cuentas heredadas necesitan una contraseña local provisionada por
 -- administración; el registro no puede apropiarse de ellas.

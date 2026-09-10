@@ -15,10 +15,10 @@ async function fixture(t, { rateLimit } = {}) {
   const service = new AutorizacionService(db);
   const store = new session.MemoryStore();
   const app = express();
-  app.locals.sessionCookieName = 'feceye.sid';
+  app.locals.sessionCookieName = 'FCEYE.sid';
   app.locals.sessionCookieOptions = { path: '/', httpOnly: true, sameSite: 'lax', secure: false };
   app.use(express.json());
-  app.use(session({ name: 'feceye.sid', secret: 'test-secret-only-01234567890123456789', store, resave: false, saveUninitialized: false, cookie: app.locals.sessionCookieOptions }));
+  app.use(session({ name: 'FCEYE.sid', secret: 'test-secret-only-01234567890123456789', store, resave: false, saveUninitialized: false, cookie: app.locals.sessionCookieOptions }));
   app.get('/preauth', (req, res) => { req.session.beforeLogin = true; res.json({ ok: true }); });
   app.use('/api/v1/autorizacion', createAutorizacionRouter({ service, rateLimit }));
   app.get('/admin', verificarRol('administrador'), (_req, res) => res.json({ ok: true }));
@@ -72,7 +72,7 @@ test('registro, sesión regenerada, login y logout funcionan por HTTP sin Telegr
   const loggedOut = await request('POST', '/logout', undefined, loggedIn.cookie);
   assert.equal(loggedOut.status, 200);
   assert.deepEqual(loggedOut.body, { isAuthenticated: false });
-  assert.match(loggedOut.headers.get('set-cookie'), /^feceye\.sid=;/);
+  assert.match(loggedOut.headers.get('set-cookie'), /^FCEYE\.sid=;/);
   assert.equal((await request('GET', '/obtenerSesion', undefined, loggedIn.cookie)).status, 401);
   assert.equal((await request('GET', '/logout')).status, 404);
   assert.equal((await request('GET', '/saml/login')).status, 404);

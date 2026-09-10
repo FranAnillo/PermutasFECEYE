@@ -62,7 +62,7 @@ const actualizarCorreoUsuario = async (req, res) => {
     }
     await usuarioService.actualizarCorreoUsuario(uvus, correo);
 
-    // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+    // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
     // // Obtener chatId y enviar mensaje por Telegram
     // try {
     //   const chatId = await autorizacionService.obtenerChatIdUsuario(uvus);

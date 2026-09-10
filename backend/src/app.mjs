@@ -23,7 +23,7 @@ import uploadRouter from './routes/uploadRoutes.mjs';
 import permutaRouter from './routes/permutasRoutes.mjs';
 import administradorRouter from './routes/administradorRoutes.mjs';
 import autorizacionService from './services/autorizacionService.mjs';
-// FECEYE: el bot queda desactivado; se conserva el código de ETSII como referencia.
+// FCEYE: el bot queda desactivado; se conserva el código de ETSII como referencia.
 // import telegramRouter from './routes/telegramRoutes.mjs';
 // import { setBotCommands } from './middleware/botCommands.mjs';
 // await setBotCommands();
@@ -68,12 +68,12 @@ export function createApp({ env = process.env, sessionStore, authRouter = autori
     ? new session.MemoryStore()
     : new PgStore({ conObject: databaseConfig(env), tableName: 'sesion_web', createTableIfMissing: false }));
   const cookie = { path: '/', secure: production, httpOnly: true, sameSite: 'lax', maxAge: 7200000 };
-  app.locals.sessionCookieName = 'feceye.sid';
+  app.locals.sessionCookieName = 'FCEYE.sid';
   app.locals.sessionCookieOptions = { path: '/', secure: production, httpOnly: true, sameSite: 'lax' };
   app.locals.sessionStore = store;
   app.use(session({ name: app.locals.sessionCookieName, store,
     secret: env.SESSION_SECRET, resave: false, saveUninitialized: false, cookie }));
-  app.get('/api/health', (_req, res) => res.json({ status: 'ok', application: 'Permutas FECEYE' }));
+  app.get('/api/health', (_req, res) => res.json({ status: 'ok', application: 'Permutas FCEYE' }));
   app.use('/api/v1/autorizacion', authRouter);
   // No basta la autorización del navegador: verificar cuentas/roles también en API.
   app.use('/api/v1', async (req, res, next) => {
@@ -129,9 +129,9 @@ export function startServer() {
     if (!process.env.SSL_KEY_PATH || !process.env.SSL_CERT_PATH) throw new Error('Configura ambos archivos SSL.');
     server = https.createServer({ key: fs.readFileSync(process.env.SSL_KEY_PATH),
       cert: fs.readFileSync(process.env.SSL_CERT_PATH), passphrase: process.env.SSL_PASSPHRASE }, app);
-    server.listen(port, host, () => console.log(`Permutas FECEYE: https://${host}:${port}`));
+    server.listen(port, host, () => console.log(`Permutas FCEYE: https://${host}:${port}`));
   } else {
-    server = app.listen(port, host, () => console.log(`Permutas FECEYE: http://${host}:${port}`));
+    server = app.listen(port, host, () => console.log(`Permutas FCEYE: http://${host}:${port}`));
   }
   return server;
 }

@@ -45,7 +45,7 @@ class NotificacionService {
         values: [uvus, contenido, receptor],
       };
       await conexion.query(query);
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // try {
       //   const chatIdUsuario = await autorizacionService.obtenerChatIdUsuario(uvus);
       //   await sendMessage(chatIdUsuario, `Se ha creado una nueva notificación: ${contenido}.\n Se han mandado a todos los usuarios con el rol ${receptor}`);
@@ -88,7 +88,7 @@ class NotificacionService {
   }
 
   async notificarCierreIncidencia(idIncidencia, contenido) {
-    // FECEYE: este método solo enviaba por Telegram y queda desactivado.
+    // FCEYE: este método solo enviaba por Telegram y queda desactivado.
     // const conexion = await database.connectPostgreSQL();
     // try {
     //   // Obtener el usuario que abrió la incidencia

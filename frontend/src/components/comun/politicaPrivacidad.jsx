@@ -91,7 +91,7 @@ export default function PrivacyPolicy() {
           <h2>7. Contacto</h2>
           <p>
             Si tienes alguna pregunta o inquietud sobre nuestra Política de
-            Privacidad, consulta los canales institucionales de FECEYE:
+            Privacidad, consulta los canales institucionales de FCEYE:
           </p>
           <ul>
             <li>Facultad de Ciencias Económicas y Empresariales, Universidad de Sevilla.</li>

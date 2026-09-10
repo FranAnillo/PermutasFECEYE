@@ -1,8 +1,8 @@
 {
     "common": {
         "loading": "Chargement...",
-        "welcome": "Bienvenue sur Permutes FECEYE",
-        "description": "Gérez vos échanges de matières et de groupes à FECEYE.",
+        "welcome": "Bienvenue sur Permutes FCEYE",
+        "description": "Gérez vos échanges de matières et de groupes à FCEYE.",
         "last_notifications": "Dernières Notifications",
         "no_notifications": "Aucune notification",
         "notifications": "Notifications",
@@ -11,7 +11,7 @@
         "cookie_consent": "Nous utilisons des cookies pour améliorer l'expérience utilisateur."
     },
     "navbar": {
-        "brand": "Permutes FECEYE - Admin",
+        "brand": "Permutes FCEYE - Admin",
         "management": "Gestion",
         "home": "Accueil",
         "incidents": "Incidents",
@@ -29,14 +29,14 @@
         "my_requests": "Mes demandes",
         "accepted_exchanges": "Permutes acceptées",
         "report_incident": "Signaler un incident",
-        "student_brand": "Permutes FECEYE",
+        "student_brand": "Permutes FCEYE",
         "menu": "Ouvrir le menu",
         "logout_error": "La déconnexion a échoué. Veuillez réessayer."
     },
     "login": {
         "title": "Se connecter",
         "button": "Se connecter",
-        "description": "Accédez à votre compte Permutes FECEYE.",
+        "description": "Accédez à votre compte Permutes FCEYE.",
         "switch_prompt": "Vous n’avez pas encore de compte ?",
         "switch_link": "Créer un compte"
     },
@@ -51,7 +51,7 @@
         "documentation": "Documentation",
         "contact_us": "Contactez-nous",
         "send_email": "Envoyez-nous un e-mail",
-        "platform_name": "Permutes FECEYE"
+        "platform_name": "Permutes FCEYE"
     },
     "accepted_swaps": {
         "title": "Permutes Acceptées",
@@ -116,12 +116,12 @@
         },
         "modal": {
             "title": "Valider Permute",
-            "message": "Vérifiez les données et les signatures du document. Consultez la procédure de dépôt en vigueur à FECEYE avant d’envoyer la demande ; la validation sur cette plateforme ne remplace pas son dépôt auprès de la faculté."
+            "message": "Vérifiez les données et les signatures du document. Consultez la procédure de dépôt en vigueur à FCEYE avant d’envoyer la demande ; la validation sur cette plateforme ne remplace pas son dépôt auprès de la faculté."
         }
     },
     "register": {
         "title": "Créer un compte",
-        "description": "Inscrivez-vous pour gérer vos échanges à FECEYE.",
+        "description": "Inscrivez-vous pour gérer vos échanges à FCEYE.",
         "button": "Créer un compte",
         "switch_prompt": "Vous avez déjà un compte ?",
         "switch_link": "Se connecter"

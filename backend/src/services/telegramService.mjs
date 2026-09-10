@@ -1,4 +1,4 @@
-// FECEYE utiliza registro e inicio de sesión en la aplicación.
+// FCEYE utiliza registro e inicio de sesión en la aplicación.
 // La integración original de Telegram se conserva comentada y no realiza peticiones.
 export const handleIncomingMessage = async () => undefined;
 export const handleCallbackQuery = async () => undefined;

@@ -60,7 +60,7 @@ class PermutaService {
         await conexion.query(queryPermutas_permuta);
       }
       await conexion.query("COMMIT");
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // // Enviar mensaje por Telegram
       // try {
       //   const chatIdEstudiante = await autorizacionService?.obtenerChatIdUsuario(uvus);
@@ -115,7 +115,7 @@ class PermutaService {
       };
 
       await conexion.query(query);
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // const querySelect = {
       //   text: ` SELECT LEAST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_primario,
       //                 GREATEST(u1.nombre_usuario, u2.nombre_usuario) AS usuario_secundario,
@@ -159,7 +159,7 @@ class PermutaService {
       };
 
       await conexion.query(query);
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // const querySelect = {
       //   text: `SELECT estudiante_cumplimentado_1, estudiante_cumplimentado_2 FROM permutas WHERE id = $1`,
       //   values: [permutaId],
@@ -194,7 +194,7 @@ async validarPermuta(permutaId) {
       };
       await conexion.query(queryUpdate);
 
-      // FECEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
+      // FCEYE: notificaciones de Telegram desactivadas; código conservado como referencia.
       // const querySelect = {
       //   text: `SELECT estudiante_cumplimentado_1, estudiante_cumplimentado_2 FROM permutas WHERE id = $1`,
       //   values: [permutaId],

@@ -3,13 +3,13 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import pg from 'pg';
 
-// Opt-in: únicamente una BD de pruebas vacía, local y llamada feceye_test.
+// Opt-in: únicamente una BD de pruebas vacía, local y llamada FCEYE_test.
 // No apunta a la configuración .env de la aplicación.
 await test('PostgreSQL: migraciones, registro HTTP, sesión persistente y permisos', {
-  skip: !process.env.FECEYE_TEST_DB_PORT,
+  skip: !process.env.FCEYE_TEST_DB_PORT,
 }, async t => {
-  const config = { host: '127.0.0.1', port: Number(process.env.FECEYE_TEST_DB_PORT),
-    user: 'postgres', password: 'feceye-test-only', database: 'feceye_test' };
+  const config = { host: '127.0.0.1', port: Number(process.env.FCEYE_TEST_DB_PORT),
+    user: 'postgres', password: 'FCEYE-test-only', database: 'FCEYE_test' };
   const client = new pg.Client(config);
   await client.connect();
   let server;
@@ -52,7 +52,7 @@ await test('PostgreSQL: migraciones, registro HTTP, sesión persistente y permis
   const { createAutorizacionRouter } = await import('../src/routes/autorizacionRoutes.mjs');
   const { createAuthRateLimit } = await import('../src/middleware/authRateLimit.mjs');
   const app = createApp({ env: { ...process.env, NODE_ENV: 'development', SESSION_STORE: 'postgres',
-    SESSION_SECRET: 'feceye-integration-test-session-secret-only', FRONTEND_URL: 'http://localhost:5173' },
+    SESSION_SECRET: 'FCEYE-integration-test-session-secret-only', FRONTEND_URL: 'http://localhost:5173' },
     authRouter: createAutorizacionRouter({ rateLimit: createAuthRateLimit({ max: 100 }) }) });
   store = app.locals.sessionStore;
   server = app.listen(0, '127.0.0.1');
@@ -65,7 +65,7 @@ await test('PostgreSQL: migraciones, registro HTTP, sesión persistente y permis
     return fetch(base + route, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   }
   const auth = '/api/v1/autorizacion';
-  const data = { nombre_usuario: ' Alumna.Test ', nombre_completo: 'Estudiante FECEYE '.repeat(7).trim(),
+  const data = { nombre_usuario: ' Alumna.Test ', nombre_completo: 'Estudiante FCEYE '.repeat(7).trim(),
     correo: 'ALUMNA@example.test', password: 'Una clave local 2026', rol: 'administrador' };
   assert.equal((await request('/api/health', { method: 'GET' })).status, 200);
   assert.equal((await request('/api/v1/usuario/obtenerDatosUsuario')).status, 401);

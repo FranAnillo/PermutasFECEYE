@@ -1,8 +1,8 @@
 {
     "common": {
         "loading": "Loading...",
-        "welcome": "Welcome to FECEYE Exchanges",
-        "description": "Manage your subject and group exchanges at FECEYE.",
+        "welcome": "Welcome to FCEYE Exchanges",
+        "description": "Manage your subject and group exchanges at FCEYE.",
         "last_notifications": "Latest Notifications",
         "no_notifications": "No notifications",
         "notifications": "Notifications",
@@ -11,7 +11,7 @@
         "cookie_consent": "We use cookies to improve user experience."
     },
     "navbar": {
-        "brand": "FECEYE Exchanges - Admin",
+        "brand": "FCEYE Exchanges - Admin",
         "management": "Management",
         "home": "Home",
         "incidents": "Incidents",
@@ -29,14 +29,14 @@
         "my_requests": "My requests",
         "accepted_exchanges": "Accepted exchanges",
         "report_incident": "Report incident",
-        "student_brand": "FECEYE Exchanges",
+        "student_brand": "FCEYE Exchanges",
         "menu": "Open menu",
         "logout_error": "Unable to sign out. Please try again."
     },
     "login": {
         "title": "Sign in",
         "button": "Sign in",
-        "description": "Access your FECEYE Exchanges account.",
+        "description": "Access your FCEYE Exchanges account.",
         "switch_prompt": "Do not have an account yet?",
         "switch_link": "Create an account"
     },
@@ -51,7 +51,7 @@
         "documentation": "Documentation",
         "contact_us": "Contact Us",
         "send_email": "Send us an email",
-        "platform_name": "FECEYE Exchanges"
+        "platform_name": "FCEYE Exchanges"
     },
     "accepted_swaps": {
         "title": "Accepted Swaps",
@@ -116,12 +116,12 @@
         },
         "modal": {
             "title": "Validate Permutation",
-            "message": "Check the document details and signatures. Consult FECEYE’s current submission procedure before sending your request; validation in this platform does not replace submission to the faculty."
+            "message": "Check the document details and signatures. Consult FCEYE’s current submission procedure before sending your request; validation in this platform does not replace submission to the faculty."
         }
     },
     "register": {
         "title": "Create an account",
-        "description": "Register to manage your exchanges at FECEYE.",
+        "description": "Register to manage your exchanges at FCEYE.",
         "button": "Create account",
         "switch_prompt": "Already have an account?",
         "switch_link": "Sign in"
