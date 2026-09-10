@@ -7,3 +7,4 @@ coverage/
 .DS_Store
 backend/storage/
 backend/src/config/certs/
+despliegue_server.md
