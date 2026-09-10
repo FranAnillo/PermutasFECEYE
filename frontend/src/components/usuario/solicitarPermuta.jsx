@@ -62,7 +62,8 @@ export default function SeleccionarGruposSinGrupo() {
         : [...gruposActuales, numgrupo];
 
       if (grupos.length === 0) {
-        const { [key]: _eliminado, ...resto } = prev;
+        const resto = { ...prev };
+        delete resto[key];
         return resto;
       }
       return { ...prev, [key]: grupos };
@@ -127,7 +128,7 @@ export default function SeleccionarGruposSinGrupo() {
 
         {asignaturas.length > 0 ? (
           <>
-            <div style={{
+            <div className="responsive-card-grid" style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
               gap: '20px',
@@ -171,7 +172,7 @@ export default function SeleccionarGruposSinGrupo() {
               ))}
             </div>
 
-            <div style={{
+            <div className="responsive-stack" style={{
               margin: '40px auto',
               width: '100%',
               maxWidth: '800px',
@@ -195,7 +196,7 @@ export default function SeleccionarGruposSinGrupo() {
                 className="btn btn-primary"
                 disabled={!haySeleccion}
                 style={{
-                  minWidth: '180px',
+                  minWidth: 0,
                   padding: '14px 28px',
                   borderRadius: '12px',
                   fontSize: '1rem'

@@ -30,7 +30,7 @@ export const validarPermuta = async (solicitud) => {
     return await postAPI("/api/v1/solicitudPermuta/validarSolicitudPermuta", { solicitud });
 }
 
-export const actualizarVigenciaSolicitudes = async (solicitud) => {
+export const actualizarVigenciaSolicitudes = async () => {
     return await postAPI("/api/v1/solicitudPermuta/actualizarLaVigenciaSolicitud");
 }
 
@@ -69,6 +69,6 @@ export const generarBorradorPermuta = async (IdsPermuta) => {
     return await postAPI("/api/v1/permutas/generarBorradorPermuta", { IdsPermuta });
 }
 
-export const actualizarVigenciaPermutas = async (solicitud) => {
+export const actualizarVigenciaPermutas = async () => {
     return await postAPI("/api/v1/solicitudPermuta/actualizarVigenciaPermutas");
 }

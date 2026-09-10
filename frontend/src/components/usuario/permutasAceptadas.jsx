@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "../../styles/user-common.css";
 import { obtenerPermutasAgrupadasPorUsuario, generarBorradorPermuta } from "../../services/permuta.js";
 import { useNavigate } from "react-router-dom";
@@ -15,12 +15,7 @@ export default function PermutasAceptadas() {
   const [usuario, setUsuario] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    obtenerPermutasAgrupadas();
-    obtenerDatosUsuario();
-  }, []);
-
-  const obtenerPermutasAgrupadas = async () => {
+  const obtenerPermutasAgrupadas = useCallback(async () => {
     try {
       const response = await obtenerPermutasAgrupadasPorUsuario();
       if (
@@ -39,9 +34,9 @@ export default function PermutasAceptadas() {
       setCargando(false);
       logError(error);
     }
-  };
+  }, [t]);
 
-  const obtenerDatosUsuario = async () => {
+  const obtenerDatosUsuario = useCallback(async () => {
     try {
       const response = await obtenerSesion();
       if (response) {
@@ -52,7 +47,12 @@ export default function PermutasAceptadas() {
     } catch (error) {
       setError(t("accepted_swaps.error_loading"), error);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    obtenerPermutasAgrupadas();
+    obtenerDatosUsuario();
+  }, [obtenerDatosUsuario, obtenerPermutasAgrupadas]);
 
 
   const handleGenerarPermuta = async (IdsPermuta) => {
@@ -86,7 +86,7 @@ export default function PermutasAceptadas() {
         </header>
 
         {permutas.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+          <div className="responsive-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
             {permutas.map((grupoPermuta, index) => {
               const usuarios = grupoPermuta.usuarios ?? [];
               const permutasDetalles = grupoPermuta.permutas ?? [];

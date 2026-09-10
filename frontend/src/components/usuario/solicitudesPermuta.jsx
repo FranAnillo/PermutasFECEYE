@@ -51,7 +51,7 @@ export default function SolicitudesPermuta() {
             } else {
                 toast.error(res.errmsg || "No se pudo cancelar la solicitud");
             }
-        } catch (err) {
+        } catch {
             toast.error("Error al cancelar la solicitud");
         }
     };
@@ -101,7 +101,7 @@ export default function SolicitudesPermuta() {
 
                     <div className="solicitudes-content">
                         {solicitudesFiltradas.length > 0 ? (
-                            <div style={{
+                            <div className="responsive-card-grid" style={{
                                 display: 'grid',
                                 gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
                                 gap: '20px'
@@ -137,7 +137,7 @@ export default function SolicitudesPermuta() {
                                                 </div>
                                             </div>
 
-                                            <div className="solicitud-actions" style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+                                            <div className="solicitud-actions responsive-stack" style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
                                                 <button className="btn btn-primary btn-full" onClick={() => abrirModal(solicitud)}>
                                                     Detalles
                                                 </button>

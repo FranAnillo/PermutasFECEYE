@@ -37,7 +37,8 @@ import NoRegistrado from "./components/comun/noRegistrado.jsx";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import PanelGestionUsuarios from "./components/administrador/panelGestionUsuarios.jsx";
-import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import { useTheme } from "./contexts/themeContextBase.js";
 import { useTranslation } from "react-i18next";
 
 

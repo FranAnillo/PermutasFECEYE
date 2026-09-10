@@ -152,12 +152,12 @@ export default function MiPerfil() {
 
           {/* Sección de Asignaturas */}
           <div className="section-card">
-            <div className="section-header">
+            <div className="section-header responsive-stack">
               <div className="section-title">
                 <FontAwesomeIcon icon={faBookOpen} />
                 <span>Mis Asignaturas en Curso</span>
               </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div className="profile-section-actions responsive-stack" style={{ display: 'flex', gap: '10px' }}>
                 {asignaturas.length > 0 && (
                   <button
                     className="btn btn-success"

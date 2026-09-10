@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logError } from "../../lib/logger";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faFilter, faSave } from "@fortawesome/free-solid-svg-icons";
+import { faFilter, faSave } from "@fortawesome/free-solid-svg-icons";
 
 export default function SelectorAsignatura() {
   const [asignaturas, setAsignatura] = useState([]);

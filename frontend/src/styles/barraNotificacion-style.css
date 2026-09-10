@@ -77,12 +77,12 @@
 /* Adaptación móvil */
 @media (max-width: 768px) {
     .sidebar-container {
-        width: 100vw;
+        width: 100%;
         justify-content: flex-end;
     }
 
     .sidebar {
-        width: 85vw;
+        width: 88%;
         /* Casi todo el ancho, dejando un poco para cerrar al tocar fuera */
         max-width: 320px;
         border-radius: 0;

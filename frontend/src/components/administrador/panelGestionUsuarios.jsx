@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { obtenerTodosUsuarios, actualizarUsuario } from '../../services/usuario';
 import "../../styles/admin-common.css";
 import "../../styles/panelGestionUsuarios-style.css";

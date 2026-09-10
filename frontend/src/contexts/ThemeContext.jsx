@@ -1,8 +1,6 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-
-const ThemeContext = createContext();
-
-export const useTheme = () => useContext(ThemeContext);
+import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { ThemeContext } from './themeContextBase.js';
 
 export const ThemeProvider = ({ children }) => {
     // Inicializar tema desde localStorage o preferencia del sistema
@@ -32,4 +30,8 @@ export const ThemeProvider = ({ children }) => {
             {children}
         </ThemeContext.Provider>
     );
+};
+
+ThemeProvider.propTypes = {
+    children: PropTypes.node.isRequired,
 };

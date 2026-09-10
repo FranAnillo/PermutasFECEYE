@@ -74,7 +74,7 @@ export default function MiPerfilAdmin() {
       } else {
         toast.error(errores.join(" — "));
       }
-    } catch (err) {
+    } catch {
       toast.error("Error al retirar la vigencia.");
     } finally {
       setAccionRetirarLoading(false);

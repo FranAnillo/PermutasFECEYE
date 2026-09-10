@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { importAsignaturas } from "../../services/estadisticas";
 
 const ImportarAsignaturas = () => {
@@ -31,7 +31,7 @@ const ImportarAsignaturas = () => {
       } else {
         setMensaje("Importación completada correctamente.");
       }
-    } catch (error) {
+    } catch {
       setMensaje("Error de red al importar.");
     } finally {
       setCargando(false);

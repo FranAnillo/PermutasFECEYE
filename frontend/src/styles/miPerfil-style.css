@@ -209,4 +209,19 @@ body.dark-mode .success-banner {
     .asignaturas-grid {
         grid-template-columns: 1fr;
     }
+
+    .user-info,
+    .user-email {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+
+    .section-header {
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .profile-section-actions .btn {
+        width: 100% !important;
+    }
 }

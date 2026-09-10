@@ -1,9 +1,8 @@
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
   background-color: rgba(0,0,0,0.6);
   display: flex;
   justify-content: center;
@@ -18,12 +17,15 @@
   max-width: 400px;
   width: 90%;
   text-align: center;
+  max-height: calc(100dvh - 24px);
+  overflow-y: auto;
 }
 
 .modal-buttons {
   margin-top: 1.5rem;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 12px;
 }
 
 .modal-buttons .confirm {
@@ -33,7 +35,22 @@
   border: none;
   border-radius: 0.3rem;
   cursor: pointer;
-  margin-right: 50px;
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: calc(100% - 24px);
+    padding: 1.25rem;
+  }
+
+  .modal-buttons {
+    flex-direction: column;
+  }
+
+  .modal-buttons button {
+    width: 100%;
+    min-height: 44px;
+  }
 }
 
 .modal-buttons .cancel {

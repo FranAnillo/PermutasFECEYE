@@ -500,10 +500,13 @@
 
     .admin-content-wrap {
         padding: var(--admin-spacing-xs);
+        min-width: 0;
     }
 
     .admin-card {
         padding: var(--admin-spacing-md);
+        min-width: 0;
+        overflow-wrap: anywhere;
     }
 
     .admin-btn {
@@ -523,6 +526,36 @@
     .admin-grid-3,
     .admin-grid-4 {
         grid-template-columns: 1fr;
+    }
+
+    .admin-input,
+    .admin-textarea,
+    .admin-select {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    .admin-info,
+    .admin-flex-between {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .admin-card-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: var(--admin-spacing-sm);
+    }
+
+    .admin-accordion-header,
+    .admin-accordion-content.open,
+    .admin-sub-section {
+        padding: var(--admin-spacing-md);
+    }
+
+    .admin-modal-content {
+        width: calc(100% - 24px);
+        max-height: calc(100dvh - 24px);
     }
 }
 

@@ -139,6 +139,18 @@ export default function NavbarEstudiante() {
               )}
             </li>
           ))}
+          <li className="mobile-nav-settings">
+            <div className="mobile-nav-preferences">
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
+            <button className="nav-link-btn" onClick={() => handleLinkClick("/miPerfil")}>
+              <FontAwesomeIcon icon={faUser} /> {t("navbar.my_profile")}
+            </button>
+            <button className="nav-link-btn" disabled={loggingOut} onClick={() => handleLinkClick("/logout")}>
+              <FontAwesomeIcon icon={faSignOutAlt} /> {t("navbar.logout")}
+            </button>
+          </li>
         </ul>
         {/* Menú clásico para escritorio */}
         <ul className="nav-links">
@@ -164,15 +176,17 @@ export default function NavbarEstudiante() {
           ))}
         </ul>
         <div className="nav-icons">
-          <LanguageSwitcher />
-          <ThemeToggle />
+          <div className="nav-desktop-settings">
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
           <button className="nav-icon-button" aria-label={t("common.notifications")} aria-expanded={sidebarVisible} onClick={toggleSidebar}>
             <FontAwesomeIcon icon={faBell} className="icon bell-icon" />
           </button>
-          <button className="nav-icon-button" aria-label={t("navbar.my_profile")} onClick={() => navigate("/miPerfil")}>
+          <button className="nav-icon-button nav-secondary-action" aria-label={t("navbar.my_profile")} onClick={() => navigate("/miPerfil")}>
             <FontAwesomeIcon icon={faUser} className="icon user" />
           </button>
-          <button className="nav-icon-button" aria-label={t("navbar.logout")} disabled={loggingOut} onClick={handleClickLogout}>
+          <button className="nav-icon-button nav-secondary-action" aria-label={t("navbar.logout")} disabled={loggingOut} onClick={handleClickLogout}>
             <FontAwesomeIcon icon={faSignOutAlt} className="icon fa-sign-out-alt" />
           </button>
         </div>

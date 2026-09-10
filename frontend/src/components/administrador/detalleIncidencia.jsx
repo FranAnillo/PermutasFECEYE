@@ -14,6 +14,7 @@ export default function DetalleIncidencia() {
   const [cargando, setCargando] = useState(true);
 
   useEffect(() => {
+    let objectUrl;
     const cargarIncidencia = async () => {
       try {
         const data = await obtenerIncidenciaPorId(idInt);
@@ -27,8 +28,8 @@ export default function DetalleIncidencia() {
             tipo = "image/png";
           }
           const blob = new Blob([bytes], { type: tipo });
-          const url = URL.createObjectURL(blob);
-          setArchivo({ url, tipo });
+          objectUrl = URL.createObjectURL(blob);
+          setArchivo({ url: objectUrl, tipo });
         } else {
           setArchivo(null);
         }
@@ -39,6 +40,9 @@ export default function DetalleIncidencia() {
       }
     };
     cargarIncidencia();
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
   }, [idInt]);
 
   if (cargando) return <p>Cargando incidencia...</p>;
@@ -56,7 +60,12 @@ export default function DetalleIncidencia() {
       {archivo && (
         <div className="detalle-incidencia-archivo">
           {archivo.tipo === "application/pdf" ? (
-            <iframe src={archivo.url} title="Archivo adjunto" />
+            <>
+              <iframe className="detalle-pdf-frame" src={archivo.url} title="Archivo adjunto" />
+              <a className="detalle-pdf-mobile-link" href={archivo.url} target="_blank" rel="noreferrer">
+                Abrir documento PDF
+              </a>
+            </>
           ) : (
             <img src={archivo.url} alt="Archivo adjunto" style={{ maxWidth: "100%", maxHeight: "600px" }} />
           )}

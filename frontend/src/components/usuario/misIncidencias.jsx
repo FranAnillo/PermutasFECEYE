@@ -69,7 +69,7 @@ export default function MisIncidencias() {
             </button>
           </div>
         ) : (
-          <div style={{
+          <div className="responsive-card-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
             gap: '20px'

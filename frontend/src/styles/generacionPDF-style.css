@@ -55,6 +55,17 @@
   font-size: 3rem;
 }
 
+.pdf-mobile-preview .btn {
+  width: min(100%, 260px);
+  min-height: 48px;
+}
+
+body.dark-mode .pdf-preview-empty,
+body.dark-mode .pdf-mobile-preview {
+  background: #0f172a;
+  color: var(--text-secondary);
+}
+
 .file-upload-wrapper input[type="file"] {
   display: block;
   width: 100%;

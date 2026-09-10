@@ -125,7 +125,7 @@ export default function SeleccionarGrupos() {
               <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '20px' }}>
                 Asigna automáticamente un grupo a todas las asignaturas de un mismo curso.
               </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+              <div className="responsive-stack" style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
                 {[...new Set(asignaturas.map(a => a.curso))].sort().map(curso => (
                   <div key={curso} style={{ flex: '1 1 200px' }}>
                     <label className="form-label" style={{ fontSize: '0.85rem' }}>Curso {curso}:</label>
@@ -143,7 +143,7 @@ export default function SeleccionarGrupos() {
                 ))}
               </div>
             </div>
-            <div style={{
+            <div className="responsive-card-grid" style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
               gap: '24px',
@@ -182,7 +182,7 @@ export default function SeleccionarGrupos() {
               ))}
             </div>
 
-            <div style={{
+            <div className="responsive-stack" style={{
               margin: '20px auto 100px auto',
               width: '100%',
               maxWidth: '800px',
@@ -205,7 +205,7 @@ export default function SeleccionarGrupos() {
                 onClick={handleSubmit}
                 className="btn btn-primary"
                 disabled={!todasSeleccionadas}
-                style={{ minWidth: '180px', padding: '14px 28px' }}
+                style={{ minWidth: 0, padding: '14px 28px' }}
               >
                 <FontAwesomeIcon icon={faSave} /> Guardar Grupos
               </button>

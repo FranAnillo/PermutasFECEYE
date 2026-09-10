@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { prepararDatosDocumento } from '../generacionPDF';
+import { prepararDatosDocumento } from '../../../lib/prepararDatosDocumento.js';
 
 describe('datos del documento de permuta', () => {
   it('coloca primero al firmante inicial y refleja el intercambio de grupos', () => {

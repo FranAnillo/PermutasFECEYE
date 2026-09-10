@@ -73,7 +73,7 @@
 @media (max-width: 768px) {
   .checkbox-container {
     padding: 8px 2px;
-    max-width: 100vw;
+    max-width: 100%;
     border-radius: 0;
     box-shadow: none;
     margin: 0;

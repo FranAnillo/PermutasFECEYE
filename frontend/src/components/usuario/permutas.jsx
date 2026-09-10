@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import "../../styles/user-common.css";
 import { obtenerPermutasInteresantes, aceptarPermutaSolicitudesPermuta } from "../../services/permuta.js";
 import { useNavigate } from "react-router-dom";
@@ -15,11 +15,7 @@ export default function Permutas() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    cargarPermutas();
-  }, []);
-
-  const cargarPermutas = async () => {
+  const cargarPermutas = useCallback(async () => {
     try {
       const response = await obtenerPermutasInteresantes();
       if (response && response.result && Array.isArray(response.result.result)) {
@@ -34,7 +30,11 @@ export default function Permutas() {
       setCargando(false);
       logError(error);
     }
-  };
+  }, [t]);
+
+  useEffect(() => {
+    cargarPermutas();
+  }, [cargarPermutas]);
 
   const handleAceptarPermuta = async (solicitudId) => {
     try {
@@ -75,7 +75,7 @@ export default function Permutas() {
         </div>
 
         {permutas.length > 0 ? (
-          <div style={{
+          <div className="responsive-card-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
             gap: '20px'

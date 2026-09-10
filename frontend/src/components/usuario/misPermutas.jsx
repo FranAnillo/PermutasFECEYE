@@ -107,10 +107,10 @@ export default function MisPermutas() {
           </p>
         </div>
 
-        <div className="mispermutas-columns" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+        <div className="mispermutas-columns responsive-stack" style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
 
           {/* Columna: Propuestas por mí */}
-          <div className="mispermutascol" style={{ flex: 1, minWidth: '300px' }}>
+          <div className="mispermutascol" style={{ flex: 1, minWidth: 0 }}>
             <h2 style={{ color: 'var(--user-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <FontAwesomeIcon icon={faExchangeAlt} /> Propuestas por mí
             </h2>
@@ -130,7 +130,7 @@ export default function MisPermutas() {
                         <p><strong><FontAwesomeIcon icon={faInfoCircle} /> Estado:</strong> {permuta.estado}</p>
                         <hr style={{ margin: '10px 0', borderColor: '#eee' }} />
                         <p><strong>Asignatura:</strong> {permuta.nombre_asignatura} ({permuta.codigo_asignatura})</p>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', background: '#f8fafc', padding: '10px', borderRadius: '8px' }}>
+                        <div className="responsive-stack" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', background: '#f8fafc', padding: '10px', borderRadius: '8px' }}>
                           <span><strong>De Grupo:</strong> {permuta.grupo_solicitante}</span>
                           <span><strong>A Grupo:</strong> {permuta.grupo_solicitado}</span>
                         </div>
@@ -147,7 +147,7 @@ export default function MisPermutas() {
           </div>
 
           {/* Columna: Permutas recibidas */}
-          <div className="mispermutascol" style={{ flex: 1, minWidth: '300px' }}>
+          <div className="mispermutascol" style={{ flex: 1, minWidth: 0 }}>
             <h2 style={{ color: 'var(--user-primary)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
               <FontAwesomeIcon icon={faExchangeAlt} /> Permutas recibidas
             </h2>
@@ -167,12 +167,12 @@ export default function MisPermutas() {
                         <p><strong><FontAwesomeIcon icon={faInfoCircle} /> Estado:</strong> {permuta.estado}</p>
                         <hr style={{ margin: '10px 0', borderColor: '#eee' }} />
                         <p><strong>Asignatura:</strong> {permuta.nombre_asignatura} ({permuta.codigo_asignatura})</p>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', background: '#f8fafc', padding: '10px', borderRadius: '8px', marginBottom: '15px' }}>
+                        <div className="responsive-stack" style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', background: '#f8fafc', padding: '10px', borderRadius: '8px', marginBottom: '15px' }}>
                           <span><strong>Solicitante:</strong> G. {permuta.grupo_solicitante}</span>
                           <span><strong>Tu Grupo:</strong> G. {permuta.grupo_solicitado}</span>
                         </div>
                       </div>
-                      <div style={{ display: 'flex', gap: '10px' }}>
+                      <div className="responsive-stack" style={{ display: 'flex', gap: '10px' }}>
                         <button
                           className="btn btn-danger btn-full"
                           onClick={() => handleDenegarPermuta(permuta.permuta_id)}
@@ -202,4 +202,3 @@ export default function MisPermutas() {
     </div>
   );
 }
-
