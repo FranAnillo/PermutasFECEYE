@@ -106,3 +106,16 @@ it('permite cerrar sesión incluso si el perfil no puede cargarse', async () => 
   fireEvent.click(screen.getByText('Cerrar sesión y continuar más tarde'));
   await waitFor(() => expect(screen.getByText('Acceso público')).toBeInTheDocument());
 });
+
+it('muestra solo carga mientras verifica un perfil completo, sin abrir el asistente', async () => {
+  let resolve;
+  obtenerConfiguracionInicial.mockReturnValue(new Promise(ok => { resolve = ok; }));
+  view('/permutas');
+  expect(screen.getByRole('status')).toHaveTextContent('Cargando');
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  expect(screen.queryByText('Mi perfil')).not.toBeInTheDocument();
+  expect(screen.queryByText('Buscar permutas')).not.toBeInTheDocument();
+  resolve(complete);
+  expect(await screen.findByText('Buscar permutas')).toBeInTheDocument();
+  expect(HTMLDialogElement.prototype.showModal).not.toHaveBeenCalled();
+});

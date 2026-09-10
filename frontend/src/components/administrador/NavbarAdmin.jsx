@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { obtenerNotificaciones } from "../../services/notificacion.js";
 import { useAuth } from "../../hooks/useAuth.js";
 import { toast } from "react-toastify";
-import { formatearFecha } from "../../lib/formateadorFechas.js";
+import NotificacionesPanel from "../comun/NotificacionesPanel";
 import { Link } from "react-router-dom";
 import { logError } from "../../lib/logger.js";
 import ThemeToggle from "../comun/ThemeToggle";
@@ -70,9 +70,6 @@ export default function NavbarAdmin() {
     }
   };
 
-  if (cargando) {
-    return <div className="loading-text">{t("common.loading")}</div>;
-  }
 
   return (
     <>
@@ -188,24 +185,9 @@ export default function NavbarAdmin() {
           </button>
         </div>
       </nav>
-      {sidebarVisible && (
-        <div className="sidebar">
-          <h2>{t("common.notifications")}</h2>
+      {sidebarVisible && <NotificacionesPanel notificaciones={notificaciones}
+        cargando={cargando} onClose={() => setSidebarVisible(false)} />}
 
-          {notificaciones.length > 0 ? (
-            notificaciones.slice(0, 5).map((notificacion) => (
-              <div key={notificacion.id} className="notification-item">
-                <p className="contenido">{notificacion.contenido}</p>
-                <p className="fecha">
-                  {formatearFecha(notificacion.fecha_creacion)}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p>{t("common.no_notifications")}</p>
-          )}
-        </div>
-      )}
     </>
   );
 }

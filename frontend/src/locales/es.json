@@ -1,5 +1,6 @@
 {
     "common": {
+        "close": "Cerrar",
         "loading": "Cargando...",
         "welcome": "Bienvenido a Permutas FCEYE",
         "description": "Gestiona tus permutas de asignaturas y grupos en FCEYE.",

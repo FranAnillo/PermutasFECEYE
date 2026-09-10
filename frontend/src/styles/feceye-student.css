@@ -105,3 +105,11 @@ body.dark-mode .FCEYE-student .grupo-badge {
   border-color: var(--border-color);
 }
 body.dark-mode .FCEYE-student .section-title { color: var(--user-primary); }
+
+.profile-loading {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  background: var(--card-bg);
+  color: var(--text-primary);
+}

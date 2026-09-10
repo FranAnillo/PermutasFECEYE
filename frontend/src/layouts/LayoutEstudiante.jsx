@@ -6,7 +6,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { obtenerConfiguracionInicial, guardarConfiguracionInicial } from '../services/configuracionInicial';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/user-common.css';
-import '../styles/FCEYE-student.css';
+import '../styles/feceye-student.css';
 
 export default function LayoutEstudiante() {
   const navigate = useNavigate();
@@ -59,6 +59,13 @@ export default function LayoutEstudiante() {
   }
   const ready = verifiedPath === pathname && estado?.completo;
   const visibleState = verifiedPath === pathname ? estado : null;
+  if (!ready && !visibleState && !error) {
+    return <div className="FCEYE-student">
+      <main className="profile-loading" aria-busy="true">
+        <p role="status">Cargando…</p>
+      </main>
+    </div>;
+  }
   return <div className="FCEYE-student">
     <NavbarEstudiante />
     <main>

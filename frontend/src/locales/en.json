@@ -1,5 +1,6 @@
 {
     "common": {
+        "close": "Close",
         "loading": "Loading...",
         "welcome": "Welcome to FCEYE Exchanges",
         "description": "Manage your subject and group exchanges at FCEYE.",

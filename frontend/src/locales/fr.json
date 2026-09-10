@@ -1,5 +1,6 @@
 {
     "common": {
+        "close": "Fermer",
         "loading": "Chargement...",
         "welcome": "Bienvenue sur Permutes FCEYE",
         "description": "Gérez vos échanges de matières et de groupes à FCEYE.",

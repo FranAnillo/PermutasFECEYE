@@ -7,7 +7,7 @@ import { obtenerNotificaciones } from "../../services/notificacion.js";
 import ThemeToggle from "../comun/ThemeToggle";
 import { useAuth } from "../../hooks/useAuth.js";
 import { toast } from "react-toastify";
-import { formatearFecha } from "../../lib/formateadorFechas.js";
+import NotificacionesPanel from "../comun/NotificacionesPanel";
 import { logError } from "../../lib/logger.js";
 import { useTranslation } from "react-i18next";
 import LanguageSwitcher from "../comun/LanguageSwitcher";
@@ -92,9 +92,6 @@ export default function NavbarEstudiante() {
     }
   };
 
-  if (cargando) {
-    return <div className="loading-text">{t("common.loading")}</div>;
-  }
 
   return (
     <>
@@ -180,23 +177,9 @@ export default function NavbarEstudiante() {
           </button>
         </div>
       </nav>
-      {sidebarVisible && (
-        <div className="sidebar">
-          <h2>{t("common.notifications")}</h2>
-          {notificaciones.length > 0 ? (
-            notificaciones.slice(0, 5).map((notificacion) => (
-              <div key={notificacion.id} className="notification-item">
-                <p className="contenido">{notificacion.contenido}</p>
-                <p className="fecha">
-                  {formatearFecha(notificacion.fecha_creacion)}
-                </p>
-              </div>
-            ))
-          ) : (
-            <p>{t("common.no_notifications")}</p>
-          )}
-        </div>
-      )}
+      {sidebarVisible && <NotificacionesPanel notificaciones={notificaciones}
+        cargando={cargando} onClose={() => setSidebarVisible(false)} />}
+
     </>
   );
 }
