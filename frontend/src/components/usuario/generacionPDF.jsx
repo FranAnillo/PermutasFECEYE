@@ -23,7 +23,7 @@ import {
   validarTelefono,
 } from "../../lib/validadores.js";
 import Modal from "./Modal.jsx";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logError } from "../../lib/logger.js";
 import { useTranslation } from "react-i18next";
@@ -88,7 +88,7 @@ export default function GeneracionPDF() {
       setDomicilio(''); setPoblacion(''); setCodigoPostal(''); setProvincia(''); setTelefono('');
       setCursoSolicitante('');
       try {
-        if (!Number.isSafeInteger(documentoId) || documentoId < 1) throw new Error('Selecciona un documento desde Permutas aceptadas.');
+        if (!Number.isSafeInteger(documentoId) || documentoId < 1) return;
         const response = await obtenerDocumentoPermuta(documentoId);
         const doc = response?.result?.result;
         if (doc?.id !== documentoId || !['BORRADOR', 'FIRMADA', 'ACEPTADA', 'VALIDADA'].includes(doc.estado)) {
@@ -305,6 +305,10 @@ export default function GeneracionPDF() {
     // Comprobar si hay algún error
     return !Object.values(nuevoErrors).some((error) => error !== "");
   };
+
+  if (!Number.isSafeInteger(documentoId) || documentoId < 1) {
+    return <Navigate to="/permutasAceptadas" replace />;
+  }
 
   if (cargandoDatos) {
     return (

@@ -50,6 +50,24 @@ export const listarPermutas = async (IdsPermuta) => {
     return await postDocumento("/api/v1/permutas/listarPermutas", { IdsPermuta });
 }
 
+export const resolverDocumentoPermuta = async (IdsPermuta) => {
+    if (!Array.isArray(IdsPermuta) || !IdsPermuta.length ||
+        IdsPermuta.some(id => !Number.isSafeInteger(id) || id < 1)) {
+        throw new Error('No se pueden identificar las permutas seleccionadas.');
+    }
+    const response = await listarPermutas(IdsPermuta);
+    const documentos = response?.result?.result;
+    if (!Array.isArray(documentos) || documentos.length !== 1 ||
+        !Number.isSafeInteger(documentos[0]?.id) || documentos[0].id < 1) {
+        throw new Error('No se ha encontrado un único documento para estas permutas. Actualiza el listado y vuelve a intentarlo.');
+    }
+    const filas = documentos[0].grupo?.permutas;
+    if (filas && (filas.length !== IdsPermuta.length || filas.some(p => !IdsPermuta.includes(p.permuta_id)))) {
+        throw new Error('El documento no coincide con las permutas seleccionadas. Actualiza el listado.');
+    }
+    return documentos[0].id;
+};
+
 export const firmarPermuta = async (archivo, permutaId) => {
     return await postDocumento("/api/v1/permutas/firmarPermuta", { archivo, permutaId })
 }
@@ -73,4 +91,12 @@ export const actualizarVigenciaPermutas = async () => {
     return await postAPI("/api/v1/solicitudPermuta/actualizarVigenciaPermutas");
 }
 
-export const obtenerDocumentoPermuta = permutaId => postDocumento('/api/v1/permutas/obtenerDocumento', { permutaId });
+export const obtenerDocumentoPermuta = async permutaId => {
+    try { return await postDocumento('/api/v1/permutas/obtenerDocumento', { permutaId }); }
+    catch (error) {
+        if (error.status === 404 && error.message === 'Ruta no encontrada.') {
+            throw new Error('El backend que atiende esta web no tiene la consulta de documentos actualizada. Comprueba el despliegue del servicio y la URL de la API.');
+        }
+        throw error;
+    }
+};

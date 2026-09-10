@@ -11,7 +11,7 @@ import { PDFDocument } from 'pdf-lib';
 
 vi.mock('../../../services/permuta.js', () => ({ obtenerDocumentoPermuta: vi.fn(),
   firmarPermuta: vi.fn(), aceptarPermuta: vi.fn(), validarSolicitudPermuta: vi.fn(),
-  obtenerPermutasAgrupadasPorUsuario: vi.fn(), generarBorradorPermuta: vi.fn() }));
+  obtenerPermutasAgrupadasPorUsuario: vi.fn(), generarBorradorPermuta: vi.fn(), resolverDocumentoPermuta: vi.fn() }));
 vi.mock('../../../services/subidaArchivos.js', () => ({ obtenerPlantillaPermuta: vi.fn(),
   subirPDFDocumento: vi.fn(), descargarPDFDocumento: vi.fn() }));
 vi.mock('../../../services/login.js', () => ({ obtenerSesion: vi.fn(async () => ({ user: { uvus: 'aaa0000' } })) }));
@@ -78,9 +78,12 @@ describe('pantalla de documentos', () => {
     expect(archivos.obtenerPlantillaPermuta).not.toHaveBeenCalled();
   });
 
-  it('sin identificador pide seleccionar un documento y no elige el primero', async () => {
-    montar('/generarPermuta');
-    expect(await screen.findByRole('alert')).toHaveTextContent('Selecciona un documento');
+  it.each(['/generarPermuta', '/generarPermuta?documento=undefined'])('un enlace sin documento válido vuelve al listado: %s', async url => {
+    render(<MemoryRouter initialEntries={[url]}><Routes>
+      <Route path="/generarPermuta" element={<GeneracionPDF />} />
+      <Route path="/permutasAceptadas" element={<p>Listado de permutas</p>} />
+    </Routes></MemoryRouter>);
+    expect(await screen.findByText('Listado de permutas')).toBeInTheDocument();
     expect(api.obtenerDocumentoPermuta).not.toHaveBeenCalled();
   });
 
@@ -118,5 +121,24 @@ describe('pantalla de documentos', () => {
     const botones = await screen.findAllByText('accepted_swaps.continue_swap');
     fireEvent.click(botones[1]);
     expect(await screen.findByTestId('location')).toHaveTextContent('?documento=8');
+  });
+
+  it('resuelve la tarjeta pulsada cuando el listado no incluye documento_id', async () => {
+    api.obtenerPermutasAgrupadasPorUsuario.mockResolvedValue({ result: { result: [
+      { usuarios: ['aaa0000','sample'], permutas: [
+        { permuta_id: 6, nombre_asignatura: 'Finanzas', estado_permuta_asociada: 'BORRADOR' },
+        { permuta_id: 5, nombre_asignatura: 'Economía Pública I', estado_permuta_asociada: 'BORRADOR' },
+      ] },
+      { usuarios: ['aaa0000','aaa0001'], permutas: [{ permuta_id: 2, nombre_asignatura: 'Matemáticas II', estado_permuta_asociada: 'BORRADOR' }] },
+    ] } });
+    api.resolverDocumentoPermuta.mockResolvedValue(12);
+    render(<MemoryRouter initialEntries={['/permutasAceptadas']}><Routes>
+      <Route path="/permutasAceptadas" element={<PermutasAceptadas />} />
+      <Route path="/generarPermuta" element={<Location />} />
+    </Routes></MemoryRouter>);
+    fireEvent.click((await screen.findAllByText('accepted_swaps.continue_swap'))[0]);
+    expect(await screen.findByTestId('location')).toHaveTextContent('?documento=12');
+    expect(api.resolverDocumentoPermuta).toHaveBeenCalledWith([6,5]);
+    expect(api.generarBorradorPermuta).not.toHaveBeenCalled();
   });
 });

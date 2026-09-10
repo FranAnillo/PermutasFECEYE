@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "../../styles/user-common.css";
-import { obtenerPermutasAgrupadasPorUsuario, generarBorradorPermuta } from "../../services/permuta.js";
+import { obtenerPermutasAgrupadasPorUsuario, generarBorradorPermuta, resolverDocumentoPermuta } from "../../services/permuta.js";
 import { useNavigate } from "react-router-dom";
 import { obtenerSesion } from "../../services/login.js";
 import { toast } from "react-toastify";
@@ -61,8 +61,8 @@ export default function PermutasAceptadas() {
     setGenerando(true);
     try {
       const response = await generarBorradorPermuta(IdsPermuta);
-      const id = response?.result?.result?.id;
-      if (!Number.isSafeInteger(id)) throw new Error('No se ha recibido el documento creado.');
+      const creado = response?.result?.result?.id;
+      const id = Number.isSafeInteger(creado) && creado > 0 ? creado : await resolverDocumentoPermuta(IdsPermuta);
       toast.success(t("accepted_swaps.success_generated"));
       navigate(`/generarPermuta?documento=${id}`);
     } catch (error) {
@@ -71,6 +71,21 @@ export default function PermutasAceptadas() {
     } finally {
       setGenerando(false);
     }
+  };
+
+  const handleAbrirDocumento = async (filas) => {
+    if (generando) return;
+    setGenerando(true);
+    try {
+      const documentoId = filas[0]?.documento_id;
+      const id = Number.isSafeInteger(documentoId) && documentoId > 0 && filas.every(f => f.documento_id === documentoId)
+        ? documentoId
+        : await resolverDocumentoPermuta(filas.map(f => f.permuta_id));
+      navigate(`/generarPermuta?documento=${id}`);
+    } catch (error) {
+      toast.error(error.message || 'No se pudo abrir el documento.');
+      logError(error);
+    } finally { setGenerando(false); }
   };
 
   if (cargando) {
@@ -96,7 +111,6 @@ export default function PermutasAceptadas() {
             {permutas.map((grupoPermuta, index) => {
               const usuarios = grupoPermuta.usuarios ?? [];
               const permutasDetalles = grupoPermuta.permutas ?? [];
-              const documentoId = permutasDetalles[0]?.documento_id;
               const primerFirmante = permutasDetalles[0]?.estudiante_cumplimentado_1 || usuarios[0];
               const todasNull = permutasDetalles.every((permuta) => permuta.estado_permuta_asociada === null);
               const todasBorrador = permutasDetalles.every((permuta) => permuta.estado_permuta_asociada === "BORRADOR");
@@ -145,13 +159,13 @@ export default function PermutasAceptadas() {
                       <button className="btn btn-success btn-full" disabled={generando} onClick={() => handleGenerarPermuta(IdsPermuta)}>{t("accepted_swaps.generate_swap")}</button>
                     )}
                     {puedeContinuarPermuta && (
-                      <button className="btn btn-success btn-full" onClick={() => navigate(`/generarPermuta?documento=${documentoId}`)}>{t("accepted_swaps.continue_swap")}</button>
+                      <button className="btn btn-success btn-full" disabled={generando} onClick={() => handleAbrirDocumento(permutasDetalles)}>{t("accepted_swaps.continue_swap")}</button>
                     )}
                     {puedeCompletarPermuta && (
-                      <button className="btn btn-primary btn-full" onClick={() => navigate(`/generarPermuta?documento=${documentoId}`)}>{t("accepted_swaps.complete_swap")}</button>
+                      <button className="btn btn-primary btn-full" disabled={generando} onClick={() => handleAbrirDocumento(permutasDetalles)}>{t("accepted_swaps.complete_swap")}</button>
                     )}
                     {todasFinalizadas && (
-                      <button className="btn btn-primary btn-full" onClick={() => navigate(`/generarPermuta?documento=${documentoId}`)}>{t("accepted_swaps.view_swap")}</button>
+                      <button className="btn btn-primary btn-full" disabled={generando} onClick={() => handleAbrirDocumento(permutasDetalles)}>{t("accepted_swaps.view_swap")}</button>
                     )}
                   </div>
                 </div>

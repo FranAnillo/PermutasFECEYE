@@ -77,6 +77,8 @@ export async function postDocumento(path, body, isFile = false) {
     });
     let data;
     try { data = await response.json(); } catch { throw new Error('El servidor no ha devuelto una respuesta válida.'); }
-    if (!response.ok || data.err || data.error) throw new Error(data.message || data.errmsg || 'No se pudo completar la operación.');
+    if (!response.ok || data.err || data.error) {
+        throw Object.assign(new Error(data.message || data.errmsg || 'No se pudo completar la operación.'), { status: response.status });
+    }
     return { err: false, result: data };
 }
