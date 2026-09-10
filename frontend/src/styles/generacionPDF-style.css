@@ -66,11 +66,44 @@ body.dark-mode .pdf-mobile-preview {
   color: var(--text-secondary);
 }
 
-.file-upload-wrapper input[type="file"] {
-  display: block;
-  width: 100%;
-  min-height: 44px;
+.pdf-upload-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.pdf-upload-label {
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--card-bg);
   color: var(--text-primary);
+  font-weight: 700;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.pdf-upload-input:focus-visible + .pdf-upload-label {
+  outline: 3px solid var(--user-primary);
+  outline-offset: 3px;
+}
+
+.pdf-upload-label__icon {
+  flex-shrink: 0;
+  font-size: 1.3rem;
+}
+
+.pdf-upload-hint {
+  margin: 10px 0 14px;
+  color: var(--text-secondary);
+  font-size: .85rem;
 }
 
 @media (max-width: 900px) {

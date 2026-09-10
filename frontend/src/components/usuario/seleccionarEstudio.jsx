@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { obtenerEstudios } from "../../services/estudio";
-import "../../styles/seleccionarEstudio-style.css";
+import "../../styles/user-common.css";
 import { actualizarEstudiosUsuario } from "../../services/usuario";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -42,30 +42,31 @@ export default function SeleccionarEstudio() {
     };
 
     return (
-        <div className="container" style={{ marginTop: "60px" }}>
-            <div className="header">
-                <h1 className="titulo">Selecciona tu grado o master:</h1>
-            </div>
-            <div className="form-group">
-                <select value={selectedEstudio} onChange={handleSelectChange}>
-                    <option value="" disabled>
-                        Selecciona un estudio
-                    </option>
-                    {estudios.map((estudio, index) => (
-                        <option key={index} value={estudio.nombre}>
-                            {estudio.nombre}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <p className="subtitulo">Recuerda que solo puedes seleccionar un estudio.</p>
-            <p className="subtitulo">Una vez seleccionado, podrás elegir las asignaturas y grupos.</p>
-            <p className="subtitulo">Si te equivocas a la hora de seleccionar el estudio, reporta una incidencia.</p>
-            <p className="subtitulo">Si no seleccionas nada, no podrás hacer uso del servicio.</p>
-            <div className="button-group">
-                <button onClick={handleSubmit} disabled={!selectedEstudio}>
-                    Enviar
-                </button>
+        <div className="page-container">
+            <div className="content-wrap">
+                <div className="page-header">
+                    <h1 className="page-title">Selecciona tus estudios</h1>
+                    <p className="page-subtitle">Elige el grado o máster en el que estás matriculado para mostrarte sus asignaturas.</p>
+                </div>
+                <section className="user-card study-selection-card">
+                    <div className="form-group">
+                        <label className="form-label" htmlFor="estudio">Grado o máster</label>
+                        <select id="estudio" className="form-select" value={selectedEstudio} onChange={handleSelectChange}>
+                            <option value="" disabled>Selecciona un estudio</option>
+                            {estudios.map((estudio) => (
+                                <option key={estudio.id ?? estudio.nombre} value={estudio.nombre}>{estudio.nombre}</option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="study-selection-help">
+                        <p>Solo puedes seleccionar un estudio.</p>
+                        <p>Después elegirás las asignaturas y los grupos en los que estás matriculado.</p>
+                        <p>Si necesitas corregirlo más adelante, podrás comunicarlo mediante una incidencia.</p>
+                    </div>
+                    <button className="btn btn-primary btn-full" onClick={handleSubmit} disabled={!selectedEstudio}>
+                        Guardar y continuar
+                    </button>
+                </section>
             </div>
         </div>
     );

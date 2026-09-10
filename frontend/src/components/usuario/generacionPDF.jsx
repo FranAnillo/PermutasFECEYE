@@ -503,11 +503,16 @@ export default function GeneracionPDF() {
               <div className="file-upload-wrapper" style={{ marginTop: '20px', padding: '20px' }}>
                 <input
                   type="file"
-                  id="file"
+                  id="signed-permutation-file"
                   accept="application/pdf"
                   onChange={handleFileChange}
-                  style={{ marginBottom: '10px', width: '100%' }}
+                  className="pdf-upload-input"
                 />
+                <label className="pdf-upload-label" htmlFor="signed-permutation-file">
+                  <span className="pdf-upload-label__icon" aria-hidden="true">📎</span>
+                  <span>{file ? file.name : "Seleccionar PDF firmado"}</span>
+                </label>
+                <p className="pdf-upload-hint">Adjunta únicamente el documento PDF cumplimentado y firmado.</p>
                 <button className="btn btn-success btn-full" onClick={handleUpload}>
                   {t("pdf_generation.buttons.upload")}
                 </button>
@@ -526,7 +531,7 @@ export default function GeneracionPDF() {
           </div>
 
           {/* Columna Derecha: PDF Preview */}
-          <div className="user-card pdf-preview-card">
+          <div className={`user-card pdf-preview-card ${pdfUrl ? "has-document" : "is-empty"}`}>
             {pdfUrl ? (
               <>
                 <iframe className="pdf-preview-frame" src={pdfUrl} title="Vista previa del PDF" />

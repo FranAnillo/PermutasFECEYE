@@ -58,6 +58,7 @@ const CrearAsignatura = () => {
 
   return (
     <form
+      className="admin-inline-form"
       onSubmit={handleSubmit}
       style={{
         maxWidth: 400,
@@ -71,7 +72,10 @@ const CrearAsignatura = () => {
         gap: 16
       }}
     >
+      <label className="visually-hidden" htmlFor="assignment-name">Nombre de la asignatura</label>
       <input
+        id="assignment-name"
+        className="admin-input"
         name="nombre"
         placeholder="Nombre"
         value={form.nombre}
@@ -79,7 +83,10 @@ const CrearAsignatura = () => {
         required
         style={{ padding: 8, borderRadius: 4, border: "1px solid #bbb" }}
       />
+      <label className="visually-hidden" htmlFor="assignment-acronym">Siglas de la asignatura</label>
       <input
+        id="assignment-acronym"
+        className="admin-input"
         name="siglas"
         placeholder="Siglas"
         value={form.siglas}
@@ -87,7 +94,10 @@ const CrearAsignatura = () => {
         required
         style={{ padding: 8, borderRadius: 4, border: "1px solid #bbb" }}
       />
+      <label className="visually-hidden" htmlFor="assignment-year">Curso</label>
       <select
+        id="assignment-year"
+        className="admin-select"
         name="curso"
         value={form.curso}
         onChange={handleChange}
@@ -100,7 +110,10 @@ const CrearAsignatura = () => {
         <option value="TERCERO">Tercero</option>
         <option value="CUARTO">Cuarto</option>
       </select>
+      <label className="visually-hidden" htmlFor="assignment-code">Código de la asignatura</label>
       <input
+        id="assignment-code"
+        className="admin-input"
         name="codigo"
         placeholder="Código"
         type="number"
@@ -109,7 +122,10 @@ const CrearAsignatura = () => {
         required
         style={{ padding: 8, borderRadius: 4, border: "1px solid #bbb" }}
       />
+      <label className="visually-hidden" htmlFor="assignment-degree">Estudio</label>
       <select
+        id="assignment-degree"
+        className="admin-select"
         name="estudios_id"
         value={form.estudios_id}
         onChange={handleChange}
@@ -124,6 +140,7 @@ const CrearAsignatura = () => {
         ))}
       </select>
       <button
+        className="admin-btn admin-btn-primary"
         type="submit"
         style={{
           padding: 10,

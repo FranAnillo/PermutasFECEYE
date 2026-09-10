@@ -7,6 +7,7 @@ import { obtenerConfiguracionInicial, guardarConfiguracionInicial } from '../ser
 import { useAuth } from '../hooks/useAuth';
 import '../styles/user-common.css';
 import '../styles/feceye-student.css';
+import MobileBottomNavigation from '../components/comun/MobileBottomNavigation';
 
 export default function LayoutEstudiante() {
   const navigate = useNavigate();
@@ -68,7 +69,7 @@ export default function LayoutEstudiante() {
   }
   return <div className="FCEYE-student">
     <NavbarEstudiante />
-    <main>
+    <main className="app-layout-main app-layout-main--student">
       {ready ? <Outlet context={{ refrescarPerfil }} /> : <div className="page-container onboarding-profile-background" aria-hidden="true">
         <div className="content-wrap"><h1>Mi perfil</h1><div className="user-header-card">
           <div><h2>{estado?.usuario?.nombre_completo || 'Tu perfil académico'}</h2>
@@ -76,6 +77,7 @@ export default function LayoutEstudiante() {
         </div></div>
       </div>}
     </main>
+    {ready && <MobileBottomNavigation variant="student" />}
     <Footer />
     {!ready && <ConfiguracionInicialModal key={visibleState?.paso || 'cargando'} estado={visibleState}
       error={error} busy={busy} onSave={guardar} onRetry={refrescarPerfil} onLogout={salir} />}

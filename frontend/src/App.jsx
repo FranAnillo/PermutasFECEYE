@@ -106,6 +106,7 @@ function AppContent() {
       </main>
 
       <CookieConsent
+        containerClasses="cookie-consent-mobile"
         location="bottom"
         buttonText={t("common.accept")}
         cookieName="permutasCookies"

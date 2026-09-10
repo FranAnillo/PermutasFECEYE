@@ -172,7 +172,7 @@ export default function SeleccionarGruposSinGrupo() {
               ))}
             </div>
 
-            <div className="responsive-stack" style={{
+            <div className="responsive-stack mobile-submit-bar" style={{
               margin: '40px auto',
               width: '100%',
               maxWidth: '800px',
