@@ -26,4 +26,14 @@ main {
   .nav-icons button {
     padding: 5px 8px;
   }
+
+  .responsive-card-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .responsive-stack {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
 }

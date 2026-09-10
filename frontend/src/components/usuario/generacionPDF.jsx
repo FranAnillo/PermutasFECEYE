@@ -14,6 +14,7 @@ import {
   validarSolicitudPermuta,
 } from "../../services/permuta.js";
 import "../../styles/user-common.css";
+import "../../styles/generacionPDF-style.css";
 import { dayValue, monthValue, yearValue } from "../../lib/generadorFechas.js";
 import {
   validarDNI,
@@ -27,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { logError } from "../../lib/logger.js";
 import { useTranslation } from "react-i18next";
+import { asegurarCamposPlantillaPermuta } from "../../lib/plantillaPermutaPDF.js";
 
 export function prepararDatosDocumento(grupo, primerFirmante) {
   const usuariosOriginales = grupo?.usuarios || [];
@@ -123,6 +125,10 @@ export default function GeneracionPDF() {
     cargarDatos();
   }, []);
 
+  useEffect(() => () => {
+    if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+  }, [pdfUrl]);
+
   const generarPDF = async () => {
     try {
       const existingPdfBytes =
@@ -131,7 +137,7 @@ export default function GeneracionPDF() {
           : await obtenerPlantillaPermuta();
 
       const pdfDoc = await PDFDocument.load(existingPdfBytes);
-      const form = pdfDoc.getForm();
+      const form = asegurarCamposPlantillaPermuta(pdfDoc);
       if (permutas.length > 10) throw new Error("El documento admite un máximo de 10 cambios");
 
       const setSystemField = (fieldName, value) => {
@@ -187,8 +193,9 @@ export default function GeneracionPDF() {
 
       return await pdfDoc.save();
     } catch (error) {
-      toast.error(t("pdf_generation.errors.generation_error"));
-      logError(error)
+      toast.error(error?.message || t("pdf_generation.errors.generation_error"));
+      logError(error);
+      return null;
     }
   };
 
@@ -198,6 +205,7 @@ export default function GeneracionPDF() {
       return;
     }
     const pdfBytes = await generarPDF();
+    if (!pdfBytes) return;
     const pdfUrl = URL.createObjectURL(
       new Blob([pdfBytes], { type: "application/pdf" })
     );
@@ -214,6 +222,7 @@ export default function GeneracionPDF() {
       return;
     }
     const pdfBytes = await generarPDF();
+    if (!pdfBytes) return;
     const pdfBlob = new Blob([pdfBytes], { type: "application/pdf" });
     saveAs(pdfBlob, "solicitud-permutas.pdf");
   };
@@ -320,11 +329,11 @@ export default function GeneracionPDF() {
           </p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
+        <div className="pdf-generation-layout">
 
           {/* Columna Izquierda: Formulario */}
           <div className="user-card">
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+            <div className="pdf-form-row">
               <div style={{ flex: 1 }} className="form-group">
                 <label className="form-label">{t("pdf_generation.labels.name")}</label>
                 <input
@@ -354,7 +363,7 @@ export default function GeneracionPDF() {
                 {errors.apellidos && <span style={{ color: 'var(--danger-color)', fontSize: '0.85rem' }}>{errors.apellidos}</span>}
               </div>
             </div>
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+            <div className="pdf-form-row">
               <div style={{ flex: 2 }} className="form-group">
                 <label className="form-label">{t("pdf_generation.labels.dni")}</label>
                 <input
@@ -420,7 +429,7 @@ export default function GeneracionPDF() {
               {errors.poblacion && <span style={{ color: 'var(--danger-color)', fontSize: '0.85rem' }}>{errors.poblacion}</span>}
             </div>
 
-            <div style={{ display: 'flex', gap: '20px', marginBottom: '15px' }}>
+            <div className="pdf-form-row">
               <div className="form-group" style={{ flex: 1 }}>
                 <label className="form-label">{t("pdf_generation.labels.zip_code")}</label>
                 <input
@@ -466,7 +475,7 @@ export default function GeneracionPDF() {
               {errors.telefono && <span style={{ color: 'var(--danger-color)', fontSize: '0.85rem' }}>{errors.telefono}</span>}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '20px' }}>
+            <div className="pdf-actions">
               {estadoPermuta !== "ACEPTADA" && estadoPermuta !== "VALIDADA" && (
                 <button className="btn btn-primary" onClick={mostrarPDF}>
                   {t("pdf_generation.buttons.visualize")}
@@ -504,15 +513,20 @@ export default function GeneracionPDF() {
           </div>
 
           {/* Columna Derecha: PDF Preview */}
-          <div className="user-card" style={{ display: 'flex', flexDirection: 'column', height: 'fit-content', minHeight: '600px', padding: '0', overflow: 'hidden' }}>
+          <div className="user-card pdf-preview-card">
             {pdfUrl ? (
-              <iframe
-                src={pdfUrl}
-                style={{ width: '100%', height: '700px', border: 'none' }}
-                title="PDF Preview"
-              />
+              <>
+                <iframe className="pdf-preview-frame" src={pdfUrl} title="Vista previa del PDF" />
+                <div className="pdf-mobile-preview">
+                  <span aria-hidden="true">📄</span>
+                  <p>El documento está preparado.</p>
+                  <a className="btn btn-primary" href={pdfUrl} target="_blank" rel="noreferrer">
+                    Abrir PDF
+                  </a>
+                </div>
+              </>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: '300px', backgroundColor: '#f8f9fa', color: '#6c757d' }}>
+              <div className="pdf-preview-empty">
                 <p>{t("pdf_generation.buttons.visualize")}...</p>
               </div>
             )}

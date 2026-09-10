@@ -13,6 +13,19 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+  box-sizing: border-box;
+  width: 100%;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -26,6 +39,24 @@ body {
   margin: 0;
   display: block;
   min-height: 100vh;
+  min-height: 100dvh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+img,
+video,
+canvas,
+svg,
+iframe {
+  max-width: 100%;
+}
+
+input,
+select,
+textarea,
+button {
+  max-width: 100%;
 }
 
 h1 {
