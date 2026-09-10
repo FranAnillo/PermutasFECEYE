@@ -29,7 +29,10 @@ import { toast } from "react-toastify";
 import { logError } from "../../lib/logger.js";
 import { useTranslation } from "react-i18next";
 import { asegurarCamposPlantillaPermuta } from "../../lib/plantillaPermutaPDF.js";
-import { prepararDatosDocumento } from "../../lib/prepararDatosDocumento.js";
+import {
+  prepararDatosDocumento,
+  validarDatosSistemaDocumento,
+} from "../../lib/prepararDatosDocumento.js";
 
 export default function GeneracionPDF() {
   const { t } = useTranslation();
@@ -61,6 +64,8 @@ export default function GeneracionPDF() {
   });
   const [pdfUrl, setPdfUrl] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [cargandoDatos, setCargandoDatos] = useState(true);
+  const [errorCarga, setErrorCarga] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,6 +85,10 @@ export default function GeneracionPDF() {
         const estado = datosPermuta?.estado;
         const fileId = datosPermuta?.archivo;
         const datosDocumento = prepararDatosDocumento(grupo, datosPermuta?.estudiante_cumplimentado_1);
+        const datosFaltantes = validarDatosSistemaDocumento(datosDocumento);
+        if (datosFaltantes.length > 0) {
+          throw new Error(`No se puede generar el documento. Faltan: ${datosFaltantes.join(", ")}.`);
+        }
         setUsuarios(datosDocumento.usuarios);
         setPermutas(datosDocumento.permutas);
         setPermutaId(datosPermuta?.id);
@@ -96,10 +105,12 @@ export default function GeneracionPDF() {
           }
         }
       } catch (error) {
-        if (error?.message === "El documento admite un máximo de 10 cambios") {
-          toast.error(error.message);
-        }
+        const message = error?.message || "No se pudieron cargar los datos de la permuta.";
+        setErrorCarga(message);
+        toast.error(message);
         logError(error);
+      } finally {
+        setCargandoDatos(false);
       }
     };
     cargarDatos();
@@ -292,6 +303,28 @@ export default function GeneracionPDF() {
     // Comprobar si hay algún error
     return !Object.values(nuevoErrors).some((error) => error !== "");
   };
+
+  if (cargandoDatos) {
+    return (
+      <div className="page-container">
+        <div className="user-loading" role="status">Preparando los datos del documento...</div>
+      </div>
+    );
+  }
+
+  if (errorCarga) {
+    return (
+      <div className="page-container">
+        <div className="content-wrap">
+          <div className="user-card user-error" role="alert">
+            <h2>No se puede preparar el documento</h2>
+            <p>{errorCarga}</p>
+            <p>Actualiza y reinicia el backend antes de volver a intentarlo.</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">

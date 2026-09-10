@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { prepararDatosDocumento } from '../../../lib/prepararDatosDocumento.js';
+import {
+  prepararDatosDocumento,
+  validarDatosSistemaDocumento,
+} from '../../../lib/prepararDatosDocumento.js';
 
 describe('datos del documento de permuta', () => {
   it('coloca primero al firmante inicial y refleja el intercambio de grupos', () => {
     const grupo = {
       usuarios: [
-        { uvus: 'aaa0001', nombre_completo: 'Segundo estudiante', estudio: 'ADE' },
-        { uvus: 'zzz0001', nombre_completo: 'Primer estudiante', estudio: 'ADE' },
+        { uvus: 'aaa0001', nombre_completo: 'Segundo estudiante', estudio: 'ADE', correo: 'segundo@example.test' },
+        { uvus: 'zzz0001', nombre_completo: 'Primer estudiante', estudio: 'ADE', correo: 'primero@example.test' },
       ],
       permutas: [{
         permuta_id: 8,
@@ -28,5 +31,24 @@ describe('datos del documento de permuta', () => {
       grupo_actual_2: 2,
       grupo_nuevo_2: 7,
     });
+    expect(validarDatosSistemaDocumento(result)).toEqual([]);
+  });
+
+  it('detecta respuestas antiguas del backend antes de crear un PDF incompleto', () => {
+    const incompletos = validarDatosSistemaDocumento({
+      usuarios: [
+        { estudio: 'ECO' },
+        { estudio: 'ECO' },
+      ],
+      permutas: [{ nombre_asignatura: 'Matemáticas II' }],
+    });
+
+    expect(incompletos).toEqual(expect.arrayContaining([
+      'correo del estudiante 1',
+      'correo del estudiante 2',
+      'curso de la fila 1',
+      'grupo actual de la fila 1',
+      'grupo nuevo de la fila 1',
+    ]));
   });
 });
