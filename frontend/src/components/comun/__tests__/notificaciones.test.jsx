@@ -24,6 +24,9 @@ it('abre un diálogo, conserva la página, y cierra al pulsar fuera restaurando 
   fireEvent.click(panel, { clientX: 700, clientY: 200 });
   expect(screen.getByRole('dialog')).toBeInTheDocument();
   fireEvent.click(panel, { clientX: 100, clientY: 200 });
+  expect(panel).toHaveClass('is-closing');
+  expect(screen.getByRole('dialog')).toBeInTheDocument();
+  fireEvent.animationEnd(panel);
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   expect(document.body.style.overflow).toBe('');
   expect(bell).toHaveFocus();
@@ -31,9 +34,15 @@ it('abre un diálogo, conserva la página, y cierra al pulsar fuera restaurando 
 it('cierra con Escape y con el botón de cierre', () => {
   render(<View />);
   fireEvent.click(screen.getByText('Campana'));
-  fireEvent(screen.getByRole('dialog'), new Event('cancel', { cancelable: true }));
+  let panel = screen.getByRole('dialog');
+  fireEvent(panel, new Event('cancel', { cancelable: true }));
+  expect(panel).toHaveClass('is-closing');
+  fireEvent.animationEnd(panel);
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   fireEvent.click(screen.getByText('Campana'));
   fireEvent.click(screen.getByRole('button', { name: 'common.close' }));
+  panel = screen.getByRole('dialog');
+  expect(panel).toHaveClass('is-closing');
+  fireEvent.animationEnd(panel);
   expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });

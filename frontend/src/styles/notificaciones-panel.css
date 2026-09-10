@@ -15,8 +15,18 @@
   box-shadow: -4px 0 20px rgb(0 0 0 / 20%);
   overflow-y: auto;
   overflow-wrap: anywhere;
+  animation: notifications-slide-in 280ms cubic-bezier(.22, 1, .36, 1) both;
 }
-.notifications-drawer::backdrop { background: rgb(0 0 0 / 55%); }
+.notifications-drawer::backdrop {
+  background: rgb(0 0 0 / 55%);
+  animation: notifications-backdrop-in 280ms ease-out both;
+}
+.notifications-drawer.is-closing {
+  animation: notifications-slide-out 220ms cubic-bezier(.4, 0, 1, 1) both;
+}
+.notifications-drawer.is-closing::backdrop {
+  animation: notifications-backdrop-out 220ms ease-in both;
+}
 .notifications-drawer-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
 .notifications-drawer-header h2 { flex: 1; margin: 0; font-size: 1.4rem; }
 .notifications-drawer-header button {
@@ -31,3 +41,27 @@
   cursor: pointer;
 }
 .notifications-drawer :focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+
+@keyframes notifications-slide-in {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes notifications-slide-out {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100%); }
+}
+@keyframes notifications-backdrop-in {
+  from { background: rgb(0 0 0 / 0%); }
+  to { background: rgb(0 0 0 / 55%); }
+}
+@keyframes notifications-backdrop-out {
+  from { background: rgb(0 0 0 / 55%); }
+  to { background: rgb(0 0 0 / 0%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notifications-drawer,
+  .notifications-drawer::backdrop,
+  .notifications-drawer.is-closing,
+  .notifications-drawer.is-closing::backdrop { animation-duration: 1ms; }
+}
