@@ -13,6 +13,7 @@ export default function PermutasAceptadas() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
   const [generando, setGenerando] = useState(false);
+  const [documentosDisponibles, setDocumentosDisponibles] = useState([]);
   const [usuario, setUsuario] = useState(null);
   const navigate = useNavigate();
 
@@ -59,6 +60,7 @@ export default function PermutasAceptadas() {
   const handleGenerarPermuta = async (IdsPermuta) => {
     if (generando) return;
     setGenerando(true);
+    setDocumentosDisponibles([]);
     try {
       const response = await generarBorradorPermuta(IdsPermuta);
       const creado = response?.result?.result?.id;
@@ -66,6 +68,7 @@ export default function PermutasAceptadas() {
       toast.success(t("accepted_swaps.success_generated"));
       navigate(`/generarPermuta?documento=${id}`);
     } catch (error) {
+      if (error.documentos) { setDocumentosDisponibles(error.documentos); return; }
       toast.error(error.message || t("accepted_swaps.error_generated"));
       logError(error);
     } finally {
@@ -76,6 +79,7 @@ export default function PermutasAceptadas() {
   const handleAbrirDocumento = async (filas) => {
     if (generando) return;
     setGenerando(true);
+    setDocumentosDisponibles([]);
     try {
       const documentoId = filas[0]?.documento_id;
       const id = Number.isSafeInteger(documentoId) && documentoId > 0 && filas.every(f => f.documento_id === documentoId)
@@ -83,6 +87,7 @@ export default function PermutasAceptadas() {
         : await resolverDocumentoPermuta(filas.map(f => f.permuta_id));
       navigate(`/generarPermuta?documento=${id}`);
     } catch (error) {
+      if (error.documentos) { setDocumentosDisponibles(error.documentos); return; }
       toast.error(error.message || 'No se pudo abrir el documento.');
       logError(error);
     } finally { setGenerando(false); }
@@ -105,6 +110,21 @@ export default function PermutasAceptadas() {
             {t("accepted_swaps.subtitle")}
           </p>
         </header>
+
+        {documentosDisponibles.length > 0 && (
+          <section className="user-card" role="region" aria-label="Seleccionar documento">
+            <h3>Hay varios documentos para esta selección</h3>
+            <p>Elige cuál quieres abrir consultando las asignaturas de cada documento.</p>
+            {documentosDisponibles.map(doc => (
+              <div key={doc.id} style={{ marginBottom: '16px' }}>
+                <p><strong>Documento {doc.id}</strong> · {doc.estado}</p>
+                <ul>{doc.grupo.permutas.map(p => <li key={p.permuta_id}>{p.nombre_asignatura} ({p.codigo_asignatura ?? p.permuta_id})</li>)}</ul>
+                <button className="btn btn-primary" onClick={() => navigate(`/generarPermuta?documento=${doc.id}`)}>Abrir documento {doc.id}</button>
+              </div>
+            ))}
+            <button className="btn btn-secondary" onClick={() => setDocumentosDisponibles([])}>Cancelar</button>
+          </section>
+        )}
 
         {permutas.length > 0 ? (
           <div className="responsive-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>

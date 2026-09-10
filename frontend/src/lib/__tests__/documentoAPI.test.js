@@ -37,3 +37,27 @@ it('distingue una ruta no desplegada de un documento inexistente', async () => {
   vi.stubGlobal('fetch', vi.fn(async () => ({ ok: false, status: 404, json: async () => ({ message: 'No se encuentra el documento.' }) })));
   await expect(obtenerDocumentoPermuta(12)).rejects.toThrow('No se encuentra el documento.');
 });
+
+it('ofrece los borradores 3 y 4 del listado antiguo con las asignaturas verificadas', async () => {
+  const docs = [
+    { id: 3, estado: 'BORRADOR', archivo: null, grupo: { permutas: [{ permuta_id: 6, nombre_asignatura: 'Finanzas' }] } },
+    { id: 4, estado: 'BORRADOR', archivo: null, grupo: { permutas: [{ permuta_id: 5, nombre_asignatura: 'Economía Pública I' }] } },
+  ];
+  const fetch = vi.fn(async (url, options) => {
+    const body = JSON.parse(options.body);
+    const result = url.endsWith('/listarPermutas')
+      ? docs.map(({ id, estado, archivo }) => ({ id, estado, archivo }))
+      : docs.find(d => d.id === body.permutaId);
+    return { ok: true, json: async () => ({ error: false, result }) };
+  });
+  vi.stubGlobal('fetch', fetch);
+  await expect(resolverDocumentoPermuta([6,5])).rejects.toMatchObject({ documentos: docs });
+  expect(fetch).toHaveBeenCalledTimes(3);
+});
+
+it('mantiene la elección explícita aunque dos borradores contengan las mismas asignaturas', async () => {
+  const docs = [3,4].map(id => ({ id, estado: 'BORRADOR', archivo: null,
+    grupo: { permutas: [{ permuta_id: 6, nombre_asignatura: 'Finanzas' }] } }));
+  vi.stubGlobal('fetch', vi.fn(async () => ({ ok: true, json: async () => ({ err: false, result: docs }) })));
+  await expect(resolverDocumentoPermuta([6])).rejects.toMatchObject({ documentos: docs });
+});

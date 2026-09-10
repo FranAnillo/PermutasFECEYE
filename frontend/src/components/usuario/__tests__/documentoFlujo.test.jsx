@@ -141,4 +141,30 @@ describe('pantalla de documentos', () => {
     expect(api.resolverDocumentoPermuta).toHaveBeenCalledWith([6,5]);
     expect(api.generarBorradorPermuta).not.toHaveBeenCalled();
   });
+
+  it('permite elegir el borrador 4 cuando hay dos documentos para la tarjeta', async () => {
+    api.obtenerPermutasAgrupadasPorUsuario.mockResolvedValue({ result: { result: [
+      { usuarios: ['aaa0000', 'sample'], permutas: [
+        { permuta_id: 6, estado_permuta_asociada: 'BORRADOR' },
+        { permuta_id: 5, estado_permuta_asociada: 'BORRADOR' },
+      ] },
+    ] } });
+    const documentos = [
+      { id: 3, estado: 'BORRADOR', grupo: { permutas: [{ permuta_id: 6, nombre_asignatura: 'Finanzas' }] } },
+      { id: 4, estado: 'BORRADOR', grupo: { permutas: [{ permuta_id: 5, nombre_asignatura: 'Economía Pública I' }] } },
+    ];
+    api.resolverDocumentoPermuta.mockRejectedValue(Object.assign(new Error('Elige el documento'), { documentos }));
+    render(<MemoryRouter initialEntries={['/permutasAceptadas']}><Routes>
+      <Route path="/permutasAceptadas" element={<PermutasAceptadas />} />
+      <Route path="/generarPermuta" element={<Location />} />
+    </Routes></MemoryRouter>);
+    fireEvent.click(await screen.findByText('accepted_swaps.continue_swap'));
+    const selector = await screen.findByRole('region', { name: 'Seleccionar documento' });
+    expect(selector).toHaveTextContent('Finanzas');
+    expect(selector).toHaveTextContent('Economía Pública I');
+    expect(toast.error).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByText('Abrir documento 4'));
+    expect(await screen.findByTestId('location')).toHaveTextContent('?documento=4');
+    expect(api.generarBorradorPermuta).not.toHaveBeenCalled();
+  });
 });

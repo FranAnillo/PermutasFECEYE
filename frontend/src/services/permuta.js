@@ -57,9 +57,21 @@ export const resolverDocumentoPermuta = async (IdsPermuta) => {
     }
     const response = await listarPermutas(IdsPermuta);
     const documentos = response?.result?.result;
-    if (!Array.isArray(documentos) || documentos.length !== 1 ||
-        !Number.isSafeInteger(documentos[0]?.id) || documentos[0].id < 1) {
-        throw new Error('No se ha encontrado un único documento para estas permutas. Actualiza el listado y vuelve a intentarlo.');
+    if (!Array.isArray(documentos) || !documentos.length || documentos.some(doc => !Number.isSafeInteger(doc?.id) || doc.id < 1)) {
+        throw new Error('No se ha encontrado el documento de estas permutas. Actualiza el listado y vuelve a intentarlo.');
+    }
+    if (documentos.length > 1) {
+        // El listado antiguo agrupa por pareja, aunque existan varios documentos.
+        // Leer las asignaturas de cada uno antes de ofrecer una elección explícita.
+        const opciones = await Promise.all(documentos.map(async doc => {
+            const completo = doc.grupo ? doc : (await obtenerDocumentoPermuta(doc.id))?.result?.result;
+            if (completo?.id !== doc.id || !Array.isArray(completo.grupo?.permutas) ||
+                !completo.grupo.permutas.some(p => IdsPermuta.includes(p.permuta_id))) {
+                throw new Error('No se pudieron comprobar las asignaturas de cada documento. Revisa que el backend esté actualizado.');
+            }
+            return completo;
+        }));
+        throw Object.assign(new Error('Esta selección tiene varios documentos. Elige el que quieres abrir.'), { documentos: opciones });
     }
     const filas = documentos[0].grupo?.permutas;
     if (filas && (filas.length !== IdsPermuta.length || filas.some(p => !IdsPermuta.includes(p.permuta_id)))) {
