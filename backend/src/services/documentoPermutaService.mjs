@@ -118,9 +118,11 @@ export async function cambiarEstadoDocumento(id, uvus, siguiente, archivo) {
     if (siguiente !== 'VALIDADA' && !/^[0-9a-f-]{36}\.pdf$/i.test(archivo || '')) throw fallo('Adjunta un PDF válido.', 400);
     if (siguiente === 'VALIDADA') {
       await conexion.query("UPDATE permutas SET estado = 'VALIDADA' WHERE id = $1", [id]);
+    } else if (siguiente === 'FIRMADA') {
+      await conexion.query("UPDATE permutas SET estado = 'FIRMADA', archivo = $2 WHERE id = $1", [id, archivo]);
     } else {
-      await conexion.query(`UPDATE permutas SET estado = $2, archivo = $3,
-        estudiante_cumplimentado_2 = CASE WHEN $2 = 'ACEPTADA' THEN $4 ELSE estudiante_cumplimentado_2 END WHERE id = $1`, [id, siguiente, archivo, uvus]);
+      await conexion.query(`UPDATE permutas SET estado = 'ACEPTADA', archivo = $2,
+        estudiante_cumplimentado_2 = $3 WHERE id = $1`, [id, archivo, uvus]);
     }
     await conexion.query('COMMIT');
     return { id, estado: siguiente };
