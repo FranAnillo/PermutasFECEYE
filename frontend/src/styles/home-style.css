@@ -1,149 +1,178 @@
-p {
-  color: var(--text-primary);
-
-}
-
-.notificaciones {
-  color: var(--text-primary);
-}
-
 .home-container {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+  background: radial-gradient(circle at 88% 4%, rgb(245 124 0 / 14%), transparent 28rem), linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
 }
 
-.content h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: var(--spacing-sm);
-  background: linear-gradient(135deg, var(--user-primary), var(--user-secondary));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.home-content {
+  box-sizing: border-box;
+  width: min(1180px, calc(100% - 40px));
+  margin: 56px auto 0;
+  padding: clamp(28px, 5vw, 64px) 0;
+  text-align: left;
 }
 
-.content {
-  flex: 1;
-  text-align: center;
-  padding: 40px;
-  margin-top: 60px;
+.home-brand-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 340px);
+  align-items: center;
+  gap: clamp(28px, 6vw, 72px);
+  overflow: hidden;
+  padding: clamp(28px, 5vw, 64px);
+  border: 1px solid rgb(245 124 0 / 20%);
+  border-radius: 28px;
+  background: linear-gradient(135deg, var(--card-bg) 10%, rgb(255 247 237 / 92%) 100%);
+  box-shadow: 0 20px 50px rgb(94 53 7 / 12%);
 }
 
-.explore-button {
-  padding: 15px 30px;
-  font-size: 18px;
-  background-color: red;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
+.home-brand-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 7px;
+  background: linear-gradient(#ffab1a, #f57c00);
+}
+
+.home-eyebrow,
+.home-management-label {
+  margin: 0 0 12px;
+  color: #a94e00;
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+.home-content h1 {
+  margin: 0 0 18px;
+  color: var(--text-primary);
+  font-size: clamp(2.35rem, 5vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -.045em;
+  line-height: 1.02;
+}
+
+.home-description {
+  max-width: 620px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: clamp(1.05rem, 2vw, 1.3rem);
+  line-height: 1.65;
+}
+
+.home-faculty-logo-frame {
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 14px 35px rgb(203 92 0 / 18%);
+}
+
+.home-faculty-logo {
+  display: block;
+  width: 100%;
+  max-height: 340px;
+  object-fit: contain;
+}
+
+.home-management {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(22px, 4vw, 40px);
+  margin-top: 28px;
+  padding: 22px clamp(22px, 4vw, 38px);
+  border: 1px solid var(--border-color, rgb(0 0 0 / 8%));
+  border-radius: 20px;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+}
+
+.home-delegation-logo-frame {
+  height: 108px;
+  padding: 8px 16px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.home-delegation-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.home-management-copy h2,
+.notificaciones h2 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.home-management-copy p:last-child {
+  margin: 8px 0 0;
+  color: var(--text-secondary);
+  line-height: 1.55;
 }
 
 .notificaciones {
-  margin-top: 30px;
+  margin-top: 42px;
+  color: var(--text-primary);
 }
 
 .notificaciones-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
 
-.notificacion-card {
-  background-color: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--card-shadow);
+.notificacion-card,
+.home-empty-notifications {
+  box-sizing: border-box;
   padding: 20px;
-  transition: var(--transition);
-  border: 1px solid var(--border-color, rgba(0, 0, 0, 0.05));
+  border: 1px solid var(--border-color, rgb(0 0 0 / 5%));
+  border-radius: var(--border-radius);
+  background-color: var(--card-bg);
+  box-shadow: var(--card-shadow);
   text-align: left;
 }
 
-.notificacion-card:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--card-shadow-hover);
+.notificacion-card { transition: var(--transition); }
+.notificacion-card:hover { transform: translateY(-4px); box-shadow: var(--card-shadow-hover); }
+.notificacion-contenido h3 { margin: 0 0 8px; color: var(--text-primary); font-size: 1.1rem; }
+.notificacion-contenido p,
+.home-empty-notifications { margin: 0; color: var(--text-secondary); font-size: .9rem; }
+
+body.dark-mode .home-brand-hero {
+  background: linear-gradient(135deg, var(--card-bg) 10%, rgb(66 36 13 / 88%) 100%);
+  border-color: rgb(255 171 26 / 24%);
 }
 
-.notificacion-contenido h3 {
-  font-size: 1.1rem;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-}
+body.dark-mode .home-eyebrow,
+body.dark-mode .home-management-label { color: #ffb94d; }
 
-.notificacion-contenido p {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
-
-/* Adaptación móvil */
 @media (max-width: 768px) {
-  .home-container {
-    min-height: 100dvh;
-    padding: 0;
-  }
+  .home-content { width: min(100% - 24px, 620px); margin-top: 56px; padding: 16px 0 32px; }
+  .home-brand-hero { grid-template-columns: 1fr; gap: 22px; padding: 26px 22px 22px; border-radius: 20px; }
+  .home-content h1 { font-size: clamp(2rem, 10vw, 3rem); }
+  .home-description { font-size: 1rem; }
+  .home-faculty-logo-frame { justify-self: center; width: min(210px, 68vw); padding: 10px; border-radius: 18px; }
+  .home-faculty-logo { max-height: 250px; }
+  .home-management { grid-template-columns: 86px minmax(0, 1fr); gap: 16px; margin-top: 14px; padding: 16px; border-radius: 16px; }
+  .home-delegation-logo-frame { height: 76px; padding: 6px; }
+  .home-management-copy h2 { font-size: 1rem; }
+  .home-management-label { margin-bottom: 5px; font-size: .68rem; }
+  .home-management-copy p:last-child { display: none; }
+  .notificaciones { margin-top: 28px; }
+  .notificaciones-cards { grid-template-columns: 1fr; gap: 10px; margin-top: 12px; }
+  .notificacion-card,
+  .home-empty-notifications { width: 100%; padding: 14px; border-radius: 14px; }
+}
 
-  .content {
-    padding: 24px 12px;
-    margin-top: 56px;
-    text-align: center;
-  }
-
-  .content h1 {
-    font-size: clamp(1.75rem, 8vw, 2.25rem);
-    margin-bottom: 12px;
-  }
-
-  .content h2 {
-    font-size: 1em;
-    margin-bottom: 10px;
-  }
-
-  .content p {
-    font-size: 0.95em;
-    margin-bottom: 8px;
-  }
-
-  .explore-button {
-    width: 100%;
-    font-size: 1em;
-    padding: 12px;
-    margin-top: 10px;
-    min-height: 48px;
-    border-radius: 8px;
-  }
-
-  .notificaciones {
-    margin-top: 18px;
-  }
-
-  .notificaciones-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
-    width: 100%;
-  }
-
-  .notificacion-card {
-    padding: 10px;
-    font-size: 0.95em;
-    margin-bottom: 8px;
-    box-sizing: border-box;
-    width: 100%;
-    max-width: 100%;
-    border-radius: 12px;
-  }
-
-  .notificacion-contenido h3 {
-    font-size: 1em;
-    margin-bottom: 6px;
-  }
-
-  .notificacion-contenido p {
-    font-size: 0.95em;
-    margin-bottom: 4px;
-  }
+@media (max-width: 380px) {
+  .home-management { grid-template-columns: 68px minmax(0, 1fr); gap: 12px; }
+  .home-delegation-logo-frame { height: 64px; }
 }

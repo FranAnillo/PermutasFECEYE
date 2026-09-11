@@ -96,7 +96,10 @@ export default function NavbarEstudiante() {
   return (
     <>
       <nav className="navbar">
-        <div className="navbar-brand">{t("navbar.student_brand")}</div>
+        <Link to="/estudiante" className="navbar-brand" aria-label={t("navbar.student_brand")}>
+          <img src="/favicon.png" alt="" className="navbar-brand-mark" />
+          <span>{t("navbar.student_brand")}</span>
+        </Link>
         <button className="hamburger" aria-label={t("navbar.menu")} aria-expanded={open} onClick={() => setOpen(!open)}>
           ☰
         </button>

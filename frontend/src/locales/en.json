@@ -11,6 +11,13 @@
         "read_more": "Read more",
         "cookie_consent": "We use cookies to improve user experience."
     },
+    "brand": {
+        "faculty_logo_alt": "Visual identity of the Faculty of Economics and Business Sciences",
+        "delegation_logo_alt": "Visual identity of the DEAlS Student Delegation",
+        "managed_label": "Service managed by",
+        "delegation_name": "Student Delegation · DEAlS",
+        "managed_description": "A digital space for the FCEYE community that makes group changes clear and secure."
+    },
     "navbar": {
         "brand": "FCEYE Exchanges - Admin",
         "management": "Management",

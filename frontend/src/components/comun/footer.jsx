@@ -9,6 +9,10 @@ export default function Footer() {
         <footer className="footer">
             <div className="footer-container">
                 <div className="footer-section">
+                    <div className="footer-brand-lockup">
+                        <img src="/favicon.png" alt="" className="footer-faculty-mark" loading="lazy" />
+                        <img src="/brand/delegacion-estudiantes.jpg" alt="" className="footer-delegation-mark" loading="lazy" />
+                    </div>
                     <p><strong>{t("footer.platform_name")}</strong><br />{t("footer.school_name")}<br />{t("footer.university_name")} · © {yearValue}</p>
                 </div>
                 <div className="footer-section">

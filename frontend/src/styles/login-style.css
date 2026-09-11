@@ -13,11 +13,17 @@
   border-bottom: 1px solid #e0e5eb;
 }
 .auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   color: #263447;
   font-size: 1.3rem;
   font-weight: 700;
+  text-decoration: none;
 }
-.auth-brand span { color: #bf0a2e; }
+.auth-brand:hover { text-decoration: none; }
+.auth-brand-name strong { color: #bf0a2e; }
+.auth-brand-mark { width: 42px; height: 42px; border-radius: 11px; object-fit: cover; box-shadow: 0 3px 10px rgb(38 52 71 / 15%); }
 .auth-header .lang-btn {
   color: #263447;
   background: #f5f7fa;
@@ -32,7 +38,25 @@
   flex-direction: column;
   padding: 20px 20px 64px;
 }
-.auth-school { text-align: center; line-height: 1.7; margin: 10px 0 24px; }
+.auth-institution {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) 72px;
+  align-items: center;
+  gap: 18px;
+  width: min(100%, 560px);
+  margin: 4px 0 24px;
+  padding: 12px 18px;
+  box-sizing: border-box;
+  border: 1px solid #e0e5eb;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 24px #2634470d;
+}
+.auth-faculty-logo { width: 88px; height: 88px; object-fit: contain; }
+.auth-school { margin: 0; text-align: left; line-height: 1.4; font-weight: 700; }
+.auth-school span { color: #526075; font-size: .88rem; font-weight: 500; }
+.auth-manager { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #526075; font-size: .63rem; text-align: center; text-transform: uppercase; }
+.auth-manager img { width: 64px; height: 68px; object-fit: contain; }
 .auth-card {
   box-sizing: border-box;
   width: 100%;
@@ -79,16 +103,24 @@
 .auth-switch { text-align: center; margin: 24px 0 0; font-size: .95rem; }
 .auth-switch a { color: #a00927; text-decoration: underline; }
 .dark-mode .auth-page { background: #0f172a; color: #f1f5f9; }
-.dark-mode .auth-header, .dark-mode .auth-card { background: #1e293b; border-color: #475569; }
+.dark-mode .auth-header, .dark-mode .auth-card, .dark-mode .auth-institution { background: #1e293b; border-color: #475569; }
 .dark-mode .auth-brand { color: #f1f5f9; }
 .dark-mode .auth-header .lang-btn { color: #f1f5f9; background: #0f172a; border-color: #64748b; }
 .dark-mode .auth-header .lang-btn:hover { background: #334155; border-color: #94a3b8; }
 .dark-mode .auth-header .lang-btn.active { background: #e0ad0f; border-color: #e0ad0f; color: #1e293b; }
 .dark-mode .auth-description, .dark-mode .auth-hint { color: #cbd5e1; }
-.dark-mode .auth-brand span, .dark-mode .auth-card .login-title, .dark-mode .auth-switch a { color: #ff9db2; }
+.dark-mode .auth-brand-name strong, .dark-mode .auth-card .login-title, .dark-mode .auth-switch a { color: #ff9db2; }
+.dark-mode .auth-school span, .dark-mode .auth-manager { color: #cbd5e1; }
 .dark-mode .auth-form input { background: #0f172a; color: #f1f5f9; border-color: #64748b; }
 @media (max-width: 480px) {
   .auth-header { padding: 16px; gap: 12px; }
   .auth-brand { font-size: 1.1rem; }
+  .auth-brand-mark { width: 36px; height: 36px; border-radius: 9px; }
   .auth-content { padding: 16px 12px 40px; }
+  .auth-institution { grid-template-columns: 60px minmax(0, 1fr) 52px; gap: 10px; padding: 10px; }
+  .auth-faculty-logo { width: 60px; height: 66px; }
+  .auth-school { font-size: .82rem; }
+  .auth-school span { font-size: .75rem; }
+  .auth-manager img { width: 48px; height: 52px; }
+  .auth-manager span { display: none; }
 }

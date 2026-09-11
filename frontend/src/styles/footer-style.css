@@ -46,6 +46,16 @@
     max-width: 300px;
 }
 
+.footer-brand-lockup {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.footer-faculty-mark { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
+.footer-delegation-mark { width: 58px; height: 44px; padding-left: 10px; border-left: 1px solid var(--border-color, #ddd); object-fit: contain; }
+
 
 ul {
     list-style: none;
@@ -113,6 +123,8 @@ body.dark-mode .footer a:hover {
         width: 100%;
         margin-bottom: 10px;
     }
+
+    .footer-brand-lockup { justify-content: center; }
 
     .footer div {
         width: 100%;

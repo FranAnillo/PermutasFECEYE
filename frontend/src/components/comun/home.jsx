@@ -38,9 +38,29 @@ export default function Home() {
 
   return (
     <div className="home-container">
-      <div className="content">
-        <h1>{t("common.welcome")}</h1>
-        <p>{t("common.description")}</p>
+      <main className="content home-content">
+        <section className="home-brand-hero" aria-labelledby="home-title">
+          <div className="home-brand-copy">
+            <p className="home-eyebrow">{t("footer.school_name")}</p>
+            <h1 id="home-title">{t("common.welcome")}</h1>
+            <p className="home-description">{t("common.description")}</p>
+          </div>
+          <div className="home-faculty-logo-frame">
+            <img src="/brand/fceye-facultad.jpg" alt={t("brand.faculty_logo_alt")} className="home-faculty-logo" fetchPriority="high" />
+          </div>
+        </section>
+
+        <section className="home-management" aria-labelledby="management-title">
+          <div className="home-delegation-logo-frame">
+            <img src="/brand/delegacion-estudiantes.jpg" alt={t("brand.delegation_logo_alt")} className="home-delegation-logo" loading="lazy" />
+          </div>
+          <div className="home-management-copy">
+            <p className="home-management-label">{t("brand.managed_label")}</p>
+            <h2 id="management-title">{t("brand.delegation_name")}</h2>
+            <p>{t("brand.managed_description")}</p>
+          </div>
+        </section>
+
         <div className="notificaciones">
           <h2>{t("common.last_notifications")}</h2>
 
@@ -53,9 +73,10 @@ export default function Home() {
                 </div>
               </div>
             ))}
+            {notificaciones.length === 0 && <p className="home-empty-notifications">{t("common.no_notifications")}</p>}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

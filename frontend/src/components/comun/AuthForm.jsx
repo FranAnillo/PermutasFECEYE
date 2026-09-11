@@ -80,11 +80,21 @@ export default function AuthForm({ register = false }) {
         <>
             <div className="auth-page">
                 <header className="auth-header">
-                    <Link className="auth-brand" to="/login">Permutas <span>FCEYE</span></Link>
+                    <Link className="auth-brand" to="/login">
+                        <img src="/favicon.png" alt="" className="auth-brand-mark" />
+                        <span className="auth-brand-name">Permutas <strong>FCEYE</strong></span>
+                    </Link>
                     <LanguageSwitcher />
                 </header>
                 <div className="auth-content">
-                    <p className="auth-school">{t("footer.school_name")}<br />{t("footer.university_name")}</p>
+                    <div className="auth-institution">
+                        <img src="/brand/fceye-facultad.jpg" alt={t("brand.faculty_logo_alt")} className="auth-faculty-logo" />
+                        <p className="auth-school">{t("footer.school_name")}<br /><span>{t("footer.university_name")}</span></p>
+                        <div className="auth-manager">
+                            <img src="/brand/delegacion-estudiantes.jpg" alt={t("brand.delegation_logo_alt")} />
+                            <span>{t("brand.managed_label")}</span>
+                        </div>
+                    </div>
                     <section className="auth-card" aria-labelledby="auth-title">
                         <h1 id="auth-title" className="login-title">{t(`${prefix}.title`)}</h1>
                         <p className="auth-description">{t(`${prefix}.description`)}</p>

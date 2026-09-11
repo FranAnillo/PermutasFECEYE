@@ -74,7 +74,10 @@ export default function NavbarAdmin() {
   return (
     <>
       <nav className="navbar navbar-admin">
-        <div className="navbar-brand">{t("navbar.brand")}</div>
+        <Link to="/admin" className="navbar-brand" aria-label={t("navbar.brand")}>
+          <img src="/favicon.png" alt="" className="navbar-brand-mark" />
+          <span>{t("navbar.brand")}</span>
+        </Link>
         <button className="hamburger" aria-label={t("navbar.menu")} aria-expanded={open} onClick={() => setOpen(!open)}>
           ☰
         </button>
